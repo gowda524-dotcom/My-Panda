@@ -11,39 +11,39 @@
       height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* align toward top */
+      align-items: flex-start;
       background: url('Background1.jpg') no-repeat center center/cover;
       font-family: 'Poppins', sans-serif;
     }
 
     .container {
       text-align: center;
-      color: white;
-      margin-top: 120px; /* adjust text higher */
+      margin-top: 120px;
+      color: #fff;
     }
 
     h1 {
-      font-size: 2.4em;
+      font-size: 2.6em;
       font-weight: bold;
-      background: linear-gradient(45deg, #007BFF, #8e44ad, #ff4d79);
+      background: linear-gradient(45deg, #ff66cc, #66ccff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
       margin-bottom: 15px;
     }
 
     p {
       font-size: 1.2em;
       font-style: italic;
-      color: #ffd6e7;
+      color: #fce4ec;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
       margin-bottom: 25px;
     }
 
     .quiz h2 {
-      font-size: 1.6em;
+      font-size: 1.5em;
       font-weight: bold;
-      background: linear-gradient(45deg, #ff9933, #ff33cc, #33ccff);
+      background: linear-gradient(45deg, #ffcc33, #ff33cc, #33ccff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
@@ -62,11 +62,11 @@
     }
 
     #startBtn {
-      background: #ff4d79;
+      background: linear-gradient(45deg, #ff6699, #ff3366);
     }
 
     #startBtn:hover {
-      background: #ff6699;
+      background: linear-gradient(45deg, #ff99bb, #ff4d88);
       box-shadow: 0 6px 16px rgba(255,105,180,0.6);
     }
 
@@ -77,24 +77,13 @@
 
     .quiz button {
       display: block;
-      margin: 10px auto;
-      width: 200px;
-    }
-
-    .quiz button:nth-child(2) {
-      background: #007BFF; /* School - blue */
-    }
-
-    .quiz button:nth-child(3) {
-      background: #28a745; /* College - green */
-    }
-
-    .quiz button:nth-child(4) {
-      background: #ff9933; /* Bus stop - orange */
+      margin: 12px auto;
+      width: 220px;
+      background: linear-gradient(45deg, #9b59b6, #e91e63);
     }
 
     .quiz button:hover {
-      opacity: 0.85;
+      opacity: 0.9;
       transform: scale(1.05);
     }
 
@@ -113,9 +102,9 @@
 
     <div class="quiz" id="quizBox">
       <h2>Namma 1st meet ahna place 🤔??</h2>
-      <button onclick="checkAnswer('School')">School</button>
-      <button onclick="checkAnswer('College')">College</button>
-      <button onclick="checkAnswer('Bus stop')">Bus stop</button>
+      <button onclick="checkAnswer(this, 'School')">School</button>
+      <button onclick="checkAnswer(this, 'College')">College</button>
+      <button onclick="checkAnswer(this, 'Bus stop')">Bus stop</button>
       <div class="message" id="msg"></div>
     </div>
   </div>
@@ -131,17 +120,22 @@
       startBtn.style.display = 'none';
     });
 
-    function checkAnswer(ans) {
+    function checkAnswer(btn, ans) {
       if(ans === "College") {
+        btn.style.background = "#28a745"; // Green
         msg.style.color = "lightgreen";
         msg.innerHTML = "🎉 Correct! Let’s go...";
         launchConfetti();
         setTimeout(() => {
-          window.location.href = "page1.html"; // go to first page
+          window.location.href = "page1.html";
         }, 2000);
       } else {
-        msg.style.color = "red";
-        msg.innerHTML = "Oops! Try again 😅";
+        btn.style.background = "#e74c3c"; // Red
+        msg.style.color = "orange";
+        msg.innerHTML = "Oops! Wrong answer 😅";
+        setTimeout(() => {
+          btn.style.background = "linear-gradient(45deg, #9b59b6, #e91e63)";
+        }, 800);
       }
     }
 
