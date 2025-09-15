@@ -2,143 +2,126 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Surprise - Intro</title>
   <style>
-    body, html {
+    body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-    .intro {
-      background: url('Background1.jpg') no-repeat center center/cover;
-      width: 100%;
       height: 100vh;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
+      background: url('Background1.jpg') no-repeat center center/cover;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .container {
       text-align: center;
       color: white;
-      text-shadow: 2px 2px 5px #000;
+      position: relative;
+      top: -80px; /* moves text a little up */
     }
+
     h1 {
-      font-size: 2em;
+      font-size: 2.2em;
       font-weight: bold;
+      background: linear-gradient(45deg, #007BFF, #8e44ad, #ff4d79);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+      margin-bottom: 15px;
     }
-    .hidden {
-      display: none;
+
+    p {
+      font-size: 1.2em;
+      font-style: italic;
+      color: #ffd6e7;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+      margin-bottom: 25px;
     }
+
     button {
-      padding: 10px 20px;
-      margin-top: 20px;
-      font-size: 1em;
+      padding: 12px 24px;
+      background: #ff4d79;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #ff4da6;
+      border-radius: 25px;
+      font-size: 1em;
       color: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
+
+    button:hover {
+      background: #ff6699;
+      box-shadow: 0 6px 16px rgba(255,105,180,0.6);
+    }
+
     .quiz {
+      display: none;
       margin-top: 20px;
     }
+
     .quiz button {
-      margin: 5px;
-      background: #0066ff;
+      display: block;
+      margin: 10px auto;
+      width: 200px;
     }
-    #message {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    canvas#confettiCanvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
+
+    .message {
+      margin-top: 15px;
+      font-size: 1.1em;
+      color: yellow;
     }
   </style>
 </head>
 <body>
-  <div class="intro">
+  <div class="container">
     <h1>A Little Surprise For My Sweetest Bestfriend 💙 😚</h1>
     <p>This journey is all about you, filled with memories, laughter, and love 💕</p>
     <button id="startBtn">Start Quiz</button>
 
-    <div id="quizBox" class="quiz hidden">
-      <p><strong>Namma 1st meet ahna place 🤔??</strong></p>
+    <div class="quiz" id="quizBox">
+      <h2>Namma 1st meet ahna place 🤔??</h2>
       <button onclick="checkAnswer('School')">School</button>
       <button onclick="checkAnswer('College')">College</button>
       <button onclick="checkAnswer('Bus stop')">Bus stop</button>
-      <div id="message"></div>
+      <div class="message" id="msg"></div>
     </div>
   </div>
 
-  <canvas id="confettiCanvas"></canvas>
-
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
   <script>
     const startBtn = document.getElementById('startBtn');
     const quizBox = document.getElementById('quizBox');
-    const message = document.getElementById('message');
-    const confettiCanvas = document.getElementById('confettiCanvas');
-    const ctx = confettiCanvas.getContext('2d');
-
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-
-    let confettiPieces = [];
-
-    function createConfetti() {
-      for (let i = 0; i < 150; i++) {
-        confettiPieces.push({
-          x: Math.random() * confettiCanvas.width,
-          y: Math.random() * confettiCanvas.height - confettiCanvas.height,
-          w: 8,
-          h: 16,
-          color: `hsl(${Math.random() * 360},100%,50%)`,
-          speed: Math.random() * 3 + 2,
-        });
-      }
-    }
-
-    function drawConfetti() {
-      ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-      confettiPieces.forEach(p => {
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x, p.y, p.w, p.h);
-        p.y += p.speed;
-        if (p.y > confettiCanvas.height) p.y = -20;
-      });
-      requestAnimationFrame(drawConfetti);
-    }
-
-    function startConfetti() {
-      createConfetti();
-      drawConfetti();
-      setTimeout(() => { confettiPieces = []; ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); }, 5000);
-    }
+    const msg = document.getElementById('msg');
 
     startBtn.addEventListener('click', () => {
-      quizBox.classList.remove('hidden');
+      quizBox.style.display = 'block';
       startBtn.style.display = 'none';
     });
 
     function checkAnswer(ans) {
-      if (ans === 'College') {
-        message.style.color = 'lime';
-        message.innerText = 'Correct 🎉 Moving to Page 1...';
-        startConfetti();
+      if(ans === "College") {
+        msg.style.color = "lightgreen";
+        msg.innerHTML = "🎉 Correct! Let’s go...";
+        launchConfetti();
         setTimeout(() => {
-          window.location.href = 'page1.html'; // replace with navigation to first page of journey
-        }, 3000);
+          window.location.href = "page1.html"; // go to first page
+        }, 2000);
       } else {
-        message.style.color = 'red';
-        message.innerText = 'Oops! Try again 😅';
+        msg.style.color = "red";
+        msg.innerHTML = "Oops! Try again 😅";
       }
+    }
+
+    function launchConfetti() {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
     }
   </script>
 </body>
