@@ -18,35 +18,31 @@
 
     .container {
       text-align: center;
-      margin-top: 120px;
+      margin-top: 60px; /* moved higher */
       color: #fff;
     }
 
     h1 {
       font-size: 2.6em;
       font-weight: bold;
-      background: linear-gradient(45deg, #ff66cc, #66ccff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+      color: #ffffff; /* keep clean white */
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
       margin-bottom: 15px;
     }
 
     p {
       font-size: 1.2em;
       font-style: italic;
-      color: #fce4ec;
+      color: #ffccff; /* soft pastel pink to match 💕 */
       text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
       margin-bottom: 25px;
     }
 
     .quiz h2 {
-      font-size: 1.5em;
+      font-size: 1.4em;
       font-weight: bold;
-      background: linear-gradient(45deg, #ffcc33, #ff33cc, #33ccff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+      color: #fff;
+      text-shadow: 1px 1px 8px rgba(0,0,0,0.6);
       margin-bottom: 20px;
     }
 
@@ -79,12 +75,15 @@
       display: block;
       margin: 12px auto;
       width: 220px;
-      background: linear-gradient(45deg, #9b59b6, #e91e63);
+      background: linear-gradient(45deg, #8e44ad, #c0392b);
     }
 
-    .quiz button:hover {
-      opacity: 0.9;
-      transform: scale(1.05);
+    .quiz button.correct {
+      background: #28a745 !important; /* green when correct */
+    }
+
+    .quiz button.wrong {
+      background: #e74c3c !important; /* red when wrong */
     }
 
     .message {
@@ -122,7 +121,7 @@
 
     function checkAnswer(btn, ans) {
       if(ans === "College") {
-        btn.style.background = "#28a745"; // Green
+        btn.classList.add("correct");
         msg.style.color = "lightgreen";
         msg.innerHTML = "🎉 Correct! Let’s go...";
         launchConfetti();
@@ -130,12 +129,12 @@
           window.location.href = "page1.html";
         }, 2000);
       } else {
-        btn.style.background = "#e74c3c"; // Red
+        btn.classList.add("wrong");
         msg.style.color = "orange";
         msg.innerHTML = "Oops! Wrong answer 😅";
         setTimeout(() => {
-          btn.style.background = "linear-gradient(45deg, #9b59b6, #e91e63)";
-        }, 800);
+          btn.classList.remove("wrong");
+        }, 1000);
       }
     }
 
