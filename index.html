@@ -9,23 +9,43 @@
       margin: 0;
       padding: 0;
       height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       background: url('Background1.jpg') no-repeat center center/cover;
       font-family: 'Poppins', sans-serif;
+      position: relative;
+    }
+
+    /* Floating blue hearts */
+    .heart {
+      position: absolute;
+      bottom: -50px;
+      font-size: 2rem;
+      color: #1e90ff;
+      animation: floatUp 8s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.9; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
     }
 
     .container {
       text-align: center;
-      margin-top: 60px; /* moved higher */
+      margin-top: 60px; /* lifted up */
       color: #fff;
+      z-index: 10;
+      position: relative;
     }
 
     h1 {
       font-size: 2.6em;
       font-weight: bold;
-      color: #ffffff; /* keep clean white */
+      color: #ffffff;
       text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
       margin-bottom: 15px;
     }
@@ -33,7 +53,7 @@
     p {
       font-size: 1.2em;
       font-style: italic;
-      color: #ffccff; /* soft pastel pink to match 💕 */
+      color: #ffffff;
       text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
       margin-bottom: 25px;
     }
@@ -79,11 +99,11 @@
     }
 
     .quiz button.correct {
-      background: #28a745 !important; /* green when correct */
+      background: #28a745 !important;
     }
 
     .quiz button.wrong {
-      background: #e74c3c !important; /* red when wrong */
+      background: #e74c3c !important;
     }
 
     .message {
@@ -94,6 +114,26 @@
   </style>
 </head>
 <body>
+  <!-- Floating Hearts -->
+  <script>
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.textContent = "💙";
+      document.body.appendChild(heart);
+
+      // Random position + animation duration
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (6 + Math.random() * 4) + "s";
+      heart.style.fontSize = (20 + Math.random() * 20) + "px";
+
+      setTimeout(() => {
+        heart.remove();
+      }, 10000);
+    }
+    setInterval(createHeart, 600);
+  </script>
+
   <div class="container">
     <h1>A Little Surprise For My Sweetest Bestfriend 💙 😚</h1>
     <p>This journey is all about you, filled with memories, laughter, and love 💕</p>
