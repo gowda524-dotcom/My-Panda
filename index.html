@@ -11,7 +11,7 @@
       height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start; /* align toward top */
       background: url('Background1.jpg') no-repeat center center/cover;
       font-family: 'Poppins', sans-serif;
     }
@@ -19,12 +19,11 @@
     .container {
       text-align: center;
       color: white;
-      position: relative;
-      top: -80px; /* moves text a little up */
+      margin-top: 120px; /* adjust text higher */
     }
 
     h1 {
-      font-size: 2.2em;
+      font-size: 2.4em;
       font-weight: bold;
       background: linear-gradient(45deg, #007BFF, #8e44ad, #ff4d79);
       -webkit-background-clip: text;
@@ -41,9 +40,18 @@
       margin-bottom: 25px;
     }
 
+    .quiz h2 {
+      font-size: 1.6em;
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff9933, #ff33cc, #33ccff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+      margin-bottom: 20px;
+    }
+
     button {
       padding: 12px 24px;
-      background: #ff4d79;
       border: none;
       border-radius: 25px;
       font-size: 1em;
@@ -53,7 +61,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
 
-    button:hover {
+    #startBtn {
+      background: #ff4d79;
+    }
+
+    #startBtn:hover {
       background: #ff6699;
       box-shadow: 0 6px 16px rgba(255,105,180,0.6);
     }
@@ -67,6 +79,23 @@
       display: block;
       margin: 10px auto;
       width: 200px;
+    }
+
+    .quiz button:nth-child(2) {
+      background: #007BFF; /* School - blue */
+    }
+
+    .quiz button:nth-child(3) {
+      background: #28a745; /* College - green */
+    }
+
+    .quiz button:nth-child(4) {
+      background: #ff9933; /* Bus stop - orange */
+    }
+
+    .quiz button:hover {
+      opacity: 0.85;
+      transform: scale(1.05);
     }
 
     .message {
