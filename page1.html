@@ -1,102 +1,94 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 1</title>
+  <title>Birthday Surprise Page 1</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: #111;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to right, #ffdde1, #ee9ca7);
       color: white;
-      font-family: 'Arial', sans-serif;
       text-align: center;
       overflow-x: hidden;
     }
     h1 {
-      font-size: 30px;
-      margin-top: 20px;
-      color: #00cfff;
-      text-shadow: 2px 2px 8px #000;
+      margin-top: 30px;
+      font-size: 42px;
+      text-shadow: 2px 2px 6px black;
+    }
+    h2 {
+      margin-top: 10px;
+      font-size: 26px;
+      text-shadow: 1px 1px 4px black;
     }
     .slideshow {
-      width: 900px;    /* bigger width */
-      height: 1200px;  /* doubled height */
-      margin: 20px auto;
       position: relative;
+      width: 100%;
+      height: 1300px; /* increased height */
+      margin: 20px auto;
       overflow: hidden;
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(255,255,255,0.7);
     }
     .slideshow img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* fills box neatly */
       position: absolute;
-      left: 0;
+      width: auto;
+      height: 1300px; /* image height */
+      max-width: 100%;
+      left: 50%;
       top: 0;
+      transform: translateX(-50%);
       opacity: 0;
-      animation: fade 18s infinite;
+      animation: fade 36s infinite;
     }
     .slideshow img:nth-child(1) { animation-delay: 0s; }
-    .slideshow img:nth-child(2) { animation-delay: 3s; }
-    .slideshow img:nth-child(3) { animation-delay: 6s; }
-    .slideshow img:nth-child(4) { animation-delay: 9s; }
-    .slideshow img:nth-child(5) { animation-delay: 12s; }
-    .slideshow img:nth-child(6) { animation-delay: 15s; }
+    .slideshow img:nth-child(2) { animation-delay: 6s; }
+    .slideshow img:nth-child(3) { animation-delay: 12s; }
+    .slideshow img:nth-child(4) { animation-delay: 18s; }
+    .slideshow img:nth-child(5) { animation-delay: 24s; }
+    .slideshow img:nth-child(6) { animation-delay: 30s; }
 
     @keyframes fade {
       0% { opacity: 0; }
-      10% { opacity: 1; }
+      5% { opacity: 1; }
       25% { opacity: 1; }
-      35% { opacity: 0; }
+      30% { opacity: 0; }
       100% { opacity: 0; }
     }
 
-    .bottom-text {
-      font-size: 24px;
-      margin-top: 15px;
-      color: #ffda6a;
-      text-shadow: 1px 1px 5px #000;
-    }
-
     .quiz {
-      margin-top: 25px;
-      font-size: 18px;
+      margin-top: 30px;
+      font-size: 22px;
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 15px;
+      display: inline-block;
     }
     input[type="date"] {
-      padding: 8px;
-      font-size: 16px;
+      padding: 10px;
+      font-size: 18px;
       border-radius: 8px;
       border: none;
       margin-top: 10px;
     }
     button {
       margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #00cfff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      padding: 12px 24px;
+      font-size: 20px;
+      background: #ff4081;
       color: white;
-      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     button:hover {
-      background: #008ecc;
-    }
-    #confetti-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: -1;
+      background: #e91e63;
     }
   </style>
 </head>
 <body>
   <h1>Wishing you Happiest Birthday My Bestest Friend Forever 💙🫂</h1>
-
   <div class="slideshow">
     <img src="Saree1.jpg" alt="Photo 1">
     <img src="Saree2.jpg" alt="Photo 2">
@@ -105,77 +97,26 @@
     <img src="Saree5.jpg" alt="Photo 5">
     <img src="Saree6.jpg" alt="Photo 6">
   </div>
-
-  <div class="bottom-text">
-    Thank you for being with me always di loosu 🤗
-  </div>
+  <h2>Thank you for being with me always di loosu 🤗</h2>
 
   <div class="quiz">
-    <p>Enter your DOB to move next page 🎂</p>
-    <input type="date" id="dobInput">
+    <p>Enter your DOB to move to the next page 🎂</p>
+    <input type="date" id="dob">
     <br>
     <button onclick="checkDOB()">Submit</button>
-    <p id="result"></p>
   </div>
 
-  <canvas id="confetti-canvas"></canvas>
-
   <script>
-    // Correct DOB (format: yyyy-mm-dd)
-    const correctDOB = "2000-05-10"; // <-- change to her real DOB
-
     function checkDOB() {
-      const input = document.getElementById("dobInput").value;
-      const result = document.getElementById("result");
-      if (input === correctDOB) {
-        result.innerHTML = "<span style='color:lightgreen;'>Correct! 🎉</span>";
-        setTimeout(() => { window.location.href = 'page2.html'; }, 1200);
+      const dob = document.getElementById("dob").value;
+      const correct = "2000-05-20"; // replace with her real DOB in YYYY-MM-DD format
+      if(dob === correct){
+        alert("Correct! 🎉 Moving to next page...");
+        window.location.href = "page2.html";
       } else {
-        result.innerHTML = "<span style='color:red;'>Oops! Try again ❌</span>";
+        alert("Oops! Try again 😅");
       }
     }
-
-    // Confetti
-    const canvas = document.getElementById('confetti-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    let confetti = [];
-    for (let i=0; i<200; i++) {
-      confetti.push({
-        x: Math.random()*canvas.width,
-        y: Math.random()*canvas.height,
-        r: Math.random()*6+2,
-        d: Math.random()*10+5,
-        color: "hsl(" + Math.random()*360 + ",100%,50%)",
-        tilt: Math.random()*10-10
-      });
-    }
-
-    function drawConfetti() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      confetti.forEach(p => {
-        ctx.beginPath();
-        ctx.fillStyle = p.color;
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
-        ctx.fill();
-      });
-      updateConfetti();
-    }
-
-    function updateConfetti() {
-      confetti.forEach(p => {
-        p.y += Math.cos(p.d) + 1 + p.r/2;
-        p.x += Math.sin(p.d);
-        if (p.y > canvas.height) {
-          p.x = Math.random()*canvas.width;
-          p.y = -10;
-        }
-      });
-    }
-
-    setInterval(drawConfetti, 20);
   </script>
 </body>
 </html>
