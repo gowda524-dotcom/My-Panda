@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,7 +11,7 @@
       background: linear-gradient(to right, #ffdde1, #ee9ca7);
       color: white;
       text-align: center;
-      overflow-x: hidden;
+      overflow: hidden;
     }
     h1 {
       margin-top: 30px;
@@ -26,14 +26,14 @@
     .slideshow {
       position: relative;
       width: 100%;
-      height: 1300px; /* increased height */
+      height: 1300px; /* tall height */
       margin: 20px auto;
       overflow: hidden;
     }
     .slideshow img {
       position: absolute;
       width: auto;
-      height: 1300px; /* image height */
+      height: 1300px;
       max-width: 100%;
       left: 50%;
       top: 0;
@@ -85,6 +85,19 @@
     button:hover {
       background: #e91e63;
     }
+
+    /* Floating emojis */
+    .emoji {
+      position: absolute;
+      bottom: -50px;
+      font-size: 40px;
+      animation: floatUp 12s linear infinite;
+      opacity: 0.9;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -106,10 +119,32 @@
     <button onclick="checkDOB()">Submit</button>
   </div>
 
+  <!-- 🎶 Background song -->
+  <audio autoplay loop>
+    <source src="Friend1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Floating Emojis -->
+  <script>
+    const emojis = ["🎂","🎊","😚","🤗","💙","🌍","💗","❤️‍🩹"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.classList.add("emoji");
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.fontSize = (30 + Math.random() * 30) + "px";
+      emoji.style.animationDuration = (8 + Math.random() * 5) + "s";
+      document.body.appendChild(emoji);
+      setTimeout(() => { emoji.remove(); }, 13000);
+    }
+    setInterval(createEmoji, 800);
+  </script>
+
   <script>
     function checkDOB() {
       const dob = document.getElementById("dob").value;
-      const correct = "2000-05-20"; // replace with her real DOB in YYYY-MM-DD format
+      const correct = "2000-10-07"; // replace with her real DOB YYYY-MM-DD
       if(dob === correct){
         alert("Correct! 🎉 Moving to next page...");
         window.location.href = "page2.html";
