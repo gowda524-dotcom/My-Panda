@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Balloon Pop Game</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: radial-gradient(circle at center, #ffe6f0, #d1f0ff);
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+    }
+
+    h1 {
+        font-size: 2.5em;
+        color: #1e90ff;
+        margin-bottom: 20px;
+        text-shadow: 3px 3px 10px #fff, 0 0 15px #1e90ff;
+    }
+
+    h2 {
+        font-size: 1.5em;
+        color: #ff69b4;
+        margin-bottom: 40px;
+        text-shadow: 3px 3px 10px #fff, 0 0 15px #ff69b4;
+    }
+
+    .score {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+        color: #ff3366;
+        z-index: 10;
+    }
+
+    .balloon {
+        position: absolute;
+        cursor: pointer;
+        user-select: none;
+        animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+        0% { transform: translateY(100vh) rotate(0deg); }
+        100% { transform: translateY(-20vh) rotate(360deg); }
+    }
+
+    .floating-emoji {
+        position: absolute;
+        font-size: 2em;
+        animation: floatEmoji 12s linear infinite;
+        opacity: 0.8;
+        text-shadow: 0 0 10px #fff, 0 0 15px #ff3366;
+        user-select: none;
+    }
+
+    @keyframes floatEmoji {
+        0% { transform: translateY(100vh) rotate(0deg); }
+        100% { transform: translateY(-100vh) rotate(360deg); }
+    }
+
+    .sparkle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: sparkleAnim 1s infinite;
+    }
+    @keyframes sparkleAnim {
+        0% { transform: scale(0); opacity: 0; }
+        50% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(0); opacity: 0; }
+    }
+
+    .next-btn {
+        margin-top: 40px;
+        padding: 15px 35px;
+        font-size: 1.3em;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #ff69b4, #1e90ff);
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 0 20px #ff69b4, 0 0 40px #1e90ff inset;
+        transition: transform 0.3s;
+        z-index: 10;
+        display: none; /* show only after popping all balloons */
+    }
+    .next-btn:hover {
+        transform: scale(1.1);
+    }
+</style>
+</head>
+<body>
+
+<h1>Birthday Balloon Pop Game 🎈🎉</h1>
+<h2>Pop all the balloons to unlock your surprise! 💖</h2>
+<div class="score">Balloons Popped: <span id="score">0</span>/10</div>
+
+<!-- Next button -->
+<button class="next-btn" id="nextBtn" onclick="location.href='page3.html'">Next ➤</button>
+
+<!-- Audio -->
+<audio src="Friend1.mp3" autoplay loop></audio>
+
+<script>
+const totalBalloons = 10;
+let score = 0;
+const balloonColors = ['#ff4d4d','#ffcc00','#66ff66','#3399ff','#ff66ff'];
+
+function createBalloon() {
+    const balloon = document.createElement('div');
+    balloon.className = 'balloon';
+    balloon.innerText = '🎈';
+    balloon.style.left = Math.random() * 90 + 'vw';
+    balloon.style.fontSize = (Math.random() * 50 + 50) + 'px';
+    balloon.style.color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+    balloon.style.animationDuration = (5 + Math.random() * 5) + 's';
+    document.body.appendChild(balloon);
+
+    balloon.addEventListener('click', () => {
+        popBalloon(balloon);
+    });
+
+    // Remove balloon if it floats away
+    setTimeout(() => {
+        if(document.body.contains(balloon)){
+            balloon.remove();
+            createBalloon();
+        }
+    }, balloon.style.animationDuration.replace('s','') * 1000);
+}
+
+// Floating hearts/kisses in the background
+function createFloatingEmoji() {
+    const emojiList = ['💖','😘','😚','💖','😘'];
+    const emoji = document.createElement('div');
+    emoji.className = 'floating-emoji';
+    emoji.innerText = emojiList[Math.floor(Math.random()*emojiList.length)];
+    emoji.style.left = Math.random() * 90 + 'vw';
+    emoji.style.fontSize = (Math.random()*30 + 20) + 'px';
+    emoji.style.animationDuration = (8 + Math.random()*4) + 's';
+    document.body.appendChild(emoji);
+    setTimeout(()=>emoji.remove(), 12000);
+}
+setInterval(createFloatingEmoji, 800);
+
+// Pop balloon
+function popBalloon(balloon) {
+    balloon.remove();
+    score++;
+    document.getElementById('score').innerText = score;
+
+    // Sparkles/confetti
+    for(let i=0;i<10;i++){
+        const confetti = document.createElement('div');
+        confetti.className = 'sparkle';
+        confetti.style.top = balloon.offsetTop + 'px';
+        confetti.style.left = balloon.offsetLeft + 'px';
+        confetti.style.width = confetti.style.height = Math.random()*5+5 + 'px';
+        document.body.appendChild(confetti);
+        setTimeout(()=>confetti.remove(),1000);
+    }
+
+    if(score >= totalBalloons){
+        document.getElementById('nextBtn').style.display = 'inline-block';
+    } else {
+        createBalloon();
+    }
+}
+
+// Initialize balloons
+for(let i=0;i<totalBalloons;i++){
+    createBalloon();
+}
+</script>
+
+</body>
+</html>
