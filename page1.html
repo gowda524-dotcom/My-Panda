@@ -20,9 +20,9 @@
       text-shadow: 2px 2px 8px #000;
     }
     .slideshow {
-      width: 400px;
-      height: 400px;
-      margin: 40px auto;
+      width: 600px;   /* bigger width */
+      height: 500px;  /* bigger height */
+      margin: 30px auto;
       position: relative;
       overflow: hidden;
       border-radius: 20px;
@@ -31,6 +31,7 @@
     .slideshow img {
       width: 100%;
       height: 100%;
+      object-fit: cover; /* show full photo without cutting */
       position: absolute;
       left: 0;
       top: 0;
@@ -60,7 +61,7 @@
     }
 
     .quiz {
-      margin-top: 30px;
+      margin-top: 20px;
       font-size: 18px;
     }
     input[type="date"] {
@@ -121,7 +122,7 @@
 
   <script>
     // Correct DOB (format: yyyy-mm-dd)
-    const correctDOB = "2003-10-07"; // <-- change this to her actual DOB
+    const correctDOB = "2000-10-07"; // <-- change to her real DOB
 
     function checkDOB() {
       const input = document.getElementById("dobInput").value;
@@ -134,7 +135,7 @@
       }
     }
 
-    // Simple confetti effect
+    // Confetti
     const canvas = document.getElementById('confetti-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
