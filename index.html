@@ -10,9 +10,6 @@
       padding: 0;
       height: 100vh;
       background: url('Background1.jpg') no-repeat center center/cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       font-family: 'Poppins', sans-serif;
       overflow: hidden;
     }
@@ -23,6 +20,9 @@
       background: rgba(0,0,0,0.4);
       padding: 30px;
       border-radius: 20px;
+      width: 80%;
+      max-width: 600px;
+      margin: 60px auto 0; /* 👈 moved up */
     }
 
     h1 {
@@ -84,6 +84,7 @@
       font-size: 22px;
       color: #00aaff;
       animation: floatUp 6s linear infinite;
+      opacity: 0.8;
     }
 
     @keyframes floatUp {
