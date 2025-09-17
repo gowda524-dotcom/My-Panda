@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -26,7 +26,7 @@
     .slideshow {
       position: relative;
       width: 100%;
-      height: 1300px; /* tall height */
+      height: 1300px;
       margin: 20px auto;
       overflow: hidden;
     }
@@ -125,6 +125,9 @@
     Your browser does not support the audio element.
   </audio>
 
+  <!-- Confetti script -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <!-- Floating Emojis -->
   <script>
     const emojis = ["🎂","🎊","😚","🤗","💙","🌍","💗","❤️‍🩹"];
@@ -139,15 +142,19 @@
       setTimeout(() => { emoji.remove(); }, 13000);
     }
     setInterval(createEmoji, 800);
-  </script>
 
-  <script>
     function checkDOB() {
       const dob = document.getElementById("dob").value;
       const correct = "2003-10-07"; // replace with her real DOB YYYY-MM-DD
       if(dob === correct){
-        alert("Correct! 🎉 Moving to next page...");
-        window.location.href = "page2.html";
+        confetti({
+          particleCount: 200,
+          spread: 90,
+          origin: { y: 0.7 }
+        });
+        setTimeout(() => {
+          window.location.href = "page2.html";
+        }, 2000); // wait 2 sec for confetti before moving
       } else {
         alert("Oops! Try again 😅");
       }
