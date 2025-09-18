@@ -7,177 +7,49 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #000;
+      background: url('Bg.jpg') no-repeat center center fixed;
+      background-size: cover;
       color: white;
       text-align: center;
-      overflow: hidden;
+      overflow-x: hidden;
     }
     h1 {
       margin-top: 20px;
       font-size: 36px;
-      color: #FFD700;
+      color: yellow;
       text-shadow: 2px 2px 6px #000;
     }
-    .slideshow {
+    .photo-box {
       margin: 30px auto;
       width: 90%;
       max-width: 1000px;
-      height: 1300px; /* Bigger size */
-      position: relative;
+      border-radius: 20px;
       overflow: hidden;
-      border-radius: 15px;
-      box-shadow: 0px 0px 20px rgba(255,255,255,0.6);
+      box-shadow: 0px 0px 20px rgba(0,0,0,0.6);
     }
-    .slideshow img {
+    .photo-box img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
+      height: auto;   /* ✅ keeps full image visible */
+      display: block;
     }
-    .slideshow img.active {
-      opacity: 1;
-    }
-    .quiz-box {
+    .message {
       margin-top: 20px;
-      position: relative;
-      z-index: 2;
-    }
-    input {
-      padding: 10px;
-      font-size: 18px;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 8px;
-      border: none;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 15px;
-      font-size: 18px;
-      background-color: #ff69b4;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #ff1493;
-    }
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 1;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff66cc;
     }
   </style>
 </head>
 <body>
-  <canvas id="confetti"></canvas>
-  <h1>Happy Birthday #Magle 😘</h1>
+  <h1>Happy Birthday #Magle 😘😘</h1>
 
-  <!-- Slideshow -->
-  <div class="slideshow">
-    <img src="Amma1.jpg" class="active">
-    <img src="Amma2.jpg">
-    <img src="Amma3.jpg">
-    <img src="Amma4.jpg">
-    <img src="Amma5.jpg">
+  <div class="photo-box">
+    <img src="1000039917.jpg" alt="Birthday Photo">
   </div>
 
-  <!-- Background song -->
-  <audio autoplay loop>
-    <source src="Amma.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Quiz Box -->
-  <div class="quiz-box">
-    <p>Un Amma ku... Love you Amma 🌎</p>
-    <p>Apram more than 10 kisses 😘 type pannu next page ku pogum 💕</p>
-    <input type="text" id="answer" placeholder="Type here...">
-    <br>
-    <button onclick="checkAnswer()">Submit</button>
+  <div class="message">
+    Un Amma ku... Love you Amma 🌍 <br>
+    Apram more than 10 kisses 😘 type pannu next page ku pogum 💕
   </div>
-
-  <script>
-    // Slideshow
-    let slides = document.querySelectorAll(".slideshow img");
-    let index = 0;
-    setInterval(() => {
-      slides[index].classList.remove("active");
-      index = (index + 1) % slides.length;
-      slides[index].classList.add("active");
-    }, 3000);
-
-    // Quiz check - auto move
-    function checkAnswer() {
-      const input = document.getElementById('answer').value.trim();
-      const count = (input.match(/😘/g) || []).length;
-      if (count > 10) {
-        window.location.href = "page4.html"; // auto move to next page
-      } else {
-        alert("Type more 😘 emojis to continue!");
-      }
-    }
-
-    // Floating + Confetti
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let W, H;
-
-    function resizeCanvas() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
-    function randomEmoji() {
-      return "😘";
-    }
-
-    function createParticle() {
-      return {
-        x: Math.random() * W,
-        y: Math.random() * H - H,
-        r: 20,
-        d: Math.random() * 2 + 1,
-        emoji: randomEmoji(),
-      };
-    }
-
-    for (let i = 0; i < 50; i++) {
-      particles.push(createParticle());
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.font = "26px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      for (let i = 0; i < particles.length; i++) {
-        let p = particles[i];
-        ctx.fillText(p.emoji, p.x, p.y);
-      }
-      update();
-    }
-
-    function update() {
-      for (let i = 0; i < particles.length; i++) {
-        let p = particles[i];
-        p.y += p.d;
-        if (p.y > H) {
-          particles[i] = createParticle();
-          particles[i].y = 0;
-        }
-      }
-    }
-
-    setInterval(draw, 33);
-  </script>
 </body>
 </html>
