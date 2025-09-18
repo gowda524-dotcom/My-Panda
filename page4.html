@@ -10,7 +10,14 @@
       text-align: center;
       color: white;
       overflow: hidden;
-      background: url('Jerry.jpg') no-repeat center center/cover;
+
+      /* ✅ Full screen background */
+      background-image: url('Jerry.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      width: 100vw;
     }
     h1 {
       margin-top: 20px;
@@ -46,7 +53,6 @@
     button:hover {
       background: darkred;
     }
-    /* Floating emoji animation */
     .emoji {
       position: absolute;
       font-size: 28px;
@@ -57,7 +63,6 @@
       0% { top: -50px; opacity: 1; }
       100% { top: 100vh; opacity: 0; }
     }
-    /* Confetti canvas */
     canvas {
       position: fixed;
       top: 0;
@@ -71,7 +76,7 @@
   <h1>Happy Birthday di En Chello Best Friend💙😚</h1>
 
   <div class="question">
-    Unnoda Unexpected BestFriend ha pakka namma first meet ahna date ha select pannu...<br>
+    Unnoda Unexpected Friend ha pakka namma first meet ahna date ha select pannu...<br>
     Correct date next page ku pogum 🎉
   </div>
 
@@ -82,7 +87,6 @@
   <canvas id="confetti"></canvas>
 
   <script>
-    // Floating emojis ❤️‍🩹 😚 💎
     const emojis = ["❤️‍🩹","😚","💎"];
     function createEmoji() {
       const emoji = document.createElement("div");
@@ -96,7 +100,6 @@
     }
     setInterval(createEmoji, 200);
 
-    // Confetti setup
     const confetti = document.getElementById('confetti');
     const ctx = confetti.getContext('2d');
     confetti.width = window.innerWidth;
@@ -107,7 +110,6 @@
       const colors = ["#ff0","#ff66cc","#00f","#0f0","#f0f","#0ff","#fff"];
       return colors[Math.floor(Math.random()*colors.length)];
     }
-
     function createConfetti() {
       for(let i=0;i<250;i++){
         particles.push({
@@ -120,7 +122,6 @@
         });
       }
     }
-
     function drawConfetti() {
       ctx.clearRect(0,0,confetti.width,confetti.height);
       particles.forEach((p,i)=>{
@@ -133,7 +134,6 @@
     }
     drawConfetti();
 
-    // Answer check + auto move
     function checkAnswer() {
       const inputDate = document.getElementById("dob").value;
       if (inputDate === "2024-08-29") {
