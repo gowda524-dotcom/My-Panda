@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Surprise - Page 4</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+      background: url('Jerry.jpg') no-repeat center center/cover;
+    }
+    h1 {
+      margin-top: 20px;
+      font-size: 40px;
+      font-weight: bold;
+      color: gold;
+      text-shadow: 3px 3px 8px black;
+    }
+    .question {
+      margin-top: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffccff;
+      text-shadow: 1px 1px 6px #000;
+    }
+    input {
+      padding: 10px;
+      margin: 20px;
+      border-radius: 10px;
+      border: none;
+      font-size: 18px;
+    }
+    button {
+      padding: 12px 25px;
+      background: crimson;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: darkred;
+    }
+    /* Floating emoji animation */
+    .emoji {
+      position: absolute;
+      font-size: 28px;
+      animation: floatDown linear infinite;
+      z-index: 2;
+    }
+    @keyframes floatDown {
+      0% { top: -50px; opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+    /* Confetti canvas */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Happy Birthday di En Chello Best Friend💙😚</h1>
+
+  <div class="question">
+    Unnoda Unexpected BestFriend ha pakka namma first meet ahna date ha select pannu...<br>
+    Correct date next page ku pogum 🎉
+  </div>
+
+  <input type="date" id="dob">
+  <br>
+  <button onclick="checkAnswer()">Submit</button>
+
+  <canvas id="confetti"></canvas>
+
+  <script>
+    // Floating emojis ❤️‍🩹 😚 💎
+    const emojis = ["❤️‍🩹","😚","💎"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+      emoji.classList.add("emoji");
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.animationDuration = 3 + Math.random() * 3 + "s";
+      emoji.style.fontSize = (25 + Math.random()*20) + "px";
+      document.body.appendChild(emoji);
+      setTimeout(() => { emoji.remove(); }, 6000);
+    }
+    setInterval(createEmoji, 200);
+
+    // Confetti setup
+    const confetti = document.getElementById('confetti');
+    const ctx = confetti.getContext('2d');
+    confetti.width = window.innerWidth;
+    confetti.height = window.innerHeight;
+
+    let particles = [];
+    function randomColor() {
+      const colors = ["#ff0","#ff66cc","#00f","#0f0","#f0f","#0ff","#fff"];
+      return colors[Math.floor(Math.random()*colors.length)];
+    }
+
+    function createConfetti() {
+      for(let i=0;i<250;i++){
+        particles.push({
+          x: Math.random()*confetti.width,
+          y: Math.random()*confetti.height - confetti.height,
+          w: 8,
+          h: 14,
+          color: randomColor(),
+          speed: Math.random()*3+2
+        });
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0,0,confetti.width,confetti.height);
+      particles.forEach((p,i)=>{
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x,p.y,p.w,p.h);
+        p.y += p.speed;
+        if(p.y > confetti.height) particles.splice(i,1);
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+    drawConfetti();
+
+    // Answer check + auto move
+    function checkAnswer() {
+      const inputDate = document.getElementById("dob").value;
+      if (inputDate === "2024-08-29") {
+        createConfetti();
+        setTimeout(() => {
+          window.location.href = "page5.html"; 
+        }, 2000);
+      } else {
+        alert("Wrong date! Try again 💙");
+      }
+    }
+
+    window.addEventListener("resize",()=>{
+      confetti.width = window.innerWidth;
+      confetti.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
