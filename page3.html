@@ -7,8 +7,7 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: url('Bg.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: black;
       color: white;
       text-align: center;
       overflow-x: hidden;
@@ -19,17 +18,23 @@
       color: yellow;
       text-shadow: 2px 2px 6px #000;
     }
-    .photo-box {
-      margin: 30px auto;
+    .slideshow-container {
+      position: relative;
+      margin: 20px auto;
+      max-width: 1300px;
+      min-width: 900px;
       width: 90%;
-      max-width: 1000px;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0px 0px 20px rgba(0,0,0,0.6);
     }
-    .photo-box img {
+    .slides {
+      display: none;
       width: 100%;
-      height: auto;   /* ✅ keeps full image visible */
+    }
+    .slides img {
+      width: 100%;
+      height: auto;  /* ✅ Auto height */
       display: block;
     }
     .message {
@@ -38,18 +43,81 @@
       font-weight: bold;
       color: #ff66cc;
     }
+    input {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: none;
+      width: 70%;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background: hotpink;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: deeppink;
+    }
   </style>
 </head>
 <body>
-  <h1>Happy Birthday #Magle 😘😘</h1>
+  <h1>Happy Birthday #Magle 😘</h1>
 
-  <div class="photo-box">
-    <img src="1000039917.jpg" alt="Birthday Photo">
+  <!-- 🎶 Background Song -->
+  <audio autoplay loop>
+    <source src="Amma.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Slideshow -->
+  <div class="slideshow-container">
+    <div class="slides"><img src="Amma1.jpg" alt="Amma1"></div>
+    <div class="slides"><img src="Amma2.jpg" alt="Amma2"></div>
+    <div class="slides"><img src="Amma3.jpg" alt="Amma3"></div>
+    <div class="slides"><img src="Amma4.jpg" alt="Amma4"></div>
+    <div class="slides"><img src="Amma5.jpg" alt="Amma5"></div>
   </div>
 
   <div class="message">
     Un Amma ku... Love you Amma 🌍 <br>
     Apram more than 10 kisses 😘 type pannu next page ku pogum 💕
   </div>
+
+  <input type="text" id="answer" placeholder="Type here...">
+  <button onclick="checkAnswer()">Submit</button>
+
+  <script>
+    // Slideshow function
+    let slideIndex = 0;
+    showSlides();
+    function showSlides() {
+      let slides = document.getElementsByClassName("slides");
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1 }
+      slides[slideIndex-1].style.display = "block";
+      setTimeout(showSlides, 2000); // 2s per slide
+    }
+
+    // Quiz validation + auto move
+    function checkAnswer() {
+      let ans = document.getElementById("answer").value;
+      let kissCount = (ans.match(/😘/g) || []).length;
+      if (ans.includes("Love you Amma") && kissCount > 10) {
+        // ✅ Smooth auto move
+        setTimeout(() => {
+          window.location.href = "page4.html";
+        }, 1000);
+      } else {
+        alert("Type correctly with more than 10 😘!");
+      }
+    }
+  </script>
 </body>
 </html>
