@@ -20,9 +20,9 @@
     }
     .slideshow {
       margin: 30px auto;
-      width: 80%;
-      max-width: 900px;
-      height: 500px;
+      width: 90%;
+      max-width: 1000px;
+      height: 1300px; /* Bigger size */
       position: relative;
       overflow: hidden;
       border-radius: 15px;
@@ -41,6 +41,8 @@
     }
     .quiz-box {
       margin-top: 20px;
+      position: relative;
+      z-index: 2;
     }
     input {
       padding: 10px;
@@ -109,13 +111,12 @@
       slides[index].classList.add("active");
     }, 3000);
 
-    // Quiz check
+    // Quiz check - auto move
     function checkAnswer() {
       const input = document.getElementById('answer').value.trim();
       const count = (input.match(/😘/g) || []).length;
       if (count > 10) {
-        alert("Correct! Moving to next page 🎉");
-        window.location.href = "https://gowda524-dotcom.github.io/My-Panda/page4.html";
+        window.location.href = "page4.html"; // auto move to next page
       } else {
         alert("Type more 😘 emojis to continue!");
       }
