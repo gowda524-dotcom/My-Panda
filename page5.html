@@ -7,23 +7,33 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      text-align: center;
       color: white;
       background: black;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
+
     h1 {
       margin: 20px 0;
       font-size: 32px;
       font-weight: bold;
       color: #ffccff;
       text-shadow: 3px 3px 8px black;
+      text-align: center;
     }
-    /* 3D Cube */
+
+    /* Cube Center */
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     .scene {
       width: 600px;
       height: 600px;
-      margin: 40px auto;
       perspective: 2000px;
     }
     .cube {
@@ -54,11 +64,16 @@
       to { transform: rotateX(360deg) rotateY(360deg); }
     }
 
-    /* Quiz Section */
+    /* Quiz Bottom */
+    .quiz {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0,0,0,0.6);
+    }
     .question {
       font-size: 22px;
       font-weight: bold;
-      margin-top: 20px;
+      margin-bottom: 15px;
       color: #ffcc66;
       text-shadow: 2px 2px 6px #000;
     }
@@ -69,7 +84,7 @@
       border: none;
       width: 80%;
       max-width: 400px;
-      margin-top: 15px;
+      margin-top: 10px;
     }
     button {
       margin-top: 15px;
@@ -111,23 +126,27 @@
 <body>
   <h1>Namma 1st Selfie loosuu, Always blessed to have you in my Life 🤗</h1>
 
-  <div class="scene">
-    <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="right"></div>
-      <div class="left"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
+  <div class="content">
+    <div class="scene">
+      <div class="cube">
+        <div class="front"></div>
+        <div class="back"></div>
+        <div class="right"></div>
+        <div class="left"></div>
+        <div class="top"></div>
+        <div class="bottom"></div>
+      </div>
     </div>
   </div>
 
-  <div class="question">
-    Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂
+  <div class="quiz">
+    <div class="question">
+      Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂
+    </div>
+    <input type="text" id="answer" placeholder="Type hugs here...">
+    <br>
+    <button onclick="checkAnswer()">Submit</button>
   </div>
-  <input type="text" id="answer" placeholder="Type hugs here...">
-  <br>
-  <button onclick="checkAnswer()">Submit</button>
 
   <!-- Background Song -->
   <audio id="song" src="First.mp3" autoplay loop></audio>
@@ -187,7 +206,6 @@
     // Quiz check
     function checkAnswer() {
       const ans = document.getElementById("answer").value.trim();
-      const hug = "🫂";
       let count = (ans.match(/🫂/g) || []).length;
       if (count >= 10) {
         createConfetti();
