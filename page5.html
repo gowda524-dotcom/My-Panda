@@ -2,224 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page 5</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      color: white;
-      background: black;
-      overflow: hidden;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-    }
-
-    h1 {
-      margin: 20px 0;
-      font-size: 32px;
-      font-weight: bold;
-      color: #ffccff;
-      text-shadow: 3px 3px 8px black;
+      justify-content: space-between;
+      align-items: center;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: Arial, sans-serif;
       text-align: center;
     }
 
-    /* Cube Center */
-    .content {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    h1 {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #ffccff;
     }
+
+    /* Cube */
     .scene {
-      width: 600px;
-      height: 600px;
-      perspective: 2000px;
+      width: 220px;
+      height: 220px;
+      perspective: 1000px;
+      margin-top: 20px;
     }
     .cube {
       width: 100%;
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      animation: rotate 25s infinite linear;
+      animation: rotate 12s infinite linear;
     }
     .cube div {
       position: absolute;
-      width: 600px;
-      height: 600px;
+      width: 220px;
+      height: 220px;
       background-size: cover;
       background-position: center;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.4);
     }
-    .front  { transform: rotateY(0deg) translateZ(300px); background-image: url('First1.jpg'); }
-    .back   { transform: rotateY(180deg) translateZ(300px); background-image: url('First2.jpg'); }
-    .right  { transform: rotateY(90deg) translateZ(300px); background-image: url('First3.jpg'); }
-    .left   { transform: rotateY(-90deg) translateZ(300px); background-image: url('First4.jpg'); }
-    .top    { transform: rotateX(90deg) translateZ(300px); background-image: url('First5.jpg'); }
-    .bottom { transform: rotateX(-90deg) translateZ(300px); background-image: url('First6.jpg'); }
+    .front  { transform: rotateY(0deg) translateZ(110px); background-image: url("First1.jpg"); }
+    .back   { transform: rotateY(180deg) translateZ(110px); background-image: url("First2.jpg"); }
+    .right  { transform: rotateY(90deg) translateZ(110px); background-image: url("First3.jpg"); }
+    .left   { transform: rotateY(-90deg) translateZ(110px); background-image: url("First4.jpg"); }
+    .top    { transform: rotateX(90deg) translateZ(110px); background-image: url("First5.jpg"); }
+    .bottom { transform: rotateX(-90deg) translateZ(110px); background-image: url("First6.jpg"); }
 
     @keyframes rotate {
-      from { transform: rotateX(0deg) rotateY(0deg); }
+      from { transform: rotateX(0) rotateY(0); }
       to { transform: rotateX(360deg) rotateY(360deg); }
     }
 
-    /* Quiz Bottom */
+    /* Quiz at bottom */
     .quiz {
+      margin: 15px 0;
       text-align: center;
-      padding: 20px;
-      background: rgba(0,0,0,0.6);
     }
-    .question {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 15px;
-      color: #ffcc66;
-      text-shadow: 2px 2px 6px #000;
-    }
-    input {
-      padding: 10px;
-      font-size: 18px;
-      border-radius: 10px;
+    .quiz input {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 6px;
       border: none;
-      width: 80%;
-      max-width: 400px;
       margin-top: 10px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 12px 25px;
-      background: crimson;
-      color: white;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      background: darkred;
+      text-align: center;
     }
 
-    /* Floating Emojis */
+    /* Floating emojis */
     .emoji {
       position: absolute;
       font-size: 28px;
-      animation: floatDown linear infinite;
-      z-index: 2;
+      animation: floatUp 6s linear infinite;
     }
-    @keyframes floatDown {
-      0% { top: -50px; opacity: 1; }
-      100% { top: 100vh; opacity: 0; }
-    }
-
-    /* Confetti */
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 5;
+    @keyframes floatUp {
+      from { transform: translateY(100vh); opacity: 1; }
+      to { transform: translateY(-10vh); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <h1>Namma 1st Selfie loosuu, Always blessed to have you in my Life 🤗</h1>
+  <h1>Namma 1st Selfie loosuu😚🙈,Apro pink saree personal🤭 Always blessed to have you in my Life 🤗</h1>
 
-  <div class="content">
-    <div class="scene">
-      <div class="cube">
-        <div class="front"></div>
-        <div class="back"></div>
-        <div class="right"></div>
-        <div class="left"></div>
-        <div class="top"></div>
-        <div class="bottom"></div>
-      </div>
+  <!-- Cube -->
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="right"></div>
+      <div class="left"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
     </div>
   </div>
 
+  <!-- Quiz -->
   <div class="quiz">
-    <div class="question">
-      Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂
-    </div>
-    <input type="text" id="answer" placeholder="Type hugs here...">
-    <br>
-    <button onclick="checkAnswer()">Submit</button>
+    <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂</p>
+    <input type="text" id="answer" placeholder="Type here...">
   </div>
 
-  <!-- Background Song -->
-  <audio id="song" src="First.mp3" autoplay loop></audio>
+  <!-- Song -->
+  <audio autoplay loop>
+    <source src="First.mp3" type="audio/mpeg">
+  </audio>
 
-  <!-- Confetti -->
-  <canvas id="confetti"></canvas>
-
+  <!-- Floating Emojis -->
   <script>
-    // Floating emojis 💙🤗😚🫂💎❤️‍🩹🙈
     const emojis = ["💙","🤗","😚","🫂","💎","❤️‍🩹","🙈"];
     function createEmoji() {
       const emoji = document.createElement("div");
-      emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-      emoji.classList.add("emoji");
+      emoji.className = "emoji";
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
       emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = 3 + Math.random() * 3 + "s";
-      emoji.style.fontSize = (25 + Math.random()*25) + "px";
+      emoji.style.animationDuration = (4 + Math.random() * 4) + "s";
       document.body.appendChild(emoji);
-      setTimeout(() => { emoji.remove(); }, 6000);
+      setTimeout(() => emoji.remove(), 6000);
     }
-    setInterval(createEmoji, 150);
+    setInterval(createEmoji, 400);
 
-    // Confetti
-    const confetti = document.getElementById('confetti');
-    const ctx = confetti.getContext('2d');
-    confetti.width = window.innerWidth;
-    confetti.height = window.innerHeight;
-    let particles = [];
-    function randomColor() {
-      const colors = ["#ff0","#ff66cc","#00f","#0f0","#f0f","#0ff","#fff"];
-      return colors[Math.floor(Math.random()*colors.length)];
-    }
-    function createConfetti() {
-      for(let i=0;i<400;i++){
-        particles.push({
-          x: Math.random()*confetti.width,
-          y: Math.random()*confetti.height - confetti.height,
-          w: 8,
-          h: 14,
-          color: randomColor(),
-          speed: Math.random()*3+2
-        });
+    // Quiz validation
+    document.getElementById("answer").addEventListener("input", function() {
+      if (this.value.includes("🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂")) {
+        window.location.href = "page6.html";
       }
-    }
-    function drawConfetti() {
-      ctx.clearRect(0,0,confetti.width,confetti.height);
-      particles.forEach((p,i)=>{
-        ctx.fillStyle = p.color;
-        ctx.fillRect(p.x,p.y,p.w,p.h);
-        p.y += p.speed;
-        if(p.y > confetti.height) particles.splice(i,1);
-      });
-      requestAnimationFrame(drawConfetti);
-    }
-    drawConfetti();
-
-    // Quiz check
-    function checkAnswer() {
-      const ans = document.getElementById("answer").value.trim();
-      let count = (ans.match(/🫂/g) || []).length;
-      if (count >= 10) {
-        createConfetti();
-        setTimeout(() => {
-          window.location.href = "page6.html";
-        }, 2500);
-      } else {
-        alert("Try again 😚 at least 10 hugs 🫂 needed!");
-      }
-    }
-
-    window.addEventListener("resize",()=>{
-      confetti.width = window.innerWidth;
-      confetti.height = window.innerHeight;
     });
   </script>
 </body>
