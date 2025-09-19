@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Surprise - Page 5</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: white;
+      background: black;
+      overflow: hidden;
+    }
+    h1 {
+      margin: 20px 0;
+      font-size: 32px;
+      font-weight: bold;
+      color: #ffccff;
+      text-shadow: 3px 3px 8px black;
+    }
+    /* 3D Cube */
+    .scene {
+      width: 900px;
+      height: 900px;
+      margin: 40px auto;
+      perspective: 2000px;
+    }
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotate 25s infinite linear;
+    }
+    .cube div {
+      position: absolute;
+      width: 900px;
+      height: 900px;
+      background-size: cover;
+      background-position: center;
+    }
+    .front  { transform: rotateY(0deg) translateZ(450px); background-image: url('First1.jpg'); }
+    .back   { transform: rotateY(180deg) translateZ(450px); background-image: url('First2.jpg'); }
+    .right  { transform: rotateY(90deg) translateZ(450px); background-image: url('First3.jpg'); }
+    .left   { transform: rotateY(-90deg) translateZ(450px); background-image: url('First4.jpg'); }
+    .top    { transform: rotateX(90deg) translateZ(450px); background-image: url('First5.jpg'); }
+    .bottom { transform: rotateX(-90deg) translateZ(450px); background-image: url('First6.jpg'); }
+
+    @keyframes rotate {
+      from { transform: rotateX(0deg) rotateY(0deg); }
+      to { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    /* Quiz Section */
+    .question {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #ffcc66;
+      text-shadow: 2px 2px 6px #000;
+    }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      width: 80%;
+      max-width: 400px;
+      margin-top: 15px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      background: crimson;
+      color: white;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: darkred;
+    }
+
+    /* Floating Emojis */
+    .emoji {
+      position: absolute;
+      font-size: 28px;
+      animation: floatDown linear infinite;
+      z-index: 2;
+    }
+    @keyframes floatDown {
+      0% { top: -50px; opacity: 1; }
+      100% { top: 100vh; opacity: 0; }
+    }
+
+    /* Confetti */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Namma 1st Selfie loosuu, Always blessed to have you in my Life 🤗</h1>
+
+  <div class="scene">
+    <div class="cube">
+      <div class="front"></div>
+      <div class="back"></div>
+      <div class="right"></div>
+      <div class="left"></div>
+      <div class="top"></div>
+      <div class="bottom"></div>
+    </div>
+  </div>
+
+  <div class="question">
+    Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂
+  </div>
+  <input type="text" id="answer" placeholder="Type hugs here...">
+  <br>
+  <button onclick="checkAnswer()">Submit</button>
+
+  <!-- Background Song -->
+  <audio id="song" src="First.mp3" autoplay loop></audio>
+
+  <!-- Confetti -->
+  <canvas id="confetti"></canvas>
+
+  <script>
+    // Floating emojis 💙🤗😚🫂💎❤️‍🩹🙈
+    const emojis = ["💙","🤗","😚","🫂","💎","❤️‍🩹","🙈"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+      emoji.classList.add("emoji");
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.animationDuration = 3 + Math.random() * 3 + "s";
+      emoji.style.fontSize = (25 + Math.random()*25) + "px";
+      document.body.appendChild(emoji);
+      setTimeout(() => { emoji.remove(); }, 6000);
+    }
+    setInterval(createEmoji, 150);
+
+    // Confetti
+    const confetti = document.getElementById('confetti');
+    const ctx = confetti.getContext('2d');
+    confetti.width = window.innerWidth;
+    confetti.height = window.innerHeight;
+    let particles = [];
+    function randomColor() {
+      const colors = ["#ff0","#ff66cc","#00f","#0f0","#f0f","#0ff","#fff"];
+      return colors[Math.floor(Math.random()*colors.length)];
+    }
+    function createConfetti() {
+      for(let i=0;i<400;i++){
+        particles.push({
+          x: Math.random()*confetti.width,
+          y: Math.random()*confetti.height - confetti.height,
+          w: 8,
+          h: 14,
+          color: randomColor(),
+          speed: Math.random()*3+2
+        });
+      }
+    }
+    function drawConfetti() {
+      ctx.clearRect(0,0,confetti.width,confetti.height);
+      particles.forEach((p,i)=>{
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x,p.y,p.w,p.h);
+        p.y += p.speed;
+        if(p.y > confetti.height) particles.splice(i,1);
+      });
+      requestAnimationFrame(drawConfetti);
+    }
+    drawConfetti();
+
+    // Quiz check
+    function checkAnswer() {
+      const ans = document.getElementById("answer").value.trim();
+      const hug = "🫂";
+      let count = (ans.match(/🫂/g) || []).length;
+      if (count >= 10) {
+        createConfetti();
+        setTimeout(() => {
+          window.location.href = "page6.html";
+        }, 2500);
+      } else {
+        alert("Try again 😚 at least 10 hugs 🫂 needed!");
+      }
+    }
+
+    window.addEventListener("resize",()=>{
+      confetti.width = window.innerWidth;
+      confetti.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
