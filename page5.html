@@ -21,8 +21,8 @@
     }
     /* 3D Cube */
     .scene {
-      width: 900px;
-      height: 900px;
+      width: 600px;
+      height: 600px;
       margin: 40px auto;
       perspective: 2000px;
     }
@@ -35,17 +35,19 @@
     }
     .cube div {
       position: absolute;
-      width: 900px;
-      height: 900px;
+      width: 600px;
+      height: 600px;
       background-size: cover;
       background-position: center;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.4);
     }
-    .front  { transform: rotateY(0deg) translateZ(450px); background-image: url('First1.jpg'); }
-    .back   { transform: rotateY(180deg) translateZ(450px); background-image: url('First2.jpg'); }
-    .right  { transform: rotateY(90deg) translateZ(450px); background-image: url('First3.jpg'); }
-    .left   { transform: rotateY(-90deg) translateZ(450px); background-image: url('First4.jpg'); }
-    .top    { transform: rotateX(90deg) translateZ(450px); background-image: url('First5.jpg'); }
-    .bottom { transform: rotateX(-90deg) translateZ(450px); background-image: url('First6.jpg'); }
+    .front  { transform: rotateY(0deg) translateZ(300px); background-image: url('First1.jpg'); }
+    .back   { transform: rotateY(180deg) translateZ(300px); background-image: url('First2.jpg'); }
+    .right  { transform: rotateY(90deg) translateZ(300px); background-image: url('First3.jpg'); }
+    .left   { transform: rotateY(-90deg) translateZ(300px); background-image: url('First4.jpg'); }
+    .top    { transform: rotateX(90deg) translateZ(300px); background-image: url('First5.jpg'); }
+    .bottom { transform: rotateX(-90deg) translateZ(300px); background-image: url('First6.jpg'); }
 
     @keyframes rotate {
       from { transform: rotateX(0deg) rotateY(0deg); }
