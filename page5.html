@@ -2,212 +2,191 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Happy Birthday</title>
+  <title>Special Surprise</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background: #000;
-      color: white;
-      font-family: Arial, sans-serif;
+      height: 100vh;
+      background: black;
       overflow: hidden;
-    }
-
-    /* Top Text */
-    .top-text {
-      font-size: 28px;
-      font-weight: bold;
+      font-family: Arial, sans-serif;
+      color: white;
       text-align: center;
-      color: #fff;  /* emojis stay original */
-      line-height: 1.6;
-      margin-top: 20px;
     }
 
-    /* Cube wrapper */
+    /* Top text */
+    .top-text {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 1.6;
+    }
+
+    /* Cube settings */
     .slideshow {
-      width: 720px;
-      height: 720px;
-      margin: 40px auto;
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 550px;   /* Reduced to avoid cutting */
+      height: 550px;
       perspective: 1200px;
     }
 
-    .cube {
+    .slideshow img {
+      position: absolute;
       width: 100%;
       height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: rotate 18s infinite linear;
-    }
-
-    .cube img {
-      position: absolute;
-      width: 720px;
-      height: 720px;
       object-fit: cover;
       backface-visibility: hidden;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+      animation: rotate 30s infinite linear;
     }
-
-    .front  { transform: rotateY(0deg) translateZ(360px); }
-    .back   { transform: rotateY(180deg) translateZ(360px); }
-    .right  { transform: rotateY(90deg) translateZ(360px); }
-    .left   { transform: rotateY(-90deg) translateZ(360px); }
-    .top    { transform: rotateX(90deg) translateZ(360px); }
-    .bottom { transform: rotateX(-90deg) translateZ(360px); }
 
     @keyframes rotate {
-      from { transform: rotateX(0) rotateY(0); }
-      to { transform: rotateX(360deg) rotateY(360deg); }
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
     }
 
-    /* Quiz */
-    .quiz {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .quiz input {
-      padding: 10px;
-      font-size: 18px;
-      border-radius: 5px;
-      border: none;
-      width: 250px;
-      text-align: center;
-    }
-    .quiz button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin-left: 10px;
-      border: none;
-      background: #ff007f;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    /* Floating Emojis */
+    /* Floating emojis */
     .emoji {
       position: absolute;
-      font-size: 32px;
-      animation: float 8s infinite;
+      font-size: 28px;
+      animation: float 10s infinite linear;
     }
 
     @keyframes float {
-      from { transform: translateY(100vh) scale(1); opacity: 1; }
-      to { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+      0% { transform: translateY(100vh); opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
     }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      pointer-events: none;
+    /* Quiz section */
+    .quiz {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    button {
+      padding: 8px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #ff4081;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: red;
+      top: -10px;
+      animation: confettiFall 3s linear forwards;
+    }
+
+    @keyframes confettiFall {
+      to { transform: translateY(100vh) rotate(720deg); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Song -->
+  <!-- Top text -->
+  <div class="top-text">
+    Namma 1st Selfie loosuu😚🙈 <br>
+    Always blessed to have you in my Life 🤗 <br>
+    Lov uuu😚 always...
+  </div>
+
+  <!-- Cube slideshow -->
+  <div class="slideshow">
+    <img src="F1.jpg" style="animation-delay: 0s;">
+    <img src="F2.jpg" style="animation-delay: 5s;">
+    <img src="F3.jpg" style="animation-delay: 10s;">
+    <img src="F4.jpg" style="animation-delay: 15s;">
+    <img src="F5.jpg" style="animation-delay: 20s;">
+    <img src="F6.jpg" style="animation-delay: 25s;">
+  </div>
+
+  <!-- Floating emojis -->
+  <div id="emojis"></div>
+
+  <!-- Quiz -->
+  <div class="quiz">
+    <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu🫂</p>
+    <input type="text" id="answer" placeholder="Type here...">
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+
+  <!-- Background music -->
   <audio autoplay loop>
     <source src="First.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Top Text -->
-  <div class="top-text">
-    <b>Namma 1st Selfie loosuu😚🙈</b><br>
-    <b>Always blessed to have you in my Life 🤗</b><br>
-    <b>Lov uuu😚 always...</b>
-  </div>
-
-  <!-- Rotating Cube -->
-  <div class="slideshow">
-    <div class="cube">
-      <img src="F1.jpg" class="front">
-      <img src="F2.jpg" class="back">
-      <img src="F3.jpg" class="right">
-      <img src="F4.jpg" class="left">
-      <img src="F5.jpg" class="top">
-      <img src="F6.jpg" class="bottom">
-    </div>
-  </div>
-
-  <!-- Quiz -->
-  <div class="quiz">
-    <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂...</p>
-    <input type="text" id="answer" placeholder="Type hugs here...">
-    <button onclick="checkAnswer()">Submit</button>
-  </div>
-
-  <!-- Fireworks + Confetti -->
-  <canvas id="confetti"></canvas>
-
   <script>
-    // Floating Emojis
+    // Floating emojis
     const emojis = ["💙","🤗","😚","🫂","💎","❤️‍🩹","🙈"];
     function createEmoji() {
       const emoji = document.createElement("div");
       emoji.className = "emoji";
       emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.top = Math.random() * 100 + "vh";
-      emoji.style.animationDuration = 5 + Math.random() * 5 + "s";
-      document.body.appendChild(emoji);
-      setTimeout(() => emoji.remove(), 8000);
+      emoji.style.left = Math.random() * window.innerWidth + "px";
+      emoji.style.top = "100vh";
+      emoji.style.fontSize = (20 + Math.random() * 20) + "px";
+      emoji.style.animationDuration = (5 + Math.random() * 5) + "s";
+      document.getElementById("emojis").appendChild(emoji);
+      setTimeout(() => emoji.remove(), 10000);
     }
-    setInterval(createEmoji, 800);
+    setInterval(createEmoji, 500);
 
     // Quiz check
     function checkAnswer() {
       const ans = document.getElementById("answer").value.trim();
       const correct = "🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂";
       if (ans === correct) {
-        alert("Correct! Moving to next page 🎉");
-        window.location.href = "page6.html"; // update your next page
+        for (let i = 0; i < 100; i++) {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.style.left = Math.random() * window.innerWidth + "px";
+          confetti.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 3000);
+        }
+        setTimeout(() => {
+          window.location.href = "nextpage.html";
+        }, 3500);
       } else {
-        alert("Try again 💙");
+        alert("Try again! Hint: Give 10 hugs 🫂🫂...");
       }
     }
 
-    // Confetti + Fireworks
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles = [];
-    function random(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    function createParticle() {
-      particles.push({
-        x: random(0, canvas.width),
-        y: canvas.height,
-        color: `hsl(${random(0, 360)},100%,50%)`,
-        size: random(4, 8),
-        speedY: random(3, 7),
-        speedX: random(-2, 2)
-      });
-    }
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p, i) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        p.y -= p.speedY;
-        p.x += p.speedX;
-        if (p.y < 0) particles.splice(i, 1);
-      });
-    }
-
-    function loop() {
-      drawParticles();
-      requestAnimationFrame(loop);
-    }
-
-    setInterval(createParticle, 100);
-    loop();
+    // Fireworks on page load
+    window.onload = () => {
+      for (let i = 0; i < 60; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
+      }
+    };
   </script>
 </body>
 </html>
