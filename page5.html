@@ -2,135 +2,133 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page 5</title>
+  <title>Surprise Cube</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      background: black;
       overflow: hidden;
-      color: white;
+      background: black;
       font-family: Arial, sans-serif;
-      text-align: center;
     }
 
-    h1 {
-      font-size: 1.5em;
-      font-weight: bold;
-      margin: 10px 0;
-      color: #ffccff;
-    }
-
-    /* Cube */
-    .scene {
-      width: 220px;
-      height: 220px;
-      perspective: 1000px;
-      margin-top: 20px;
-    }
-    .cube {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: rotate 12s infinite linear;
-    }
-    .cube div {
+    /* Top Text */
+    .top-text {
       position: absolute;
-      width: 220px;
-      height: 220px;
-      background-size: cover;
-      background-position: center;
-    }
-    .front  { transform: rotateY(0deg) translateZ(110px); background-image: url("First1.jpg"); }
-    .back   { transform: rotateY(180deg) translateZ(110px); background-image: url("First2.jpg"); }
-    .right  { transform: rotateY(90deg) translateZ(110px); background-image: url("First3.jpg"); }
-    .left   { transform: rotateY(-90deg) translateZ(110px); background-image: url("First4.jpg"); }
-    .top    { transform: rotateX(90deg) translateZ(110px); background-image: url("First5.jpg"); }
-    .bottom { transform: rotateX(-90deg) translateZ(110px); background-image: url("First6.jpg"); }
-
-    @keyframes rotate {
-      from { transform: rotateX(0) rotateY(0); }
-      to { transform: rotateX(360deg) rotateY(360deg); }
-    }
-
-    /* Quiz at bottom */
-    .quiz {
-      margin: 15px 0;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 22px; /* Increased font size */
       text-align: center;
-    }
-    .quiz input {
-      padding: 8px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: none;
-      margin-top: 10px;
-      text-align: center;
+      width: 100%;
     }
 
     /* Floating emojis */
     .emoji {
       position: absolute;
-      font-size: 28px;
-      animation: floatUp 6s linear infinite;
+      font-size: 24px;
+      animation: float 6s infinite linear;
     }
-    @keyframes floatUp {
-      from { transform: translateY(100vh); opacity: 1; }
-      to { transform: translateY(-10vh); opacity: 0; }
+
+    @keyframes float {
+      from { transform: translateY(100vh); }
+      to { transform: translateY(-10vh); }
+    }
+
+    /* Cube */
+    .scene {
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      perspective: 600px;
+    }
+
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotate 10s infinite linear;
+    }
+
+    .cube div {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .front  { transform: rotateY(0deg) translateZ(100px); }
+    .back   { transform: rotateY(180deg) translateZ(100px); }
+    .right  { transform: rotateY(90deg) translateZ(100px); }
+    .left   { transform: rotateY(-90deg) translateZ(100px); }
+    .top    { transform: rotateX(90deg) translateZ(100px); }
+    .bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+    @keyframes rotate {
+      from { transform: rotateX(0deg) rotateY(0deg); }
+      to { transform: rotateX(360deg) rotateY(360deg); }
+    }
+
+    /* Quiz Section */
+    .quiz {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      color: white;
+      text-align: center;
+    }
+
+    .quiz button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background: pink;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
-  <h1>Namma 1st Selfie loosuu😚🙈,Apro pink saree personal🤭 Always blessed to have you in my Life 🤗</h1>
+  <!-- Top Text -->
+  <div class="top-text">
+    Namma 1st Selfie loosuu😘🙈, Apro pink saree personal🤭 Always blessed to have you in my Life 🤗
+  </div>
+
+  <!-- Floating Emojis -->
+  <div class="emoji" style="left:10%;">😘</div>
+  <div class="emoji" style="left:30%;">💎</div>
+  <div class="emoji" style="left:50%;">💙</div>
+  <div class="emoji" style="left:70%;">🤭</div>
+  <div class="emoji" style="left:90%;">❤️</div>
 
   <!-- Cube -->
   <div class="scene">
     <div class="cube">
-      <div class="front"></div>
-      <div class="back"></div>
-      <div class="right"></div>
-      <div class="left"></div>
-      <div class="top"></div>
-      <div class="bottom"></div>
+      <div class="front" style="background-image: url('1000040127.jpg');"></div>
+      <div class="back" style="background-image: url('1000040127.jpg');"></div>
+      <div class="right" style="background-image: url('1000040127.jpg');"></div>
+      <div class="left" style="background-image: url('1000040127.jpg');"></div>
+      <div class="top" style="background-image: url('1000040127.jpg');"></div>
+      <div class="bottom" style="background-image: url('1000040127.jpg');"></div>
     </div>
   </div>
 
   <!-- Quiz -->
   <div class="quiz">
-    <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂</p>
-    <input type="text" id="answer" placeholder="Type here...">
+    <p><strong>💕 Small Quiz 💕</strong></p>
+    <p>When was our 1st selfie taken? 📸</p>
+    <button onclick="alert('Correct! 🥰')">College Day</button>
+    <button onclick="alert('Oops! Try again 😘')">School Day</button>
   </div>
-
-  <!-- Song -->
-  <audio autoplay loop>
-    <source src="First.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Floating Emojis -->
-  <script>
-    const emojis = ["💙","🤗","😚","🫂","💎","❤️‍🩹","🙈"];
-    function createEmoji() {
-      const emoji = document.createElement("div");
-      emoji.className = "emoji";
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (4 + Math.random() * 4) + "s";
-      document.body.appendChild(emoji);
-      setTimeout(() => emoji.remove(), 6000);
-    }
-    setInterval(createEmoji, 400);
-
-    // Quiz validation
-    document.getElementById("answer").addEventListener("input", function() {
-      if (this.value.includes("🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂")) {
-        window.location.href = "page6.html";
-      }
-    });
-  </script>
 </body>
 </html>
