@@ -1,4 +1,4 @@
-50<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -19,66 +19,54 @@
 
     /* Top bold text */
     .top-text {
-      font-size: 36px;
+      font-size: 32px;
       font-weight: bold;
-      text-align: top;
+      text-align: center;
       line-height: 1.6;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
-    /* Cube stays fixed center */
+    /* Cube smaller, fixed center */
     .scene {
-      width: 720px;
-      height: 720px;
+      width: 450px;
+      height: 450px;
       perspective: 2000px;
+      margin: 20px 0;
     }
 
     .cube {
-      width: 720px;
-      height: 720px;
+      width: 450px;
+      height: 450px;
       position: relative;
       transform-style: preserve-3d;
       animation: rotateCube 25s linear infinite;
-      margin: auto;
     }
 
     .cube img {
       position: absolute;
-      width: 720px;
-      height: 720px;
-      object-fit: cover;
+      width: 450px;
+      height: 450px;
+      object-fit: contain; /* prevent cropping */
       backface-visibility: hidden;
+      background: black;
     }
 
-    .front  { transform: rotateY(0deg) translateZ(360px); }
-    .back   { transform: rotateY(180deg) translateZ(360px); }
-    .right  { transform: rotateY(90deg) translateZ(360px); }
-    .left   { transform: rotateY(-90deg) translateZ(360px); }
-    .top    { transform: rotateX(90deg) translateZ(360px); }
-    .bottom { transform: rotateX(-90deg) translateZ(360px); }
+    .front  { transform: rotateY(0deg) translateZ(225px); }
+    .back   { transform: rotateY(180deg) translateZ(225px); }
+    .right  { transform: rotateY(90deg) translateZ(225px); }
+    .left   { transform: rotateY(-90deg) translateZ(225px); }
+    .top    { transform: rotateX(90deg) translateZ(225px); }
+    .bottom { transform: rotateX(-90deg) translateZ(225px); }
 
     @keyframes rotateCube {
       from { transform: rotateX(0deg) rotateY(0deg); }
       to   { transform: rotateX(360deg) rotateY(360deg); }
     }
 
-    /* Floating emojis */
-    .emoji {
-      position: absolute;
-      font-size: 40px;
-      animation: floatEmojis 8s linear infinite;
-      top: 100%;
-    }
-
-    @keyframes floatEmojis {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
-    }
-
     /* Quiz */
     .quiz {
-      margin-top: 25px;
-      text-align: bottom;
+      margin-top: 20px;
+      text-align: center;
       width: 100%;
     }
 
@@ -93,7 +81,7 @@
       font-size: 18px;
       border-radius: 8px;
       border: none;
-      text-align: bottom;
+      text-align: center;
     }
 
     .quiz button {
@@ -106,6 +94,19 @@
       cursor: pointer;
       background: #ff4081;
       color: white;
+    }
+
+    /* Floating emojis */
+    .emoji {
+      position: absolute;
+      font-size: 40px;
+      animation: floatEmojis 8s linear infinite;
+      top: 100%;
+    }
+
+    @keyframes floatEmojis {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
     }
 
     /* Fireworks / Confetti */
@@ -128,7 +129,7 @@
 </head>
 <body>
 
-  <!-- Top text in 3 lines -->
+  <!-- Top text -->
   <div class="top-text">
     Namma 1st Selfie loosuu😚🙈 <br>
     Always blessed to have you in my Life 🤗 <br>
