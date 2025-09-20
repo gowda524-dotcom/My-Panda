@@ -2,198 +2,154 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Page 5 Surprise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Surprise</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
-      background: black;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
+      background: black;
       overflow: hidden;
       color: white;
       font-family: Arial, sans-serif;
     }
 
-    /* Top bold text */
+    /* Top text */
     .top-text {
-      font-size: 32px;
+      font-size: 20px;
       font-weight: bold;
       text-align: center;
+      margin-top: 20px;
       line-height: 1.6;
-      margin-bottom: 20px;
+      z-index: 10;
     }
 
-    /* Cube smaller, fixed center */
+    /* Cube container */
     .scene {
       width: 450px;
       height: 450px;
-      perspective: 2000px;
-      margin: 20px 0;
+      perspective: 1200px;
+      margin-top: 20px;
     }
 
     .cube {
-      width: 450px;
-      height: 450px;
+      width: 100%;
+      height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      animation: rotateCube 25s linear infinite;
+      animation: rotate 12s infinite linear;
     }
 
-    .cube img {
+    .cube-face {
       position: absolute;
       width: 450px;
       height: 450px;
-      object-fit: contain; /* prevent cropping */
-      backface-visibility: hidden;
-      background: black;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
-    .front  { transform: rotateY(0deg) translateZ(225px); }
-    .back   { transform: rotateY(180deg) translateZ(225px); }
-    .right  { transform: rotateY(90deg) translateZ(225px); }
-    .left   { transform: rotateY(-90deg) translateZ(225px); }
-    .top    { transform: rotateX(90deg) translateZ(225px); }
-    .bottom { transform: rotateX(-90deg) translateZ(225px); }
+    .cube-face.front  { transform: rotateY(0deg) translateZ(225px); }
+    .cube-face.back   { transform: rotateY(180deg) translateZ(225px); }
+    .cube-face.right  { transform: rotateY(90deg) translateZ(225px); }
+    .cube-face.left   { transform: rotateY(-90deg) translateZ(225px); }
+    .cube-face.top    { transform: rotateX(90deg) translateZ(225px); }
+    .cube-face.bottom { transform: rotateX(-90deg) translateZ(225px); }
 
-    @keyframes rotateCube {
+    @keyframes rotate {
       from { transform: rotateX(0deg) rotateY(0deg); }
       to   { transform: rotateX(360deg) rotateY(360deg); }
     }
 
-    /* Quiz */
+    /* Quiz section */
     .quiz {
-      margin-top: 20px;
       text-align: center;
-      width: 100%;
-    }
-
-    .quiz p {
-      font-size: 20px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-top: 20px;
+      z-index: 10;
     }
 
     .quiz input {
-      padding: 10px;
-      font-size: 18px;
-      border-radius: 8px;
+      padding: 8px;
+      border-radius: 5px;
       border: none;
-      text-align: center;
+      margin-top: 10px;
     }
 
     .quiz button {
-      padding: 10px 20px;
+      padding: 8px 15px;
       margin-left: 10px;
-      font-size: 18px;
-      font-weight: bold;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #ff4081;
+      border-radius: 5px;
+      background: #ff007f;
       color: white;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     /* Floating emojis */
     .emoji {
       position: absolute;
-      font-size: 40px;
-      animation: floatEmojis 8s linear infinite;
-      top: 100%;
+      font-size: 28px;
+      animation: float 12s infinite;
     }
 
-    @keyframes floatEmojis {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
+    @keyframes float {
+      0%   { transform: translateY(100vh) scale(1); opacity: 1; }
       100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
-    }
-
-    /* Fireworks / Confetti */
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      background: yellow;
-      top: 0;
-      left: 50%;
-      opacity: 0;
-      animation: explode 2s ease-out forwards;
-    }
-
-    @keyframes explode {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(100vh) scale(0.5); opacity: 0; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top text -->
+  <!-- Song -->
+  <audio autoplay loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Top Text -->
   <div class="top-text">
-    Namma 1st Selfie loosuu😚🙈 <br>
+    Namma 1st Selfie loosuu 😘🙈 <br>
     Always blessed to have you in my Life 🤗 <br>
-    Lov uuu😚 always
+    Lov uuu ❤️‍🩹
   </div>
 
   <!-- Cube -->
   <div class="scene">
     <div class="cube">
-      <img src="F1.jpg" class="front">
-      <img src="F2.jpg" class="back">
-      <img src="F3.jpg" class="right">
-      <img src="F4.jpg" class="left">
-      <img src="F5.jpg" class="top">
-      <img src="F6.jpg" class="bottom">
+      <div class="cube-face front"  style="background-image: url('1000040195.jpg');"></div>
+      <div class="cube-face back"   style="background-image: url('1000040195.jpg');"></div>
+      <div class="cube-face right"  style="background-image: url('1000040195.jpg');"></div>
+      <div class="cube-face left"   style="background-image: url('1000040195.jpg');"></div>
+      <div class="cube-face top"    style="background-image: url('1000040195.jpg');"></div>
+      <div class="cube-face bottom" style="background-image: url('1000040195.jpg');"></div>
     </div>
   </div>
 
   <!-- Quiz -->
   <div class="quiz">
-    <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂</p>
-    <input type="text" id="answer" placeholder="Type here...">
-    <button onclick="checkAnswer()">Submit</button>
+    Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂 <br>
+    <input type="text" placeholder="Type here...">
+    <button>Submit</button>
   </div>
 
-  <!-- Floating emojis -->
-  <div id="emoji-container"></div>
-
-  <!-- Background song -->
-  <audio id="bg-music" src="First.mp3" autoplay loop></audio>
-
+  <!-- Floating Emojis -->
   <script>
-    // Floating emojis generator
-    const emojis = ["🙈","😚","💎","🤗","🫂","❤️‍🩹"];
-    function createEmoji() {
+    const emojis = ["🙈", "😚", "💎", "🤗", "🫂", "❤️‍🩹"];
+    for (let i = 0; i < 20; i++) {
       const emoji = document.createElement("div");
       emoji.className = "emoji";
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
       emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (6 + Math.random() * 5) + "s";
-      document.getElementById("emoji-container").appendChild(emoji);
-      setTimeout(() => emoji.remove(), 10000);
-    }
-    setInterval(createEmoji, 500);
-
-    // Quiz answer check
-    function checkAnswer() {
-      const ans = document.getElementById("answer").value.trim();
-      if (ans === "🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂") {
-        for (let i = 0; i < 50; i++) {
-          const confetti = document.createElement("div");
-          confetti.className = "confetti";
-          confetti.style.left = Math.random() * 100 + "vw";
-          confetti.style.background = `hsl(${Math.random()*360},100%,50%)`;
-          document.body.appendChild(confetti);
-          setTimeout(() => confetti.remove(), 2000);
-        }
-        setTimeout(() => {
-          window.location.href = "page6.html"; // auto move next
-        }, 2500);
-      } else {
-        alert("Wrong! Try again 🫂");
-      }
+      emoji.style.animationDuration = (8 + Math.random() * 6) + "s";
+      emoji.style.fontSize = (24 + Math.random() * 20) + "px";
+      document.body.appendChild(emoji);
     }
   </script>
+
 </body>
 </html>
