@@ -15,20 +15,21 @@
     }
     h1 {
       font-size: 2em;
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
     }
     h2 {
-      font-size: 1.5em;
-      margin: 10px 0 20px 0;
+      font-size: 1.4em;
+      margin: 8px 0 15px 0;
     }
     .image-container img {
-      width: 250px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px #fff;
+      width: 70%; /* bigger size */
+      max-width: 400px;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #fff;
     }
     .quiz {
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
       font-size: 1.2em;
     }
@@ -47,13 +48,14 @@
     /* Floating Emojis */
     .emoji {
       position: absolute;
-      font-size: 2em;
-      animation: floatUp 8s infinite;
-      opacity: 0.8;
+      font-size: 2rem;
+      animation: floatUp linear forwards;
+      opacity: 0.9;
+      z-index: 999;
     }
     @keyframes floatUp {
       0% { transform: translateY(100vh) scale(1); opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+      100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
     }
   </style>
 </head>
@@ -75,7 +77,7 @@
   <!-- Background Song -->
   <audio id="bg-music" src="page6.mp3" autoplay loop></audio>
 
-  <!-- Confetti + Fireworks -->
+  <!-- Fireworks -->
   <canvas id="fireworks"></canvas>
 
   <script>
@@ -86,12 +88,12 @@
       emoji.className = "emoji";
       emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
       emoji.style.left = Math.random() * window.innerWidth + "px";
-      emoji.style.top = window.innerHeight + "px";
-      emoji.style.animationDuration = (5 + Math.random() * 5) + "s";
+      emoji.style.bottom = "-50px";
+      emoji.style.animationDuration = (4 + Math.random() * 4) + "s";
       document.body.appendChild(emoji);
-      setTimeout(() => { emoji.remove(); }, 8000);
+      setTimeout(() => { emoji.remove(); }, 6000);
     }
-    setInterval(createEmoji, 800);
+    setInterval(createEmoji, 700);
 
     // Fireworks
     const canvas = document.getElementById('fireworks');
@@ -148,7 +150,7 @@
     // Quiz check
     function checkAnswer() {
       const answer = document.getElementById("answer").value.trim().toLowerCase();
-      if(answer === "yes" || answer === "ok" || answer === "Lov uuu My Friend❤️‍🩹😚") {
+      if(answer === "yes" || answer === "ok" || answer === "Lov uuu My Friend ❤️‍🩹😚") {
         window.location.href = "page7.html"; // go to next page
       } else {
         alert("Try again, Bomma! 😘");
