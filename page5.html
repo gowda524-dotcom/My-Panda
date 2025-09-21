@@ -2,208 +2,199 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Surprise Page</title>
+  <title>Page with Cube and Quiz</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background: #000;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: black;
+      overflow: hidden;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
-      overflow: hidden;
     }
 
-    /* Layout sections */
+    /* Top text */
     .top-text {
+      font-size: 24px;
       font-weight: bold;
-      font-size: 22px;
-      line-height: 1.6em;
-      margin-top: 20px;
-      position: relative;
-      z-index: 5;
+      margin-bottom: 20px;
+      line-height: 1.8;
     }
 
-    .cube-container {
-      perspective: 1200px;
+    /* Cube */
+    .scene {
       width: 450px;
       height: 450px;
-      margin: 40px auto; /* center cube, with gap above/below */
+      perspective: 1000px;
+      margin-bottom: 40px;
     }
-
     .cube {
       width: 100%;
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      animation: rotate 25s infinite linear; /* slow rotation */
+      animation: rotateCube 12s infinite linear;
     }
-
-    .face {
+    .cube img {
       position: absolute;
       width: 450px;
       height: 450px;
-      backface-visibility: hidden;
-    }
-
-    .face img {
-      width: 100%;
-      height: 100%;
       object-fit: cover;
     }
-
-    .front  { transform: rotateY(0deg) translateZ(225px); }
+    .front  { transform: rotateY(  0deg) translateZ(225px); }
     .back   { transform: rotateY(180deg) translateZ(225px); }
-    .right  { transform: rotateY(90deg) translateZ(225px); }
+    .right  { transform: rotateY( 90deg) translateZ(225px); }
     .left   { transform: rotateY(-90deg) translateZ(225px); }
-    .top    { transform: rotateX(90deg) translateZ(225px); }
+    .top    { transform: rotateX( 90deg) translateZ(225px); }
     .bottom { transform: rotateX(-90deg) translateZ(225px); }
 
-    @keyframes rotate {
-      from { transform: rotateX(0deg) rotateY(0deg); }
+    @keyframes rotateCube {
+      from { transform: rotateX(0) rotateY(0); }
       to   { transform: rotateX(360deg) rotateY(360deg); }
     }
 
+    /* Quiz */
     .quiz {
-      margin-top: 30px;
-      position: relative;
-      z-index: 5;
+      margin-top: 20px;
     }
-
     .quiz input {
       padding: 8px;
-      border: none;
-      border-radius: 5px;
-      margin-right: 5px;
+      font-size: 16px;
+      width: 280px;
     }
-
     .quiz button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 5px;
-      background: hotpink;
-      color: white;
+      padding: 8px 15px;
+      font-size: 16px;
       font-weight: bold;
+      margin-left: 10px;
       cursor: pointer;
     }
 
     /* Floating emojis */
     .emoji {
       position: absolute;
-      font-size: 26px;
-      animation: float 8s linear infinite;
-      z-index: 1;
+      font-size: 32px;
+      animation: floatEmojis 8s linear infinite;
     }
-
-    @keyframes float {
-      0%   { transform: translateY(100vh) scale(1); opacity: 1; }
-      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
+    @keyframes floatEmojis {
+      0% { transform: translateY(100vh); opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <!-- Song -->
-  <audio autoplay loop>
-    <source src="First.mp3" type="audio/mpeg">
-  </audio>
 
   <!-- Top text -->
   <div class="top-text">
-    Namma 1st Selfie loosuu 😚🙈 <br>
+    Namma 1st Selfie loosuu😚🙈 <br>
     Always blessed to have you in my Life 🤗 <br>
-    Lov uuu 😚 always...
+    Lov uuu😚 always...
   </div>
 
-  <!-- Cube -->
-  <div class="cube-container">
+  <!-- Rotating Cube -->
+  <div class="scene">
     <div class="cube">
-      <div class="face front"><img src="F1.jpg"></div>
-      <div class="face back"><img src="F2.jpg"></div>
-      <div class="face right"><img src="F3.jpg"></div>
-      <div class="face left"><img src="F4.jpg"></div>
-      <div class="face top"><img src="F5.jpg"></div>
-      <div class="face bottom"><img src="F6.jpg"></div>
+      <img src="F1.jpg" class="front">
+      <img src="F2.jpg" class="back">
+      <img src="F3.jpg" class="right">
+      <img src="F4.jpg" class="left">
+      <img src="F5.jpg" class="top">
+      <img src="F6.jpg" class="bottom">
     </div>
   </div>
 
   <!-- Quiz -->
   <div class="quiz">
-    <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu 🫂</p>
-    <input id="answer" type="text" placeholder="Type here...">
+    <p><b>Next page ku porathukku unnoda loosu ku more than 10 hug kudu🫂...</b></p>
+    <input type="text" id="answer" placeholder="Enter your answer">
     <button onclick="checkAnswer()">Submit</button>
   </div>
 
-  <!-- Fireworks & confetti -->
-  <canvas id="confetti"></canvas>
+  <!-- Floating emojis -->
+  <div id="emojis"></div>
+
+  <!-- Fireworks -->
+  <canvas id="fireworks"></canvas>
+
+  <!-- Background Music -->
+  <audio autoplay loop>
+    <source src="First.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     // Floating emojis
-    const emojis = ["💙","🤗","😚","🫂","💎","❤️‍🩹","🙈"];
+    const emojiArray = ["🙈","😚","💎","🤗","🫂","❤️‍🩹"];
     function createEmoji() {
       const emoji = document.createElement("div");
-      emoji.className = "emoji";
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.fontSize = (20 + Math.random() * 20) + "px";
-      emoji.style.animationDuration = (6 + Math.random() * 4) + "s";
-      document.body.appendChild(emoji);
-      setTimeout(() => emoji.remove(), 10000);
-    }
-    setInterval(createEmoji, 800);
+      emoji.classList.add("emoji");
+      emoji.innerText = emojiArray[Math.floor(Math.random() * emojiArray.length)];
+      emoji.style.left = Math.random() * window.innerWidth + "px";
+      emoji.style.top = "100vh";
+      emoji.style.fontSize = (24 + Math.random() * 24) + "px";
+      document.getElementById("emojis").appendChild(emoji);
 
-    // Quiz answer check
+      setTimeout(() => { emoji.remove(); }, 8000);
+    }
+    setInterval(createEmoji, 600);
+
+    // Quiz check + Auto Next Page
     function checkAnswer() {
       const ans = document.getElementById("answer").value.trim();
       const correct = "🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂";
       if (ans === correct) {
-        alert("Correct! 🎉 Moving to next page...");
-        window.location.href = "nextpage.html"; // set target page
-      } else {
-        alert("Oops! Try again 😊");
+        window.location.href = "page6.html"; // <-- Next page
       }
     }
 
-    // Confetti
-    const canvas = document.getElementById("confetti");
-    const ctx = canvas.getContext("2d");
+    // Fireworks effect
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    const pieces = [];
-    const numberOfPieces = 150;
+    let particles = [];
 
-    for (let i = 0; i < numberOfPieces; i++) {
-      pieces.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 6 + 2,
-        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
-        speed: Math.random() * 3 + 2
-      });
+    function random(min, max) { return Math.random() * (max - min) + min; }
+    function Particle(x, y, color) {
+      this.x = x; this.y = y;
+      this.color = color;
+      this.radius = random(2, 4);
+      this.dx = random(-5, 5);
+      this.dy = random(-5, 5);
+      this.life = 100;
     }
-
-    function update() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      pieces.forEach(p => {
+    Particle.prototype.update = function () {
+      this.x += this.dx;
+      this.y += this.dy;
+      this.life--;
+    }
+    function createFirework() {
+      const x = random(100, canvas.width - 100);
+      const y = random(100, canvas.height / 2);
+      const colors = ["red","yellow","blue","green","purple","orange"];
+      for (let i=0; i<100; i++) {
+        particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
+      }
+    }
+    function animate() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach((p, i) => {
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
         ctx.fillStyle = p.color;
         ctx.fill();
-        p.y += p.speed;
-        if (p.y > canvas.height) p.y = 0;
+        p.update();
+        if (p.life <= 0) particles.splice(i, 1);
       });
-      requestAnimationFrame(update);
+      requestAnimationFrame(animate);
     }
-    update();
+    setInterval(createFirework, 2000);
+    animate();
   </script>
+
 </body>
 </html>
