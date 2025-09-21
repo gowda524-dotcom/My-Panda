@@ -10,7 +10,7 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: space-between; /* push quiz to bottom */
       align-items: center;
       background: black;
       overflow: hidden;
@@ -24,32 +24,31 @@
       font-size: 24px;
       font-weight: bold;
       margin-top: 20px;
-      margin-bottom: 30px;
       line-height: 1.8;
     }
 
-    /* Cube wrapper to fix positioning */
+    /* Cube wrapper */
     .scene {
       width: 450px;
       height: 450px;
       perspective: 1000px;
-      margin: 20px 0;
       display: flex;
       justify-content: center;
       align-items: center;
+      margin: 20px 0;
     }
     .cube {
       width: 100%;
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      animation: rotateCube 12s infinite linear;
+      animation: rotateCube 16s infinite linear; /* slower rotation */
     }
     .cube img {
       position: absolute;
       width: 450px;
       height: 450px;
-      object-fit: contain; /* Keeps full image, no crop */
+      object-fit: contain; /* Keep image fully visible */
     }
     .front  { transform: rotateY(  0deg) translateZ(225px); }
     .back   { transform: rotateY(180deg) translateZ(225px); }
@@ -63,9 +62,9 @@
       to   { transform: rotateX(360deg) rotateY(360deg); }
     }
 
-    /* Quiz */
+    /* Quiz pinned bottom */
     .quiz {
-      margin-top: 40px;
+      margin-bottom: 25px;
     }
     .quiz p {
       font-size: 18px;
@@ -75,13 +74,16 @@
     .quiz input {
       padding: 8px;
       font-size: 16px;
-      width: 280px;
+      width: 220px;
     }
     .quiz button {
       padding: 8px 15px;
       font-size: 16px;
       font-weight: bold;
       margin-left: 10px;
+      background: hotpink;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
 
@@ -94,6 +96,16 @@
     @keyframes floatEmojis {
       0% { transform: translateY(100vh); opacity: 1; }
       100% { transform: translateY(-10vh); opacity: 0; }
+    }
+
+    /* Fireworks canvas */
+    #fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -118,7 +130,7 @@
     </div>
   </div>
 
-  <!-- Quiz -->
+  <!-- Quiz at bottom -->
   <div class="quiz">
     <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu🫂...</p>
     <input type="text" id="answer" placeholder="Enter your answer">
@@ -152,16 +164,16 @@
     }
     setInterval(createEmoji, 600);
 
-    // Quiz check + Auto Next Page
+    // Quiz auto-next
     function checkAnswer() {
       const ans = document.getElementById("answer").value.trim();
       const correct = "🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂";
       if (ans === correct) {
-        window.location.href = "page6.html"; // <-- Next page
+        window.location.href = "page6.html"; // Next page
       }
     }
 
-    // Fireworks effect
+    // Fireworks
     const canvas = document.getElementById('fireworks');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
