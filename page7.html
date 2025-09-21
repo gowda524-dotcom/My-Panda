@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Page 7 - Birthday Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+      color: white;
+      background: black;
+    }
+    h1 {
+      font-size: 2em;
+      margin-top: 15px;
+      font-weight: bold;
+      z-index: 5;
+      position: relative;
+      text-shadow: 2px 2px 5px #000;
+    }
+    .photo img {
+      width: 95%;
+      max-width: 1080px;
+      margin: 15px auto;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.6);
+      z-index: 5;
+      position: relative;
+    }
+    .quiz {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1.2em;
+      z-index: 5;
+      position: relative;
+      text-shadow: 2px 2px 5px #000;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1em;
+    }
+    button {
+      background: #00ccff;
+      color: white;
+      cursor: pointer;
+    }
+    /* Floating Emojis */
+    .emoji {
+      position: absolute;
+      font-size: 2.5rem;
+      animation: floatUp linear forwards;
+      opacity: 1;
+      z-index: 4;
+      pointer-events: none;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(1); opacity: 1; }
+      100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+    }
+    /* Floating Hate U Texts */
+    .hate {
+      position: absolute;
+      font-size: 1.5rem;
+      color: #ff4da6;
+      font-weight: bold;
+      animation: floatRandom linear infinite;
+      z-index: 3;
+      pointer-events: none;
+    }
+    @keyframes floatRandom {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+    }
+    /* Fireworks canvas */
+    #fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Lov uuu to My Bestest Friend 💙 😚</h1>
+
+  <div class="photo">
+    <img src="Page7.jpg" alt="Best Friend">
+  </div>
+
+  <div class="quiz">
+    Un Best Friend ku more than 10 kiss 😚kudu appo tha next page pogum... <br>
+    Free ya onnu kudkatha ...kadana kudu clg ku varumbothu return kudkra🤭 <br>
+    <input type="text" id="answer" placeholder="Type your answer...">
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+
+  <!-- Song -->
+  <audio id="bg-music" src="Page7.mp3" autoplay loop></audio>
+
+  <!-- Fireworks -->
+  <canvas id="fireworks"></canvas>
+
+  <script>
+    // Floating Emojis
+    const emojis = ["🤗","😚","💗","🙈","🎉","🥳"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.className = "emoji";
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * window.innerWidth + "px";
+      emoji.style.bottom = "-50px";
+      emoji.style.animationDuration = (4 + Math.random() * 4) + "s";
+      document.body.appendChild(emoji);
+      setTimeout(() => { emoji.remove(); }, 7000);
+    }
+    setInterval(createEmoji, 500);
+
+    // Floating "Hate uuu 😚" texts
+    function createHateText() {
+      for (let i = 0; i < 20; i++) {
+        const hate = document.createElement("div");
+        hate.className = "hate";
+        hate.innerText = "Hate uuu 😚";
+        hate.style.left = Math.random() * window.innerWidth + "px";
+        hate.style.bottom = "-50px";
+        hate.style.animationDuration = (5 + Math.random() * 5) + "s";
+        document.body.appendChild(hate);
+        setTimeout(() => { hate.remove(); }, 10000);
+      }
+    }
+    setInterval(createHateText, 6000);
+    createHateText();
+
+    // Fireworks
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    function random(min, max) { return Math.random() * (max - min) + min; }
+    function Particle(x, y, color) {
+      this.x = x; this.y = y;
+      this.color = color;
+      this.radius = random(2,4);
+      this.angle = random(0, 2 * Math.PI);
+      this.speed = random(2,8);
+      this.friction = 0.95;
+      this.gravity = 0.05;
+      this.alpha = 1;
+    }
+    Particle.prototype.update = function() {
+      this.x += Math.cos(this.angle) * this.speed;
+      this.y += Math.sin(this.angle) * this.speed + this.gravity;
+      this.speed *= this.friction;
+      this.alpha -= 0.01;
+    }
+    Particle.prototype.draw = function() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    function createFirework(x, y) {
+      const colors = ["#ff4da6", "#ffcc00", "#00ccff", "#ff0066", "#ffffff"];
+      for (let i = 0; i < 120; i++) {
+        particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
+      }
+    }
+    function animate() {
+      ctx.fillStyle = "rgba(0,0,0,0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(i, 1);
+      });
+      requestAnimationFrame(animate);
+    }
+    setInterval(() => createFirework(Math.random()*canvas.width, Math.random()*canvas.height/2), 1500);
+    animate();
+
+    // Quiz check
+    function normalize(text) {
+      return text.replace(/\s+/g, "").trim();
+    }
+    function checkAnswer() {
+      const answer = normalize(document.getElementById("answer").value);
+      const correct = normalize("😚😚😚😚😚😚😚😚😚😚");
+      if(answer === correct) {
+        window.location.href = "page8.html"; // Go to next page
+      } else {
+        alert("Try again 😘! Need 10 kisses 😚😚😚...");
+      }
+    }
+  </script>
+
+</body>
+</html>
