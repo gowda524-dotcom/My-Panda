@@ -12,12 +12,7 @@
       overflow: hidden;
       position: relative;
       color: white;
-
-      /* Background image with gradient fallback */
-      background: linear-gradient(135deg, #ff4da6, #6600ff),
-                  url("Saree2.jpg") no-repeat center center fixed;
-      background-size: cover;
-      background-blend-mode: lighten;
+      background: black; /* plain background */
     }
     h1 {
       font-size: 2em;
@@ -34,8 +29,19 @@
       z-index: 3;
       text-shadow: 2px 2px 5px #000;
     }
+    .photo {
+      margin: 20px auto;
+      position: relative;
+      z-index: 3;
+    }
+    .photo img {
+      width: 85%; /* make image big */
+      max-width: 500px; /* prevent too large */
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(255,255,255,0.6);
+    }
     .quiz {
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
       font-size: 1.2em;
       position: relative;
@@ -80,6 +86,10 @@
 
   <h1>Alzhagu Bomma💗🤭</h1>
   <h2>Happy Birthday En Bomma 🙈</h2>
+
+  <div class="photo">
+    <img src="Saree2.jpg" alt="Birthday Photo">
+  </div>
 
   <div class="quiz">
     Lov uuu My Friend ❤️‍🩹😚.... Sollu next pola....<br>
