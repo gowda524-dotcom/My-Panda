@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Page8 - Romantic Mini Games</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      overflow: hidden;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+    h1 {
+      margin-top: 20px;
+      font-size: 32px;
+      text-shadow: 2px 2px 8px #000;
+    }
+    .game {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    button {
+      font-size: 20px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: hotpink;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: deeppink;
+    }
+    #kissArea span {
+      font-size: 30px;
+      display: inline-block;
+      margin: 5px;
+      animation: floatUp 3s linear forwards;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-200px); opacity: 0; }
+    }
+    /* Catch Game */
+    #game2Canvas {
+      background: #111;
+      display: block;
+      margin: 20px auto;
+      border: 2px solid white;
+    }
+    /* Secret Heart */
+    .float {
+      position: absolute;
+      font-size: 28px;
+      animation: floatRandom 10s linear infinite;
+    }
+    @keyframes floatRandom {
+      from { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+      to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <audio autoplay loop>
+    <source src="Page8.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Game 1: Blow Kiss 😘 -->
+  <div id="game1" class="game active">
+    <h1>💖 Game 1: Blow the Kiss 😘</h1>
+    <p>Send 10 kisses to unlock next game!</p>
+    <button onclick="blowKiss()">Send Kiss 😘</button>
+    <div id="kissArea"></div>
+    <p id="kissCount">Kisses: 0</p>
+  </div>
+
+  <!-- Game 2: Catch Kiss 😚 -->
+  <div id="game2" class="game">
+    <h1>💞 Game 2: Catch the Kiss 😚</h1>
+    <p>Use ⬅️ ➡️ keys to catch 5 kisses!</p>
+    <canvas id="game2Canvas" width="400" height="400"></canvas>
+    <p id="catchScore">Score: 0</p>
+  </div>
+
+  <!-- Game 3: Secret Heart 💙 -->
+  <div id="game3" class="game">
+    <h1>💙 Game 3: Find the Secret Heart ❤️</h1>
+    <p>Click the ❤️ heart to unlock next page!</p>
+  </div>
+
+  <script>
+    // GAME 1: Blow Kiss
+    let kissCount = 0;
+    function blowKiss() {
+      kissCount++;
+      let span = document.createElement("span");
+      span.innerText = "😚";
+      document.getElementById("kissArea").appendChild(span);
+      document.getElementById("kissCount").innerText = "Kisses: " + kissCount;
+      if (kissCount >= 10) {
+        setTimeout(() => {
+          document.getElementById("game1").classList.remove("active");
+          document.getElementById("game2").classList.add("active");
+          startCatchGame();
+        }, 500);
+      }
+    }
+
+    // GAME 2: Catch Kiss
+    let canvas = document.getElementById("game2Canvas");
+    let ctx = canvas.getContext("2d");
+    let basket = { x: 170, y: 370, w: 60, h: 20 };
+    let kisses = [];
+    let score = 0;
+    let game2Running = false;
+
+    function startCatchGame() {
+      document.addEventListener("keydown", moveBasket);
+      game2Running = true;
+      setInterval(dropKiss, 1500);
+      requestAnimationFrame(updateCatchGame);
+    }
+
+    function moveBasket(e) {
+      if (e.key === "ArrowLeft" && basket.x > 0) basket.x -= 20;
+      if (e.key === "ArrowRight" && basket.x < canvas.width - basket.w) basket.x += 20;
+    }
+
+    function dropKiss() {
+      if (!game2Running) return;
+      kisses.push({ x: Math.random()*360, y: 0 });
+    }
+
+    function updateCatchGame() {
+      if (!game2Running) return;
+      ctx.clearRect(0,0,400,400);
+      // draw basket
+      ctx.fillStyle = "pink";
+      ctx.fillRect(basket.x, basket.y, basket.w, basket.h);
+      // draw kisses
+      ctx.font = "24px Arial";
+      ctx.fillText("😚", basket.x, basket.y-10);
+      for (let i=0; i<kisses.length; i++) {
+        ctx.fillText("😚", kisses[i].x, kisses[i].y);
+        kisses[i].y += 3;
+        // check catch
+        if (kisses[i].y > basket.y && kisses[i].x > basket.x && kisses[i].x < basket.x+basket.w) {
+          score++;
+          document.getElementById("catchScore").innerText = "Score: " + score;
+          kisses.splice(i,1);
+          i--;
+          if (score >= 5) {
+            game2Running = false;
+            document.getElementById("game2").classList.remove("active");
+            document.getElementById("game3").classList.add("active");
+            startSecretHeart();
+          }
+        }
+      }
+      requestAnimationFrame(updateCatchGame);
+    }
+
+    // GAME 3: Secret Heart
+    function startSecretHeart() {
+      const emojis = ["💖","💙","💜","✨","🎉","😍","😘"];
+      for (let i=0; i<30; i++) {
+        let span = document.createElement("span");
+        span.className = "float";
+        span.innerText = (i===5) ? "❤️" : emojis[Math.floor(Math.random()*emojis.length)];
+        span.style.left = Math.random()*90 + "vw";
+        span.style.animationDuration = (5 + Math.random()*5) + "s";
+        span.onclick = function() {
+          if (this.innerText === "❤️") {
+            alert("Yay! You found my secret heart ❤️");
+            window.location.href = "Page9.html";
+          } else {
+            alert("Hehe, not this one 😝 try again!");
+          }
+        };
+        document.getElementById("game3").appendChild(span);
+      }
+    }
+  </script>
+</body>
+</html>
