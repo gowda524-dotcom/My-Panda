@@ -12,8 +12,12 @@
       overflow: hidden;
       position: relative;
       color: white;
-      background: url("Saree2.jpg") no-repeat center center fixed;
+
+      /* Background image with gradient fallback */
+      background: linear-gradient(135deg, #ff4da6, #6600ff),
+                  url("Saree2.jpg") no-repeat center center fixed;
       background-size: cover;
+      background-blend-mode: lighten;
     }
     h1 {
       font-size: 2em;
@@ -63,7 +67,7 @@
       0% { transform: translateY(100vh) scale(1); opacity: 1; }
       100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
     }
-    /* Fireworks canvas in background */
+    /* Fireworks canvas */
     #fireworks {
       position: fixed;
       top: 0;
@@ -156,7 +160,7 @@
     setInterval(() => createFirework(Math.random()*canvas.width, Math.random()*canvas.height/2), 2000);
     animate();
 
-    // Quiz check (case + space insensitive)
+    // Quiz check
     function normalize(text) {
       return text.replace(/\s+/g, " ").trim().toLowerCase();
     }
@@ -164,7 +168,7 @@
       const answer = normalize(document.getElementById("answer").value);
       const correct = normalize("Lov uuu My Friend ❤️‍🩹😚");
       if(answer === correct) {
-        window.location.href = "page7.html"; // go to next page
+        window.location.href = "page7.html"; // Go to next page
       } else {
         alert("Try again, Bomma! 😘");
       }
