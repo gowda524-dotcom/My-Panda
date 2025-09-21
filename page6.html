@@ -2,176 +2,159 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 6</title>
+  <title>Page 6 - Birthday Surprise</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      background: black url("Saree2.jpg") no-repeat center center/cover;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      overflow: hidden;
+      padding: 0;
+      background: #000;
       color: white;
       font-family: Arial, sans-serif;
       text-align: center;
+      overflow: hidden;
     }
-
-    /* Top text */
-    .top-text {
-      margin-top: 30px;
+    h1 {
+      font-size: 2em;
+      margin-top: 20px;
       font-weight: bold;
-      font-size: 28px;
-      line-height: 1.6em;
     }
-
-    /* Quiz */
-    .quiz-container {
-      margin-top: auto;
-      margin-bottom: 80px;
-      text-align: center;
+    h2 {
+      font-size: 1.5em;
+      margin: 10px 0 20px 0;
     }
-    .quiz-container p {
+    .image-container img {
+      width: 250px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #fff;
+    }
+    .quiz {
+      margin-top: 20px;
       font-weight: bold;
-      font-size: 24px;
-      margin-bottom: 10px;
+      font-size: 1.2em;
     }
-    .quiz-container input {
+    input, button {
+      margin: 10px;
       padding: 10px;
-      font-size: 18px;
-      width: 280px;
-      text-align: center;
-      border-radius: 8px;
+      border-radius: 10px;
       border: none;
+      font-size: 1em;
     }
-    .quiz-container button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin-left: 10px;
-      cursor: pointer;
-      border-radius: 8px;
-      border: none;
-      background: #ff3399;
+    button {
+      background: #ff4da6;
       color: white;
-      font-weight: bold;
+      cursor: pointer;
     }
-
     /* Floating Emojis */
     .emoji {
       position: absolute;
-      font-size: 32px;
-      animation: floatUp 10s linear infinite;
-      z-index: 2;
+      font-size: 2em;
+      animation: floatUp 8s infinite;
+      opacity: 0.8;
     }
     @keyframes floatUp {
-      0% { transform: translateY(100vh); opacity: 1; }
-      100% { transform: translateY(-10vh); opacity: 0; }
-    }
-
-    /* Confetti + Fireworks canvas */
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
+      0% { transform: translateY(100vh) scale(1); opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <!-- Fireworks & Confetti Canvas -->
-  <canvas id="canvas"></canvas>
 
-  <!-- Top Text -->
-  <div class="top-text">
-    Alzhagu Bomma💗🤭 <br>
-    Happy Birthday En Bomma 🙈
+  <h1>Alzhagu Bomma💗🤭</h1>
+  <h2>Happy Birthday En Bomma 🙈</h2>
+
+  <div class="image-container">
+    <img src="Saree2.jpg" alt="Saree2">
   </div>
 
-  <!-- Quiz -->
-  <div class="quiz-container">
-    <p>Lov uuu My Friend ❤️‍🩹😚.... Sollu next pola....</p>
-    <input type="text" id="answer" placeholder="Type your answer here">
+  <div class="quiz">
+    Lov uuu My Friend ❤️‍🩹😚.... Sollu next pola....<br>
+    <input type="text" id="answer" placeholder="Type your answer...">
     <button onclick="checkAnswer()">Submit</button>
   </div>
 
-  <!-- Floating Emojis -->
-  <div id="emojis"></div>
+  <!-- Background Song -->
+  <audio id="bg-music" src="page6.mp3" autoplay loop></audio>
+
+  <!-- Confetti + Fireworks -->
+  <canvas id="fireworks"></canvas>
 
   <script>
     // Floating Emojis
     const emojis = ["🤗","😚","💗","🙈"];
     function createEmoji() {
       const emoji = document.createElement("div");
-      emoji.classList.add("emoji");
+      emoji.className = "emoji";
       emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (6 + Math.random() * 5) + "s";
-      document.getElementById("emojis").appendChild(emoji);
-      setTimeout(() => emoji.remove(), 10000);
+      emoji.style.left = Math.random() * window.innerWidth + "px";
+      emoji.style.top = window.innerHeight + "px";
+      emoji.style.animationDuration = (5 + Math.random() * 5) + "s";
+      document.body.appendChild(emoji);
+      setTimeout(() => { emoji.remove(); }, 8000);
     }
-    setInterval(createEmoji, 700);
+    setInterval(createEmoji, 800);
 
-    // Quiz logic
-    function checkAnswer() {
-      const ans = document.getElementById("answer").value.trim();
-      if (ans.toLowerCase().includes("lov uuu")) {
-        window.location.href = "page7.html"; // auto move to next page
-      }
-    }
-
-    // Fireworks + Confetti Effect
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
+    // Fireworks
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const particles = [];
-    function random(min, max) {
-      return Math.random() * (max - min) + min;
+    let particles = [];
+    function random(min, max) { return Math.random() * (max - min) + min; }
+    function Particle(x, y, color) {
+      this.x = x; this.y = y;
+      this.color = color;
+      this.radius = random(2,4);
+      this.angle = random(0, 2 * Math.PI);
+      this.speed = random(2,8);
+      this.friction = 0.95;
+      this.gravity = 0.05;
+      this.alpha = 1;
+    }
+    Particle.prototype.update = function() {
+      this.x += Math.cos(this.angle) * this.speed;
+      this.y += Math.sin(this.angle) * this.speed + this.gravity;
+      this.speed *= this.friction;
+      this.alpha -= 0.01;
+    }
+    Particle.prototype.draw = function() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
     function createFirework(x, y) {
-      for (let i = 0; i < 50; i++) {
-        particles.push({
-          x: x,
-          y: y,
-          speedX: random(-5, 5),
-          speedY: random(-5, 5),
-          radius: random(2, 4),
-          life: 100,
-          color: `hsl(${random(0,360)},100%,50%)`
-        });
+      const colors = ["#ff4da6", "#ffcc00", "#00ccff", "#ff0066", "#ffffff"];
+      for (let i = 0; i < 100; i++) {
+        particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
       }
     }
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = particles.length - 1; i >= 0; i--) {
-        let p = particles[i];
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.life--;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        if (p.life <= 0) particles.splice(i, 1);
-      }
+      ctx.fillStyle = "rgba(0,0,0,0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, i) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(i, 1);
+      });
       requestAnimationFrame(animate);
     }
+    setInterval(() => createFirework(Math.random()*canvas.width, Math.random()*canvas.height/2), 2000);
     animate();
 
-    // Random fireworks on open
-    setInterval(() => {
-      createFirework(random(0, canvas.width), random(0, canvas.height/2));
-    }, 1000);
-
-    window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
+    // Quiz check
+    function checkAnswer() {
+      const answer = document.getElementById("answer").value.trim().toLowerCase();
+      if(answer === "yes" || answer === "ok" || answer === "Lov uuu My Friend❤️‍🩹😚") {
+        window.location.href = "page7.html"; // go to next page
+      } else {
+        alert("Try again, Bomma! 😘");
+      }
+    }
   </script>
+
 </body>
 </html>
