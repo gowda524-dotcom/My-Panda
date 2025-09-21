@@ -1,133 +1,135 @@
- <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Page7 - Bestest Friend</title>
+  <meta charset="UTF-8">
+  <title>Page7</title>
   <style>
     body {
       margin: 0;
+      padding: 0;
       overflow: hidden;
-      font-family: 'Arial', sans-serif;
-      background-color: #000;
+      text-align: center;
+      background: black;
+      font-family: Arial, sans-serif;
     }
-
-    .container {
-      position: relative;
+    .bg {
       width: 1080px;
-      margin: 0 auto;
-    }
-
-    .image {
-      width: 100%;
+      max-width: 100%;
+      height: auto;
       display: block;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
-
     .top-text {
       position: absolute;
       top: 20px;
       width: 100%;
-      text-align: center;
-      font-size: 36px;
+      font-size: 32px;
       font-weight: bold;
-      color: #fff;
-      text-shadow: 2px 2px 5px #000;
-      z-index: 10;
+      color: white;
+      text-shadow: 2px 2px 8px #000;
+      z-index: 2;
     }
-
-    .bottom-quiz {
+    .bottom-text {
+      position: absolute;
+      bottom: 140px;
+      width: 100%;
+      font-size: 22px;
+      color: yellow;
+      font-weight: bold;
+      text-shadow: 2px 2px 8px #000;
+      z-index: 2;
+      line-height: 1.5;
+    }
+    .quiz-box {
       position: absolute;
       bottom: 60px;
       width: 100%;
+      z-index: 3;
+    }
+    input {
+      font-size: 22px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
       text-align: center;
-      color: #fff;
+    }
+    button {
+      font-size: 20px;
+      padding: 6px 16px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 8px;
+      background: hotpink;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: deeppink;
+    }
+    .float {
+      position: absolute;
       font-size: 22px;
       font-weight: bold;
-      text-shadow: 1px 1px 3px #000;
-      z-index: 10;
-    }
-
-    .answer {
-      margin-top: 10px;
-      font-size: 26px;
-    }
-
-    .floating-text, .emoji {
-      position: absolute;
-      font-size: 20px;
-      font-weight: bold;
-      animation: float 10s linear infinite;
+      animation: floatUp 8s linear infinite;
+      z-index: 4;
       pointer-events: none;
-      z-index: 20;
     }
-
-    @keyframes float {
-      0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-200px) rotate(720deg);
-        opacity: 0;
-      }
-    }
-
-    audio {
-      position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
+    @keyframes floatUp {
+      from { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+      to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <img src="Page7.jpg" alt="Page 7" class="image" />
-
-    <div class="top-text">
-      Lov uuu to My Bestest Friend 💙 😚
-    </div>
-
-    <div class="bottom-quiz">
-      Un Best Friend ku more than 10 kiss 😚 kudu appo tha next page pogum... <br/>
-      Free ya onnu kudkatha ...kadana kudu clg ku varumbothu return kudkra🤭
-      <div class="answer">😚😚😚😚😚😚😚😚😚😚</div>
-    </div>
-
-    <!-- 20 Floating "hate uuu😚" texts -->
-    <!-- Each positioned randomly -->
-    <script>
-      const emojis = ["🎆","🎇","🎉","🥳","✨","💥","🤗","💖"];
-      for (let i = 0; i < 20; i++) {
-        const floatText = document.createElement('div');
-        floatText.className = 'floating-text';
-        floatText.style.left = `${Math.random() * 100}%`;
-        floatText.style.top = `${Math.random() * 100}%`;
-        floatText.style.fontSize = `${16 + Math.random() * 20}px`;
-        floatText.style.color = `hsl(${Math.random()*360}, 100%, 70%)`;
-        floatText.textContent = 'hate uuu😚';
-        document.body.appendChild(floatText);
-      }
-
-      for (let i = 0; i < 10; i++) {
-        const emoji = document.createElement('div');
-        emoji.className = 'emoji';
-        emoji.style.left = `${Math.random() * 100}%`;
-        emoji.style.top = `${Math.random() * 100}%`;
-        emoji.style.fontSize = `${24 + Math.random() * 20}px`;
-        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        document.body.appendChild(emoji);
-      }
-    </script>
-  </div>
-
-  <!-- Audio Player -->
-  <audio controls>
+  <!-- Song autoplay -->
+  <audio autoplay loop>
     <source src="Page7.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
   </audio>
 
+  <!-- Background image -->
+  <img src="Page7.jpg" alt="Page7" class="bg">
+
+  <!-- Texts -->
+  <div class="top-text">Lov uuu to My Bestest Friend 💙 😚</div>
+  <div class="bottom-text">
+    Un Best Friend ku more than 10 kiss 😚 kudu appo tha next page pogum... <br>
+    Free ya onnu kudkatha ...kadana kudu clg ku varumbothu return kudkra🤭
+  </div>
+
+  <!-- Quiz Input -->
+  <div class="quiz-box">
+    <input type="text" id="answer" placeholder="Type your kisses 😚...">
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+
+  <!-- Floating texts + emojis -->
+  <script>
+    const items = ["🎆","🎇","🎉","✨","💖","😍","😘","hate uuu 😚"];
+    for (let i = 0; i < 50; i++) {
+      let span = document.createElement("span");
+      span.className = "float";
+      span.innerText = i < 20 ? "hate uuu 😚" : items[Math.floor(Math.random()*items.length)];
+      span.style.left = Math.random()*90 + "vw";
+      span.style.animationDuration = (5 + Math.random()*5) + "s";
+      document.body.appendChild(span);
+    }
+
+    function checkAnswer() {
+      let ans = document.getElementById("answer").value.trim();
+
+      // count how many 😚 emojis are in the input
+      let kissCount = (ans.match(/😚/g) || []).length;
+
+      if (kissCount >= 10) {
+        window.location.href = "Page8.html"; // ✅ Next page if >=10
+      } else {
+        alert("😜 Oops! Need MORE than 10 kisses 😚 to continue...");
+      }
+    }
+  </script>
 </body>
 </html>
