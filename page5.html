@@ -2,221 +2,143 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Page with Cube and Quiz</title>
+  <title>Birthday Surprise</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
       height: 100vh;
+      background: black;
       display: flex;
       flex-direction: column;
-      justify-content: space-between; /* push quiz to bottom */
       align-items: center;
-      background: black;
+      justify-content: space-between;
       overflow: hidden;
       color: white;
       font-family: Arial, sans-serif;
-      text-align: center;
     }
 
-    /* Top text */
+    /* Text */
     .top-text {
-      font-size: 24px;
+      text-align: center;
+      font-size: 28px;
       font-weight: bold;
-      margin-top: 20px;
-      line-height: 1.8;
+      margin-top: 10px;
+      line-height: 1.6;
     }
 
-    /* Cube wrapper */
+    /* Cube */
     .scene {
       width: 450px;
       height: 450px;
       perspective: 1000px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 20px 0;
+      margin: auto;
     }
     .cube {
       width: 100%;
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
-      animation: rotateCube 16s infinite linear; /* slower rotation */
+      animation: spin 10s infinite linear;
     }
-    .cube img {
+    .cube-face {
       position: absolute;
       width: 450px;
       height: 450px;
-      object-fit: contain; /* Keep image fully visible */
+      backface-visibility: hidden;
     }
-    .front  { transform: rotateY(  0deg) translateZ(225px); }
+    .cube-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .front  { transform: rotateY(0deg) translateZ(225px); }
     .back   { transform: rotateY(180deg) translateZ(225px); }
-    .right  { transform: rotateY( 90deg) translateZ(225px); }
+    .right  { transform: rotateY(90deg) translateZ(225px); }
     .left   { transform: rotateY(-90deg) translateZ(225px); }
-    .top    { transform: rotateX( 90deg) translateZ(225px); }
+    .top    { transform: rotateX(90deg) translateZ(225px); }
     .bottom { transform: rotateX(-90deg) translateZ(225px); }
 
-    @keyframes rotateCube {
-      from { transform: rotateX(0) rotateY(0); }
-      to   { transform: rotateX(360deg) rotateY(360deg); }
+    @keyframes spin {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
     }
 
-    /* Quiz pinned bottom */
-    .quiz {
-      margin-bottom: 25px;
-    }
-    .quiz p {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .quiz input {
-      padding: 8px;
-      font-size: 16px;
-      width: 220px;
-    }
-    .quiz button {
-      padding: 8px 15px;
-      font-size: 16px;
-      font-weight: bold;
-      margin-left: 10px;
-      background: hotpink;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    /* Floating emojis */
+    /* Floating Emojis */
     .emoji {
       position: absolute;
       font-size: 32px;
-      animation: floatEmojis 8s linear infinite;
+      animation: floatUp 10s linear infinite;
     }
-    @keyframes floatEmojis {
+    @keyframes floatUp {
       0% { transform: translateY(100vh); opacity: 1; }
       100% { transform: translateY(-10vh); opacity: 0; }
     }
 
-    /* Fireworks canvas */
-    #fireworks {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
+    /* Quiz */
+    .quiz-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .quiz-container input {
+      padding: 8px;
+      font-size: 16px;
+    }
+    .quiz-container button {
+      padding: 8px 16px;
+      margin-left: 5px;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-  <!-- Top text -->
+  <!-- Top Text -->
   <div class="top-text">
-    Namma 1st Selfie loosuu😚🙈 <br>
-    Always blessed to have you in my Life 🤗 <br>
-    Lov uuu😚 always...
+    Happy Birthday My Life 🤗 <br>
+    Wishing you all happiness 💎 <br>
+    Love you always 😚
   </div>
 
-  <!-- Rotating Cube -->
+  <!-- Cube -->
   <div class="scene">
     <div class="cube">
-      <img src="F1.jpg" class="front">
-      <img src="F2.jpg" class="back">
-      <img src="F3.jpg" class="right">
-      <img src="F4.jpg" class="left">
-      <img src="F5.jpg" class="top">
-      <img src="F6.jpg" class="bottom">
+      <div class="cube-face front"><img src="1000040613.jpg" alt=""></div>
+      <div class="cube-face back"><img src="1000040551.jpg" alt=""></div>
+      <div class="cube-face right"><img src="1000040195.jpg" alt=""></div>
+      <div class="cube-face left"><img src="1000040528.jpg" alt=""></div>
+      <div class="cube-face top"><img src="1000040613.jpg" alt=""></div>
+      <div class="cube-face bottom"><img src="1000040551.jpg" alt=""></div>
     </div>
   </div>
 
-  <!-- Quiz at bottom -->
-  <div class="quiz">
-    <p>Next page ku porathukku unnoda loosu ku more than 10 hug kudu🫂...</p>
-    <input type="text" id="answer" placeholder="Enter your answer">
-    <button onclick="checkAnswer()">Submit</button>
+  <!-- Quiz at Bottom -->
+  <div class="quiz-container">
+    <p><b>How many hug kudus 🤗 you want today?</b></p>
+    <input type="text" id="answer">
+    <button onclick="goNext()">Submit</button>
   </div>
 
-  <!-- Floating emojis -->
+  <!-- Floating Emojis -->
   <div id="emojis"></div>
 
-  <!-- Fireworks -->
-  <canvas id="fireworks"></canvas>
-
-  <!-- Background Music -->
-  <audio autoplay loop>
-    <source src="First.mp3" type="audio/mpeg">
-  </audio>
-
   <script>
-    // Floating emojis
-    const emojiArray = ["🙈","😚","💎","🤗","🫂","❤️‍🩹"];
+    // Floating Emojis
+    const emojis = ["🙈","😚","💎","🤗","🫂","❤️‍🩹"];
     function createEmoji() {
       const emoji = document.createElement("div");
       emoji.classList.add("emoji");
-      emoji.innerText = emojiArray[Math.floor(Math.random() * emojiArray.length)];
-      emoji.style.left = Math.random() * window.innerWidth + "px";
-      emoji.style.top = "100vh";
-      emoji.style.fontSize = (24 + Math.random() * 24) + "px";
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.animationDuration = (6 + Math.random() * 5) + "s";
       document.getElementById("emojis").appendChild(emoji);
+      setTimeout(() => emoji.remove(), 10000);
+    }
+    setInterval(createEmoji, 800);
 
-      setTimeout(() => { emoji.remove(); }, 8000);
+    // Quiz auto next page
+    function goNext() {
+      window.location.href = "page2.html";
     }
-    setInterval(createEmoji, 600);
-
-    // Quiz auto-next
-    function checkAnswer() {
-      const ans = document.getElementById("answer").value.trim();
-      const correct = "🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂";
-      if (ans === correct) {
-        window.location.href = "page6.html"; // Next page
-      }
-    }
-
-    // Fireworks
-    const canvas = document.getElementById('fireworks');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    let particles = [];
-
-    function random(min, max) { return Math.random() * (max - min) + min; }
-    function Particle(x, y, color) {
-      this.x = x; this.y = y;
-      this.color = color;
-      this.radius = random(2, 4);
-      this.dx = random(-5, 5);
-      this.dy = random(-5, 5);
-      this.life = 100;
-    }
-    Particle.prototype.update = function () {
-      this.x += this.dx;
-      this.y += this.dy;
-      this.life--;
-    }
-    function createFirework() {
-      const x = random(100, canvas.width - 100);
-      const y = random(100, canvas.height / 2);
-      const colors = ["red","yellow","blue","green","purple","orange"];
-      for (let i=0; i<100; i++) {
-        particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
-      }
-    }
-    function animate() {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      particles.forEach((p, i) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-        p.update();
-        if (p.life <= 0) particles.splice(i, 1);
-      });
-      requestAnimationFrame(animate);
-    }
-    setInterval(createFirework, 2000);
-    animate();
   </script>
-
 </body>
 </html>
