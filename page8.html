@@ -1,135 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Page8</title>
+  <title>Happy Birthday 🎂</title>
   <style>
     body {
       margin: 0;
       padding: 0;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       overflow: hidden;
+    }
+
+    .wish-container {
       text-align: center;
-      background: black;
-      font-family: Arial, sans-serif;
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: fadeIn 2s ease-in-out;
     }
 
-    .bg {
-      width: 1080px;
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
+    h1 {
+      font-size: 2.5rem;
+      color: #ff5e62;
+      margin-bottom: 10px;
+      animation: popUp 1s ease-in-out;
     }
 
-    .top-text {
-      position: absolute;
-      top: 20px;
-      width: 100%;
-      font-size: 32px;
-      font-weight: bold;
-      color: white;
-      text-shadow: 2px 2px 8px #000;
-      z-index: 2;
+    .emoji {
+      font-size: 2.2rem;
+      margin-top: 10px;
+      animation: heartBeat 1.5s infinite;
     }
 
-    .quiz-box {
-      position: absolute;
-      bottom: 60px;
-      width: 100%;
-      z-index: 3;
+    @keyframes popUp {
+      from {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
-    button {
-      font-size: 22px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      background: deeppink;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: hotpink;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    .kiss {
-      position: absolute;
-      font-size: 40px;
-      animation: fall linear;
-      z-index: 5;
-    }
-
-    @keyframes fall {
-      from { transform: translateY(-50px); opacity: 1; }
-      to { transform: translateY(110vh); opacity: 0; }
-    }
-
-    .float {
-      position: absolute;
-      font-size: 26px;
-      font-weight: bold;
-      animation: floatUp 8s linear infinite;
-      z-index: 4;
-      pointer-events: none;
-    }
-
-    @keyframes floatUp {
-      from { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-      to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    @keyframes heartBeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Background song -->
-  <audio autoplay loop>
-    <source src="Page8.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Background image -->
-  <img src="Page8.jpg" alt="Page8" class="bg">
-
-  <!-- Top text -->
-  <div class="top-text">Games Time for My Bestest Friend 💙🫂</div>
-
-  <!-- Blow Kiss Game -->
-  <div class="quiz-box">
-    <button onclick="blowKisses()">💋 Blow 25 Kisses 😘</button>
+  <div class="wish-container">
+    <h1>Wishing you<br>Happiest Birthday<br>my friend</h1>
+    <div class="emoji">❤️‍🩹😚</div>
   </div>
-
-  <script>
-    // Floating emojis
-    const floatItems = ["🤗","😚","💗","🙈","💙","🫂"];
-    for (let i = 0; i < 40; i++) {
-      let span = document.createElement("span");
-      span.className = "float";
-      span.innerText = floatItems[Math.floor(Math.random()*floatItems.length)];
-      span.style.left = Math.random()*90 + "vw";
-      span.style.animationDuration = (5 + Math.random()*5) + "s";
-      document.body.appendChild(span);
-    }
-
-    function blowKisses() {
-      for (let i = 0; i < 25; i++) {
-        setTimeout(() => {
-          let kiss = document.createElement("div");
-          kiss.className = "kiss";
-          kiss.innerText = "😘";
-          kiss.style.left = Math.random()*90 + "vw";
-          kiss.style.top = "-50px";
-          kiss.style.animationDuration = (3 + Math.random()*2) + "s";
-          document.body.appendChild(kiss);
-          setTimeout(() => kiss.remove(), 5000);
-        }, i*200);
-      }
-
-      // Auto move to Page9 after kisses
-      setTimeout(() => {
-        window.location.href = "Page9.html";
-      }, 6000);
-    }
-  </script>
 </body>
 </html>
