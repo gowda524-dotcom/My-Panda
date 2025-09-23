@@ -120,14 +120,36 @@
 
     function checkAnswer() {
       let ans = document.getElementById("answer").value.trim();
-
-      // count how many 😚 emojis are in the input
       let kissCount = (ans.match(/😚/g) || []).length;
 
       if (kissCount >= 10) {
-        window.location.href = "Page8.html"; // ✅ Next page if >=10
-      } else {
-        alert("😜 Oops! Need MORE than 10 kisses 😚 to continue...");
+        // 🎆 Confetti & fireworks effect
+        launchCelebration();
+
+        // ⏩ Auto move to Page8 after 2s
+        setTimeout(() => {
+          window.location.href = "Page8.html";
+        }, 2000);
+      }
+    }
+
+    function launchCelebration() {
+      // Simple fireworks burst
+      for (let i = 0; i < 15; i++) {
+        setTimeout(() => {
+          const fw = document.createElement("div");
+          fw.style.position = "absolute";
+          fw.style.left = Math.random()*100 + "vw";
+          fw.style.top = Math.random()*100 + "vh";
+          fw.style.width = "10px";
+          fw.style.height = "10px";
+          fw.style.borderRadius = "50%";
+          fw.style.background = ["red","yellow","blue","pink","lime"][Math.floor(Math.random()*5)];
+          fw.style.boxShadow = "0 0 20px white";
+          fw.style.zIndex = 5;
+          document.body.appendChild(fw);
+          setTimeout(()=>fw.remove(),1000);
+        }, i*100);
       }
     }
   </script>
