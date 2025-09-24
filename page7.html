@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Page7</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    .bg {
+      width: 1080px;
+      max-width: 100%;
+      display: block;
+      margin: 0 auto;
+      position: relative;
+      z-index: 0;
+    }
+    .top-text {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      font-size: 32px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 8px #000;
+      z-index: 2;
+    }
+    .quiz-box {
+      position: absolute;
+      bottom: 60px;
+      width: 100%;
+      z-index: 3;
+      color: yellow;
+      font-weight: bold;
+      font-size: 22px;
+      text-shadow: 2px 2px 8px #000;
+      line-height: 1.5;
+    }
+    input {
+      font-size: 22px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+    button {
+      font-size: 20px;
+      padding: 6px 16px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 8px;
+      background: hotpink;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: deeppink; }
+
+    /* Floating Emojis */
+    .emoji {
+      position: absolute;
+      font-size: 30px;
+      animation: floatUp linear forwards;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(100vh); opacity: 1; }
+      to { transform: translateY(-120px); opacity: 0; }
+    }
+
+    /* Fireworks + Confetti Canvas */
+    canvas { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+  </style>
+</head>
+<body>
+  <!-- Autoplay song -->
+  <audio autoplay loop>
+    <source src="Page7.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Background -->
+  <img src="Page7.jpg" class="bg">
+
+  <!-- Top Text -->
+  <div class="top-text">Happy Birthday My Bestest Friend Forever 💙🫂</div>
+
+  <!-- Quiz -->
+  <div class="quiz-box">
+    Next page ku ponum na un best friend ku more than 10 kiss (😚)... <br>
+    Free ya onnu kudkatha...kadana kudu na again clg varumbothu return kudkra 🤭 <br><br>
+    <input type="text" id="answer" placeholder="Type 10 kisses 😚...">
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+
+  <!-- Canvas for fireworks/confetti -->
+  <canvas id="canvas"></canvas>
+
+  <script>
+    // ✅ Check Answer
+    function checkAnswer() {
+      let ans = document.getElementById("answer").value.trim();
+      let count = (ans.match(/😚/g) || []).length;
+      if (count >= 10) {
+        window.location.href = "Page8.html"; // go next
+      }
+    }
+
+    // 🎊 Confetti + 🎆 Fireworks
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    function random(min, max){ return Math.random() * (max - min) + min; }
+
+    function createParticles(){
+      for(let i=0;i<150;i++){
+        particles.push({
+          x: canvas.width/2,
+          y: canvas.height/2,
+          speed: random(2,7),
+          angle: random(0,2*Math.PI),
+          radius: random(2,4),
+          color: `hsl(${random(0,360)},100%,50%)`,
+          life: random(50,150)
+        });
+      }
+    }
+
+    function animateParticles(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach((p,i)=>{
+        p.x += Math.cos(p.angle)*p.speed;
+        p.y += Math.sin(p.angle)*p.speed;
+        p.life--;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if(p.life<=0) particles.splice(i,1);
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    createParticles();
+    animateParticles();
+
+    // Floating Emojis
+    const emojis = ["💙","🌍","🫂","😚","💎","❤️‍🩹"];
+    function createEmoji(){
+      let e = document.createElement("div");
+      e.className = "emoji";
+      e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+      e.style.left = Math.random()*90 + "vw";
+      e.style.top = "100vh";
+      e.style.animationDuration = (3+Math.random()*3) + "s";
+      document.body.appendChild(e);
+      setTimeout(()=>e.remove(),6000);
+    }
+    setInterval(createEmoji,500);
+  </script>
+</body>
+</html>
