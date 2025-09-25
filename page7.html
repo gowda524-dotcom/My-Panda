@@ -10,13 +10,17 @@
       overflow: hidden;
       text-align: center;
       font-family: Arial, sans-serif;
-      background: url("Page7.jpg") no-repeat center center;
-      background-size: cover; /* ✅ background fills screen */
+      background: black;
+      color: white;
+    }
+    .photo {
+      width: 1080px;
+      max-width: 100%;
+      margin: 0 auto;
+      display: block;
     }
     .top-text {
-      position: absolute;
-      top: 20px;
-      width: 100%;
+      margin-top: 10px;
       font-size: 32px;
       font-weight: bold;
       color: white;
@@ -24,9 +28,7 @@
       z-index: 3;
     }
     .quiz-box {
-      position: absolute;
-      bottom: 60px;
-      width: 100%;
+      margin-top: 20px;
       z-index: 3;
       color: yellow;
       font-weight: bold;
@@ -55,17 +57,17 @@
     }
     button:hover { background: deeppink; }
 
-    /* Floating Emojis */
+    /* Falling Emojis */
     .emoji {
       position: absolute;
       font-size: 34px;
       z-index: 5;
-      animation: floatUp linear forwards;
+      animation: fallDown linear forwards;
       pointer-events: none;
     }
-    @keyframes floatUp {
-      from { transform: translateY(100vh); opacity: 1; }
-      to { transform: translateY(-120px); opacity: 0; }
+    @keyframes fallDown {
+      from { transform: translateY(-50px); opacity: 1; }
+      to { transform: translateY(110vh); opacity: 0; }
     }
 
     /* Fireworks + Confetti */
@@ -86,6 +88,9 @@
 
   <!-- Top Text -->
   <div class="top-text">Happy Birthday My Bestest Friend Forever 💙🫂</div>
+
+  <!-- Photo -->
+  <img src="Page7.jpg" alt="Page7" class="photo">
 
   <!-- Quiz -->
   <div class="quiz-box">
@@ -149,19 +154,19 @@
     createParticles();
     animateParticles();
 
-    // Floating Emojis
+    // Falling Emojis
     const emojis = ["💙","🌍","🫂","😚","💎","❤️‍🩹"];
     function createEmoji(){
       let e = document.createElement("div");
       e.className = "emoji";
       e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
       e.style.left = Math.random()*90 + "vw";
-      e.style.top = "100vh";
+      e.style.top = "-50px";
       e.style.animationDuration = (3+Math.random()*3) + "s";
       document.body.appendChild(e);
       setTimeout(()=>e.remove(),6000);
     }
-    setInterval(createEmoji,500);
+    setInterval(createEmoji,400);
   </script>
 </body>
 </html>
