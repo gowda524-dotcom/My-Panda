@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Page8</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+      color: white;
+    }
+    .top-text {
+      margin-top: 20px;
+      font-size: 30px;
+      font-weight: bold;
+      text-shadow: 2px 2px 6px #000;
+      line-height: 1.4;
+      z-index: 3;
+      position: relative;
+    }
+    .gallery {
+      margin-top: 20px;
+      z-index: 2;
+      position: relative;
+    }
+    .gallery img {
+      width: 800px;
+      max-width: 95%;
+      display: block;
+      margin: 20px auto;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.6);
+    }
+    .quiz-box {
+      margin: 30px auto;
+      font-size: 22px;
+      font-weight: bold;
+      color: yellow;
+      line-height: 1.5;
+      text-shadow: 2px 2px 8px #000;
+      z-index: 3;
+      position: relative;
+    }
+    input {
+      font-size: 22px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+    button {
+      font-size: 20px;
+      padding: 6px 16px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 8px;
+      background: hotpink;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: deeppink; }
+
+    /* Floating Emojis */
+    .emoji {
+      position: absolute;
+      font-size: 36px;
+      z-index: 5;
+      animation: fallDown linear forwards;
+      pointer-events: none;
+    }
+    @keyframes fallDown {
+      from { transform: translateY(-60px); opacity: 1; }
+      to { transform: translateY(110vh); opacity: 0; }
+    }
+
+    /* Fireworks/Confetti canvas */
+    canvas {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      pointer-events:none;
+      z-index:4;
+    }
+  </style>
+</head>
+<body>
+  <!-- Song autoplay -->
+  <audio autoplay loop>
+    <source src="Page8.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Top Text -->
+  <div class="top-text">
+    Happy Birthday Azhagi 🫶😚 <br>
+    Antha Kolanthaa siripu pathunae erukalamm 🤗 🙈
+  </div>
+
+  <!-- Gallery of 13 photos -->
+  <div class="gallery">
+    <img src="Teeth1.jpg" alt="Photo1">
+    <img src="Teeth2.jpg" alt="Photo2">
+    <img src="Teeth3.jpg" alt="Photo3">
+    <img src="Teeth4.jpg" alt="Photo4">
+    <img src="Teeth5.jpg" alt="Photo5">
+    <img src="Teeth6.jpg" alt="Photo6">
+    <img src="Teeth7.jpg" alt="Photo7">
+    <img src="Teeth8.jpg" alt="Photo8">
+    <img src="Teeth9.jpg" alt="Photo9">
+    <img src="Teeth10.jpg" alt="Photo10">
+    <img src="Teeth11.jpg" alt="Photo11">
+    <img src="Teeth12.jpg" alt="Photo12">
+    <img src="Teeth13.jpg" alt="Photo13">
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-box">
+    😁 Annu Siri appo tha next page ku pogum... <br>
+    More than 10 times 😁 intha emoji type pannu... <br><br>
+    <input type="text" id="answer" placeholder="Type 10+ 😁 here...">
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+
+  <!-- Fireworks & Confetti -->
+  <canvas id="canvas"></canvas>
+
+  <script>
+    // ✅ Answer check
+    function checkAnswer() {
+      let ans = document.getElementById("answer").value.trim();
+      let count = (ans.match(/😁/g) || []).length;
+      if (count >= 10) {
+        window.location.href = "Page9.html"; // Go to Page9
+      }
+    }
+
+    // 🎆 Fireworks / Confetti
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    function random(min, max){ return Math.random() * (max - min) + min; }
+
+    function createParticles(){
+      for(let i=0;i<200;i++){
+        particles.push({
+          x: canvas.width/2,
+          y: canvas.height/2,
+          speed: random(2,8),
+          angle: random(0,2*Math.PI),
+          radius: random(2,4),
+          color: `hsl(${random(0,360)},100%,50%)`,
+          life: random(50,150)
+        });
+      }
+    }
+
+    function animateParticles(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach((p,i)=>{
+        p.x += Math.cos(p.angle)*p.speed;
+        p.y += Math.sin(p.angle)*p.speed;
+        p.life--;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        if(p.life<=0) particles.splice(i,1);
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    createParticles();
+    animateParticles();
+
+    // Floating Emojis
+    const emojis = ["🙈","🤗","😚","🫶","❤️‍🩹"];
+    function createEmoji(){
+      let e = document.createElement("div");
+      e.className = "emoji";
+      e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+      e.style.left = Math.random()*95 + "vw";
+      e.style.top = "-50px";
+      e.style.animationDuration = (3+Math.random()*3) + "s";
+      document.body.appendChild(e);
+      setTimeout(()=>e.remove(),6000);
+    }
+    setInterval(createEmoji,400);
+  </script>
+</body>
+</html>
