@@ -11,7 +11,7 @@
       text-align: center;
       font-family: Arial, sans-serif;
       background: url("Page7.jpg") no-repeat center center;
-      background-size: cover; /* ✅ full fit background */
+      background-size: cover; /* ✅ background fills screen */
     }
     .top-text {
       position: absolute;
@@ -55,17 +55,17 @@
     }
     button:hover { background: deeppink; }
 
-    /* Falling Emojis */
+    /* Floating Emojis */
     .emoji {
       position: absolute;
       font-size: 34px;
       z-index: 5;
-      animation: fallDown linear forwards;
+      animation: floatUp linear forwards;
       pointer-events: none;
     }
-    @keyframes fallDown {
-      from { transform: translateY(-50px); opacity: 1; }
-      to { transform: translateY(110vh); opacity: 0; }
+    @keyframes floatUp {
+      from { transform: translateY(100vh); opacity: 1; }
+      to { transform: translateY(-120px); opacity: 0; }
     }
 
     /* Fireworks + Confetti */
@@ -149,19 +149,19 @@
     createParticles();
     animateParticles();
 
-    // Falling Emojis
+    // Floating Emojis
     const emojis = ["💙","🌍","🫂","😚","💎","❤️‍🩹"];
     function createEmoji(){
       let e = document.createElement("div");
       e.className = "emoji";
       e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
       e.style.left = Math.random()*90 + "vw";
-      e.style.top = "-50px";
+      e.style.top = "100vh";
       e.style.animationDuration = (3+Math.random()*3) + "s";
       document.body.appendChild(e);
       setTimeout(()=>e.remove(),6000);
     }
-    setInterval(createEmoji,400);
+    setInterval(createEmoji,500);
   </script>
 </body>
 </html>
