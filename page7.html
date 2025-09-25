@@ -8,17 +8,10 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: black;
       text-align: center;
       font-family: Arial, sans-serif;
-    }
-    .bg {
-      width: 1080px;
-      max-width: 100%;
-      display: block;
-      margin: 0 auto;
-      position: relative;
-      z-index: 0; /* stays in background */
+      background: url("Page7.jpg") no-repeat center center;
+      background-size: cover; /* ✅ full fit background */
     }
     .top-text {
       position: absolute;
@@ -28,7 +21,7 @@
       font-weight: bold;
       color: white;
       text-shadow: 2px 2px 8px #000;
-      z-index: 2;
+      z-index: 3;
     }
     .quiz-box {
       position: absolute;
@@ -62,27 +55,26 @@
     }
     button:hover { background: deeppink; }
 
-    /* Floating Emojis */
+    /* Falling Emojis */
     .emoji {
       position: absolute;
-      font-size: 30px;
-      z-index: 5; /* ✅ ensure emojis above photo */
-      animation: floatUp linear forwards;
+      font-size: 34px;
+      z-index: 5;
+      animation: fallDown linear forwards;
       pointer-events: none;
     }
-    @keyframes floatUp {
-      from { transform: translateY(100vh); opacity: 1; }
-      to { transform: translateY(-120px); opacity: 0; }
+    @keyframes fallDown {
+      from { transform: translateY(-50px); opacity: 1; }
+      to { transform: translateY(110vh); opacity: 0; }
     }
 
-    /* Fireworks + Confetti Canvas */
+    /* Fireworks + Confetti */
     canvas { 
       position:absolute; 
       top:0; left:0; 
-      width:100%; 
-      height:100%; 
+      width:100%; height:100%; 
       pointer-events:none; 
-      z-index:4; /* ✅ above photo but below emojis */
+      z-index:4;
     }
   </style>
 </head>
@@ -91,9 +83,6 @@
   <audio autoplay loop>
     <source src="Page7.mp3" type="audio/mpeg">
   </audio>
-
-  <!-- Background -->
-  <img src="Page7.jpg" class="bg">
 
   <!-- Top Text -->
   <div class="top-text">Happy Birthday My Bestest Friend Forever 💙🫂</div>
@@ -106,7 +95,7 @@
     <button onclick="checkAnswer()">Submit</button>
   </div>
 
-  <!-- Canvas for fireworks/confetti -->
+  <!-- Fireworks/Confetti -->
   <canvas id="canvas"></canvas>
 
   <script>
@@ -115,11 +104,11 @@
       let ans = document.getElementById("answer").value.trim();
       let count = (ans.match(/😚/g) || []).length;
       if (count >= 10) {
-        window.location.href = "Page8.html"; // go next
+        window.location.href = "Page8.html"; 
       }
     }
 
-    // 🎊 Confetti + 🎆 Fireworks
+    // 🎆 Confetti + Fireworks
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
@@ -160,19 +149,19 @@
     createParticles();
     animateParticles();
 
-    // Floating Emojis
+    // Falling Emojis
     const emojis = ["💙","🌍","🫂","😚","💎","❤️‍🩹"];
     function createEmoji(){
       let e = document.createElement("div");
       e.className = "emoji";
       e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
       e.style.left = Math.random()*90 + "vw";
-      e.style.top = "100vh";
+      e.style.top = "-50px";
       e.style.animationDuration = (3+Math.random()*3) + "s";
       document.body.appendChild(e);
       setTimeout(()=>e.remove(),6000);
     }
-    setInterval(createEmoji,500);
+    setInterval(createEmoji,400);
   </script>
 </body>
 </html>
