@@ -65,6 +65,34 @@
     0% { opacity: 1; transform: translateY(0) scale(1);}
     100% { opacity: 0; transform: translateY(-150px) scale(1.5);}
   }
+
+  /* Quiz box hidden initially */
+  #quizBox {
+    display: none;
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    width: 80%;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #quizBox input {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 80%;
+    margin-bottom: 10px;
+  }
+  #quizBox button {
+    padding: 10px 20px;
+    background: limegreen;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -82,6 +110,14 @@
 
 <audio id="hugSound" src="hug.mp3" preload="auto"></audio>
 
+<!-- Quiz box -->
+<div id="quizBox">
+  <p style="font-size:18px;">Happy yaa panda 🤗?</p>
+  <input type="text" id="answer" placeholder="Type anything...">
+  <br>
+  <button onclick="submitAnswer()">Submit</button>
+</div>
+
 <script>
 let hugs = 0;
 const her = document.getElementById("her");
@@ -89,14 +125,15 @@ const you = document.getElementById("you");
 const hugBtn = document.getElementById("hugBtn");
 const counter = document.getElementById("counter");
 const hugSound = document.getElementById("hugSound");
+const quizBox = document.getElementById("quizBox");
 
 hugBtn.addEventListener("click", () => {
   hugs++;
   counter.innerText = `Hugs Given: ${hugs}/10 🫂`;
 
-  // Move images to center
-  her.style.left = "40%";
-  you.style.right = "40%";
+  // Move images closer (overlap for hug)
+  her.style.left = "45%";
+  you.style.right = "45%";
 
   setTimeout(() => {
     // Hugging effect
@@ -117,11 +154,10 @@ hugBtn.addEventListener("click", () => {
     her.classList.remove("hugging");
     you.classList.remove("hugging");
 
-    // Next page after 10 hugs
+    // Show quiz after 10 hugs
     if (hugs >= 10) {
-      setTimeout(() => {
-        window.location.href = "page12.html";
-      }, 1000);
+      hugBtn.style.display = "none";
+      quizBox.style.display = "block";
     }
   }, 3000);
 });
@@ -135,6 +171,13 @@ function createEmoji(symbol) {
   document.body.appendChild(emoji);
 
   setTimeout(() => emoji.remove(), 2000);
+}
+
+function submitAnswer() {
+  let ans = document.getElementById("answer").value.trim();
+  if (ans.length > 0) {
+    window.location.href = "page12.html";
+  }
 }
 </script>
 
