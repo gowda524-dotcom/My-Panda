@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Page 10</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+  }
+
+  .top-text {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    font-size: 28px;
+    font-weight: bold;
+    text-shadow: 2px 2px 8px #000;
+    line-height: 1.6;
+    z-index: 10;
+  }
+
+  .slideshow {
+    position: relative;
+    width: 1080px;
+    max-width: 90vw;
+    height: auto;
+    margin: 100px auto 0 auto;
+    z-index: 5;
+  }
+
+  .slideshow img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 20px;
+    opacity: 0;
+    transform: scale(0.9) rotateY(0deg);
+    transition: opacity 1s ease, transform 2s ease;
+  }
+
+  .slideshow img.active {
+    opacity: 1;
+    transform: scale(1) rotateY(360deg);
+    z-index: 2;
+  }
+
+  .quiz-box {
+    position: absolute;
+    bottom: 60px;
+    width: 100%;
+    display: none;
+    z-index: 20;
+  }
+
+  .quiz-box input {
+    font-size: 20px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    text-align: center;
+    width: 300px;
+  }
+
+  .quiz-box button {
+    font-size: 18px;
+    padding: 6px 14px;
+    margin-left: 8px;
+    border: none;
+    border-radius: 8px;
+    background: deeppink;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .float {
+    position: absolute;
+    font-size: 28px;
+    animation: floatUp 10s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes floatUp {
+    from { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+    to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Music -->
+<audio id="bg-music" loop autoplay>
+  <source src="page10.mp3" type="audio/mpeg">
+</audio>
+<button id="playBtn" style="
+  position: fixed; bottom: 20px; right: 20px;
+  padding: 12px 18px; background: hotpink; border: none;
+  border-radius: 8px; font-weight: bold; color: white; cursor: pointer; z-index: 9999;
+">▶ Play Music</button>
+
+<!-- Top Text -->
+<div class="top-text">
+  Unkita Ennaku romba pudchathu 😚 <br>
+  Un Cheeks 🤗😚
+</div>
+
+<!-- Slideshow -->
+<div class="slideshow" id="slideshow">
+  <img src="Cheek1.jpg" class="active">
+  <img src="Cheek2.jpg">
+  <img src="Cheek3.jpg">
+  <img src="Cheek4.jpg">
+  <img src="Cheek5.jpg">
+  <img src="Cheek6.jpg">
+  <img src="Cheek7.jpg">
+  <img src="Cheek8.jpg">
+  <img src="Cheek9.jpg">
+  <img src="Cheek10.jpg">
+</div>
+
+<!-- Quiz -->
+<div class="quiz-box" id="quiz-box">
+  <input type="text" id="answer" placeholder="Oru hug kudu 🫂">
+  <button onclick="checkAnswer()">Submit</button>
+</div>
+
+<script>
+  // Background Music autoplay fix
+  const music = document.getElementById("bg-music");
+  const playBtn = document.getElementById("playBtn");
+  window.addEventListener("load", () => {
+    music.play().then(() => {
+      playBtn.style.display = "none";
+    }).catch(() => {
+      playBtn.style.display = "block";
+    });
+  });
+  playBtn.addEventListener("click", () => {
+    music.play();
+    playBtn.style.display = "none";
+  });
+
+  // Slideshow logic
+  const slides = document.querySelectorAll(".slideshow img");
+  let index = 0;
+  function showNext() {
+    slides[index].classList.remove("active");
+    index++;
+    if (index >= slides.length) {
+      document.getElementById("quiz-box").style.display = "block"; // Show quiz
+      return;
+    }
+    slides[index].classList.add("active");
+    setTimeout(showNext, 3000); // 3s per photo
+  }
+  setTimeout(showNext, 3000);
+
+  // Floating emojis
+  const emojis = ["🤗","😚","🫶","❤️","🎆","🎇"];
+  function createEmoji() {
+    const span = document.createElement("span");
+    span.className = "float";
+    span.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+    span.style.left = Math.random()*90 + "vw";
+    span.style.fontSize = (24 + Math.random()*20) + "px";
+    span.style.animationDuration = (6 + Math.random()*5) + "s";
+    document.body.appendChild(span);
+    setTimeout(() => span.remove(), 12000);
+  }
+  setInterval(createEmoji, 500);
+
+  // Confetti & Fireworks
+  function blastEffects() {
+    for (let i=0; i<40; i++) {
+      let conf = document.createElement("span");
+      conf.innerText = ["🎆","🎇","🎊"][Math.floor(Math.random()*3)];
+      conf.className = "float";
+      conf.style.left = Math.random()*90 + "vw";
+      conf.style.fontSize = (20+Math.random()*25)+"px";
+      conf.style.animationDuration = (3+Math.random()*5)+"s";
+      document.body.appendChild(conf);
+      setTimeout(()=>conf.remove(),8000);
+    }
+  }
+  blastEffects();
+
+  // Quiz check
+  function checkAnswer() {
+    let ans = document.getElementById("answer").value.trim();
+    if (ans.includes("🫂")) {
+      window.location.href = "page11.html";
+    } else {
+      alert("Hint: Oru hug kudu 🫂 😘");
+    }
+  }
+</script>
+
+</body>
+</html>
