@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Page11 - Hug Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      background: black;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+    .bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+    .top-text {
+      margin-top: 20px;
+      font-size: 32px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 8px #000;
+    }
+    .sub-text {
+      font-size: 22px;
+      font-weight: bold;
+      color: yellow;
+      margin-bottom: 20px;
+    }
+    .hug-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 40px 0;
+    }
+    .photo {
+      width: 200px;
+      height: auto;
+      transition: transform 0.5s ease;
+    }
+    .btn {
+      font-size: 22px;
+      padding: 10px 20px;
+      margin: 0 20px;
+      border: none;
+      border-radius: 10px;
+      background: hotpink;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn:hover { background: deeppink; }
+    .counter {
+      font-size: 24px;
+      font-weight: bold;
+      color: cyan;
+      margin-top: 10px;
+    }
+    .quiz-box {
+      display: none;
+      margin-top: 30px;
+    }
+    .quiz-box input {
+      font-size: 20px;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      text-align: center;
+    }
+    .quiz-box button {
+      font-size: 20px;
+      padding: 8px 16px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 8px;
+      background: limegreen;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Floating emojis */
+    .float {
+      position: absolute;
+      font-size: 26px;
+      animation: floatUp 8s linear infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+      to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background -->
+  <img src="Page11.jpg" alt="bg" class="bg">
+
+  <!-- Song -->
+  <audio autoplay loop>
+    <source src="Page11.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Texts -->
+  <div class="top-text">En Panda 🐼 Hug Time 💙🫂</div>
+  <div class="sub-text"> Un Frnd ku tight hug kudu Panda 😚🫂… Vaa 10 hug kudu 🫂</div>
+
+  <!-- Hug game -->
+  <div class="hug-container">
+    <img src="Girl.png" id="girl" class="photo">
+    <button class="btn" onclick="giveHug()">Give Hug 🫂</button>
+    <img src="Boy.png" id="boy" class="photo">
+  </div>
+  <div id="counter" class="counter">Hugs Given: 0/10 🫂</div>
+
+  <!-- Quiz (hidden at first) -->
+  <div id="quiz" class="quiz-box">
+    <p style="font-size:22px; font-weight:bold; color:white; text-shadow:2px 2px 8px black;">
+      En Panda Happy yaa??? 🐼💙
+    </p>
+    <input type="text" id="answer" placeholder="Type anything...">
+    <button onclick="goNext()">Submit</button>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    let hugs = 0;
+
+    function giveHug() {
+      hugs++;
+      document.getElementById("counter").innerText = `Hugs Given: ${hugs}/10 🫂`;
+
+      // Move photos closer like hugging
+      document.getElementById("girl").style.transform = "translateX(40px)";
+      document.getElementById("boy").style.transform = "translateX(-40px)";
+      setTimeout(() => {
+        document.getElementById("girl").style.transform = "translateX(0)";
+        document.getElementById("boy").style.transform = "translateX(0)";
+      }, 500);
+
+      // Add floating effects
+      let emojis = ["🫂","😚","💙","❤️‍🩹"];
+      let span = document.createElement("span");
+      span.className = "float";
+      span.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+      span.style.left = Math.random()*90 + "vw";
+      span.style.animationDuration = (5 + Math.random()*5) + "s";
+      document.body.appendChild(span);
+
+      // Fireworks/confetti effect
+      if (hugs <= 10) {
+        for (let i = 0; i < 10; i++) {
+          let blast = document.createElement("span");
+          blast.className = "float";
+          blast.innerText = (Math.random() > 0.5) ? "🎆" : "🎇";
+          blast.style.left = Math.random()*90 + "vw";
+          blast.style.animationDuration = (2 + Math.random()*3) + "s";
+          document.body.appendChild(blast);
+        }
+      }
+
+      // After 10 hugs, show quiz
+      if (hugs >= 10) {
+        document.querySelector(".hug-container").style.display = "none";
+        document.getElementById("counter").style.display = "none";
+        document.getElementById("quiz").style.display = "block";
+      }
+    }
+
+    function goNext() {
+      let ans = document.getElementById("answer").value.trim();
+      if (ans.length > 0) {
+        window.location.href = "page12.html";
+      } else {
+        alert("Please type something 🐼💙");
+      }
+    }
+  </script>
+</body>
+</html>
