@@ -2,114 +2,110 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Page12 - Happy Birthday Radhae 🙈💙</title>
+<title>Page 12 - Birthday Surprise</title>
 <style>
   body {
     margin: 0;
     padding: 0;
     background: black;
     color: white;
-    text-align: center;
     font-family: Arial, sans-serif;
     overflow: hidden;
+    text-align: center;
   }
   h1 {
-    margin-top: 15px;
+    margin-top: 20px;
     font-size: 28px;
     font-weight: bold;
     color: cyan;
   }
 
-  /* Carousel container */
-  #carousel {
-    width: 450px;
-    height: 450px;
-    margin: 60px auto;
-    position: relative;
-    perspective: 2000px;
-  }
-  .carousel-ring {
-    width: 100%;
-    height: 100%;
+  /* Circle rotation container */
+  .circle {
     position: absolute;
-    transform-style: preserve-3d;
-    animation: rotate 30s linear infinite;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    margin-left: -200px;
+    margin-top: -200px;
+    border-radius: 50%;
+    animation: spin 20s linear infinite;
   }
-  .carousel-ring img {
+  .circle img {
     position: absolute;
-    width: 450px;
-    height: 450px;
-    object-fit: contain;
-    left: 0;
-    top: 0;
+    width: 150px;
+    height: 150px;
+    border-radius: 20px;
+    object-fit: cover;
+    box-shadow: 0 0 15px white;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
   }
 
-  @keyframes rotate {
-    from { transform: rotateY(0deg); }
-    to { transform: rotateY(360deg); }
-  }
+  /* Position each image around circle */
+  .circle img:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+  .circle img:nth-child(2) { top: 15%; left: 85%; transform: translate(-50%, -50%); }
+  .circle img:nth-child(3) { top: 50%; left: 100%; transform: translate(-50%, -50%); }
+  .circle img:nth-child(4) { top: 85%; left: 85%; transform: translate(-50%, -50%); }
+  .circle img:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%); }
+  .circle img:nth-child(6) { top: 85%; left: 15%; transform: translate(-50%, -50%); }
+  .circle img:nth-child(7) { top: 50%; left: 0; transform: translate(-50%, -50%); }
+  .circle img:nth-child(8) { top: 15%; left: 15%; transform: translate(-50%, -50%); }
+  .circle img:nth-child(9) { top: -10%; left: 30%; transform: translate(-50%, -50%); }
+  .circle img:nth-child(10) { top: -10%; left: 70%; transform: translate(-50%, -50%); }
 
   /* Floating emojis */
   .emoji {
     position: absolute;
-    font-size: 30px;
-    animation: floatUp 5s linear forwards;
+    font-size: 28px;
+    animation: floatUp 4s linear forwards;
     pointer-events: none;
   }
   @keyframes floatUp {
     0% { opacity: 1; transform: translateY(0) scale(1);}
-    100% { opacity: 0; transform: translateY(-250px) scale(1.5);}
+    100% { opacity: 0; transform: translateY(-200px) scale(1.5);}
   }
 
   /* Quiz Box */
-  .quiz-box {
-    margin-top: 20px;
+  #quizBox {
     display: none;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    border: 2px solid cyan;
+    border-radius: 15px;
+    box-shadow: 0 0 20px cyan;
   }
-  .quiz-box input {
-    font-size: 18px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-    text-align: center;
+  #quizBox input {
+    padding: 8px;
+    font-size: 16px;
+    margin-top: 10px;
   }
-  .quiz-box button {
-    font-size: 18px;
+  #quizBox button {
     padding: 8px 16px;
-    margin-left: 8px;
-    border: none;
-    border-radius: 8px;
-    background: limegreen;
+    font-size: 16px;
+    margin-top: 10px;
+    background: hotpink;
     color: white;
-    font-weight: bold;
+    border: none;
+    border-radius: 10px;
     cursor: pointer;
   }
-  .quiz-box button:hover {
-    background: green;
-  }
 
-  /* Fireworks & confetti */
-  .firework, .confetti {
-    position: absolute;
+  /* Fireworks canvas */
+  #fireworks {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-  }
-  .firework::before {
-    content: "🎆";
-    font-size: 28px;
-    animation: explode 2s ease forwards;
-  }
-  @keyframes explode {
-    from { transform: scale(0); opacity: 1; }
-    to { transform: scale(2); opacity: 0; }
-  }
-  .confetti {
-    font-size: 20px;
-    animation: fall 3s linear forwards;
-  }
-  @keyframes fall {
-    0% { transform: translateY(0); opacity: 1;}
-    100% { transform: translateY(300px); opacity: 0;}
   }
 </style>
 </head>
@@ -117,93 +113,106 @@
 
 <h1>Happy Birthday Radhae 💙</h1>
 
-<div id="carousel">
-  <div class="carousel-ring" id="ring">
-    <img src="R1.jpg">
-    <img src="R2.jpg">
-    <img src="R3.jpg">
-    <img src="R4.jpg">
-    <img src="R5.jpg">
-    <img src="R6.jpg">
-    <img src="R7.jpg">
-    <img src="R8.jpg">
-    <img src="R9.jpg">
-    <img src="R10.jpg">
-  </div>
+<div class="circle">
+  <img src="R1.jpg">
+  <img src="R2.jpg">
+  <img src="R3.jpg">
+  <img src="R4.jpg">
+  <img src="R5.jpg">
+  <img src="R6.jpg">
+  <img src="R7.jpg">
+  <img src="R8.jpg">
+  <img src="R9.jpg">
+  <img src="R10.jpg">
+</div>
+
+<!-- Quiz -->
+<div id="quizBox">
+  <p style="font-size:18px;">Unnaku pucha haa name ha type pannu 👉</p>
+  <input type="text" id="answer">
+  <br>
+  <button onclick="submitQuiz()">Submit</button>
 </div>
 
 <audio id="bgMusic" src="Page12.mp3" autoplay loop></audio>
-
-<!-- Quiz -->
-<div class="quiz-box" id="quizBox">
-  <p><b>Unnaku pudcha haa name ha type pannu next page ku pogum..</b></p>
-  <input type="text" id="quizAnswer" placeholder="Type here...">
-  <button onclick="checkQuiz()">Submit</button>
-</div>
+<canvas id="fireworks"></canvas>
 
 <script>
-// Arrange photos in a circle
-const ring = document.getElementById("ring");
-const images = ring.querySelectorAll("img");
-const total = images.length;
-const angle = 360 / total;
-
-images.forEach((img, i) => {
-  img.style.transform = `rotateY(${i * angle}deg) translateZ(900px)`;
-});
-
-// Floating emojis
-setInterval(() => {
-  createEmoji(["❤️‍🩹","🤗","😚","🙈","💙"][Math.floor(Math.random()*5)]);
-}, 700);
-
-function createEmoji(symbol) {
+/* Floating emojis */
+function createEmoji() {
+  const symbols = ["❤️‍🩹","🤗","😚","🙈","💙"];
   const emoji = document.createElement("div");
   emoji.className = "emoji";
-  emoji.innerText = symbol;
+  emoji.innerText = symbols[Math.floor(Math.random()*symbols.length)];
   emoji.style.left = Math.random() * window.innerWidth + "px";
-  emoji.style.top = window.innerHeight - 50 + "px";
+  emoji.style.top = window.innerHeight + "px";
   document.body.appendChild(emoji);
-  setTimeout(() => emoji.remove(), 5000);
+  setTimeout(() => emoji.remove(), 4000);
 }
+setInterval(createEmoji, 600);
 
-// Show quiz after 30 sec + effects
+/* Show Quiz after 30 sec */
 setTimeout(() => {
   document.getElementById("quizBox").style.display = "block";
-  launchCelebration();
+  startFireworks();
 }, 30000);
 
-// Celebration
-function launchCelebration() {
-  for (let i = 0; i < 20; i++) {
-    setTimeout(() => {
-      const fw = document.createElement("div");
-      fw.className = "firework";
-      fw.style.left = Math.random() * window.innerWidth + "px";
-      fw.style.top = Math.random() * window.innerHeight/2 + "px";
-      document.body.appendChild(fw);
-      setTimeout(() => fw.remove(), 2000);
+function submitQuiz() {
+  window.location.href = "page13.html";
+}
 
-      const conf = document.createElement("div");
-      conf.className = "confetti";
-      conf.innerText = "🎉";
-      conf.style.left = Math.random() * window.innerWidth + "px";
-      conf.style.top = "0px";
-      document.body.appendChild(conf);
-      setTimeout(() => conf.remove(), 3000);
-    }, i*200);
+/* Fireworks animation */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let fireworks = [];
+
+class Firework {
+  constructor(x, y, color) {
+    this.x = x; this.y = y; this.color = color;
+    this.radius = 2;
+    this.alpha = 1;
+    this.velX = (Math.random() - 0.5) * 6;
+    this.velY = (Math.random() - 0.5) * 6;
+  }
+  update() {
+    this.x += this.velX;
+    this.y += this.velY;
+    this.alpha -= 0.02;
+  }
+  draw() {
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+    ctx.fillStyle=this.color;
+    ctx.fill();
+    ctx.globalAlpha=1;
   }
 }
 
-// Quiz check
-function checkQuiz() {
-  let ans = document.getElementById("quizAnswer").value.trim();
-  if (ans.length > 0) {
-    window.location.href = "page13.html";
-  } else {
-    alert("Type something Radhae💙!");
-  }
+function startFireworks() {
+  setInterval(() => {
+    let colors = ["red","yellow","cyan","magenta","white","lime"];
+    let x = Math.random() * canvas.width;
+    let y = Math.random() * canvas.height/2;
+    for (let i=0;i<40;i++) {
+      fireworks.push(new Firework(x,y,colors[Math.floor(Math.random()*colors.length)]));
+    }
+  }, 700);
 }
+
+function animate() {
+  requestAnimationFrame(animate);
+  ctx.fillStyle="rgba(0,0,0,0.2)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  fireworks.forEach((f,i) => {
+    f.update(); f.draw();
+    if (f.alpha<=0) fireworks.splice(i,1);
+  });
+}
+animate();
 </script>
 
 </body>
