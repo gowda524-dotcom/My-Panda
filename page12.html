@@ -20,17 +20,13 @@
     color: cyan;
   }
 
-  /* Circle rotation container */
+  /* Circle container */
   .circle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position: relative;
     width: 400px;
     height: 400px;
-    margin-left: -200px;
-    margin-top: -200px;
-    border-radius: 50%;
-    animation: spin 20s linear infinite;
+    margin: 80px auto;
+    animation: spin 25s linear infinite;
   }
   .circle img {
     position: absolute;
@@ -40,22 +36,11 @@
     object-fit: cover;
     box-shadow: 0 0 15px white;
   }
+
   @keyframes spin {
     0% { transform: rotate(0deg);}
     100% { transform: rotate(360deg);}
   }
-
-  /* Position each image around circle */
-  .circle img:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
-  .circle img:nth-child(2) { top: 15%; left: 85%; transform: translate(-50%, -50%); }
-  .circle img:nth-child(3) { top: 50%; left: 100%; transform: translate(-50%, -50%); }
-  .circle img:nth-child(4) { top: 85%; left: 85%; transform: translate(-50%, -50%); }
-  .circle img:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%); }
-  .circle img:nth-child(6) { top: 85%; left: 15%; transform: translate(-50%, -50%); }
-  .circle img:nth-child(7) { top: 50%; left: 0; transform: translate(-50%, -50%); }
-  .circle img:nth-child(8) { top: 15%; left: 15%; transform: translate(-50%, -50%); }
-  .circle img:nth-child(9) { top: -10%; left: 30%; transform: translate(-50%, -50%); }
-  .circle img:nth-child(10) { top: -10%; left: 70%; transform: translate(-50%, -50%); }
 
   /* Floating emojis */
   .emoji {
@@ -73,7 +58,7 @@
   #quizBox {
     display: none;
     position: absolute;
-    top: 60%;
+    top: 65%;
     left: 50%;
     transform: translate(-50%,-50%);
     background: rgba(0,0,0,0.8);
@@ -113,17 +98,18 @@
 
 <h1>Happy Birthday Radhae 💙</h1>
 
+<!-- Rotating Circle -->
 <div class="circle">
-  <img src="R1.jpg">
-  <img src="R2.jpg">
-  <img src="R3.jpg">
-  <img src="R4.jpg">
-  <img src="R5.jpg">
-  <img src="R6.jpg">
-  <img src="R7.jpg">
-  <img src="R8.jpg">
-  <img src="R9.jpg">
-  <img src="R10.jpg">
+  <img src="R1.jpg" style="top:0; left:125px;">
+  <img src="R2.jpg" style="top:40px; left:250px;">
+  <img src="R3.jpg" style="top:125px; left:310px;">
+  <img src="R4.jpg" style="top:250px; left:250px;">
+  <img src="R5.jpg" style="top:310px; left:125px;">
+  <img src="R6.jpg" style="top:250px; left:0;">
+  <img src="R7.jpg" style="top:125px; left:-40px;">
+  <img src="R8.jpg" style="top:40px; left:0;">
+  <img src="R9.jpg" style="top:-30px; left:60px;">
+  <img src="R10.jpg" style="top:-30px; left:190px;">
 </div>
 
 <!-- Quiz -->
