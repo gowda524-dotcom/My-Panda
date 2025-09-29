@@ -65,6 +65,33 @@
     0% { opacity: 1; transform: translateY(0) scale(1);}
     100% { opacity: 0; transform: translateY(-150px) scale(1.5);}
   }
+  /* Quiz styles */
+  .quiz-box {
+    margin-top: 30px;
+    display: none; /* Hidden until 10 hugs */
+  }
+  .quiz-box input {
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    text-align: center;
+  }
+  .quiz-box button {
+    font-size: 18px;
+    padding: 8px 16px;
+    margin-left: 8px;
+    border: none;
+    border-radius: 8px;
+    background: limegreen;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .quiz-box button:hover {
+    background: green;
+  }
 </style>
 </head>
 <body>
@@ -78,9 +105,16 @@
 </div>
 
 <button id="hugBtn">Give Hug 🫂</button>
-<p id="counter">Hugs Given: 0/10 🫂</p>
+<p id="counter">Hugs Given: 0 🫂</p>
 
 <audio id="hugSound" src="hug.mp3" preload="auto"></audio>
+
+<!-- Quiz Box -->
+<div class="quiz-box" id="quizBox">
+  <p><b>Happy ya Panda 🐼??</b></p>
+  <input type="text" id="quizAnswer" placeholder="Type here...">
+  <button onclick="checkQuiz()">Submit</button>
+</div>
 
 <script>
 let hugs = 0;
@@ -89,10 +123,11 @@ const you = document.getElementById("you");
 const hugBtn = document.getElementById("hugBtn");
 const counter = document.getElementById("counter");
 const hugSound = document.getElementById("hugSound");
+const quizBox = document.getElementById("quizBox");
 
 hugBtn.addEventListener("click", () => {
   hugs++;
-  counter.innerText = `Hugs Given: ${hugs}/10 🫂`;
+  counter.innerText = `Hugs Given: ${hugs} 🫂`;
 
   // Move images to center
   her.style.left = "40%";
@@ -106,7 +141,7 @@ hugBtn.addEventListener("click", () => {
 
     // Floating emojis
     for (let i = 0; i < 8; i++) {
-      createEmoji(["❤️","💙","💜","💖","🤗"][Math.floor(Math.random()*6)]);
+      createEmoji(["❤️","💙","💜","💖","🤗"][Math.floor(Math.random()*5)]);
     }
   }, 1500);
 
@@ -117,11 +152,10 @@ hugBtn.addEventListener("click", () => {
     her.classList.remove("hugging");
     you.classList.remove("hugging");
 
-    // Next page after 10 hugs
+    // Show quiz only after 10 hugs
     if (hugs >= 10) {
-      setTimeout(() => {
-        window.location.href = "page12.html";
-      }, 1000);
+      quizBox.style.display = "block";
+      hugBtn.disabled = true; // Stop more hugs
     }
   }, 3000);
 });
@@ -135,6 +169,16 @@ function createEmoji(symbol) {
   document.body.appendChild(emoji);
 
   setTimeout(() => emoji.remove(), 2000);
+}
+
+// Quiz check
+function checkQuiz() {
+  let ans = document.getElementById("quizAnswer").value.trim();
+  if (ans.length > 0) {
+    window.location.href = "page12.html";
+  } else {
+    alert("Type something Panda 🐼🤗!");
+  }
 }
 </script>
 
