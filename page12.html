@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Page12 - Happy Birthday Radhae 💙</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    color: white;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+  }
+  h1 {
+    margin-top: 15px;
+    font-size: 26px;
+    font-weight: bold;
+    color: cyan;
+  }
+  #slideshow {
+    width: 720px;
+    height: 720px;
+    margin: 30px auto;
+    position: relative;
+    perspective: 1000px;
+  }
+  #slideshow img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: rotateY(90deg);
+    transition: opacity 1s ease, transform 2s ease;
+  }
+  #slideshow img.active {
+    opacity: 1;
+    transform: rotateY(0deg);
+    z-index: 10;
+  }
+  .emoji {
+    position: absolute;
+    font-size: 28px;
+    animation: floatUp 4s linear forwards;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1);}
+    100% { opacity: 0; transform: translateY(-250px) scale(1.5);}
+  }
+  /* Quiz Box */
+  .quiz-box {
+    margin-top: 30px;
+    display: none;
+  }
+  .quiz-box input {
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    text-align: center;
+  }
+  .quiz-box button {
+    font-size: 18px;
+    padding: 8px 16px;
+    margin-left: 8px;
+    border: none;
+    border-radius: 8px;
+    background: limegreen;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .quiz-box button:hover {
+    background: green;
+  }
+  /* Fireworks & confetti */
+  .firework, .confetti {
+    position: absolute;
+    pointer-events: none;
+  }
+  .firework::before, .firework::after {
+    content: "🎆";
+    font-size: 28px;
+    animation: explode 2s ease forwards;
+  }
+  @keyframes explode {
+    from { transform: scale(0); opacity: 1; }
+    to { transform: scale(2); opacity: 0; }
+  }
+  .confetti {
+    font-size: 20px;
+    animation: fall 3s linear forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(0); opacity: 1;}
+    100% { transform: translateY(300px); opacity: 0;}
+  }
+</style>
+</head>
+<body>
+
+<h1>Happy Birthday Radhae 💙</h1>
+
+<div id="slideshow">
+  <img src="R1.jpg" class="active">
+  <img src="R2.jpg">
+  <img src="R3.jpg">
+  <img src="R4.jpg">
+  <img src="R5.jpg">
+  <img src="R6.jpg">
+  <img src="R7.jpg">
+  <img src="R8.jpg">
+  <img src="R9.jpg">
+  <img src="R10.jpg">
+</div>
+
+<audio id="bgMusic" src="Page12.mp3" autoplay loop></audio>
+
+<!-- Quiz -->
+<div class="quiz-box" id="quizBox">
+  <p><b>Unnaku pudcha haa name ha type pannu next page ku pogum..</b></p>
+  <input type="text" id="quizAnswer" placeholder="Type here...">
+  <button onclick="checkQuiz()">Submit</button>
+</div>
+
+<script>
+let slides = document.querySelectorAll("#slideshow img");
+let index = 0;
+
+// Slideshow rotation
+setInterval(() => {
+  slides[index].classList.remove("active");
+  index = (index + 1) % slides.length;
+  slides[index].classList.add("active");
+}, 3000);
+
+// Floating emojis
+setInterval(() => {
+  createEmoji(["❤️‍🩹","🤗","😚","🙈","💙"][Math.floor(Math.random()*5)]);
+}, 800);
+
+function createEmoji(symbol) {
+  const emoji = document.createElement("div");
+  emoji.className = "emoji";
+  emoji.innerText = symbol;
+  emoji.style.left = Math.random() * window.innerWidth + "px";
+  emoji.style.top = window.innerHeight - 50 + "px";
+  document.body.appendChild(emoji);
+  setTimeout(() => emoji.remove(), 4000);
+}
+
+// Show quiz after 30 sec with effects
+setTimeout(() => {
+  document.getElementById("quizBox").style.display = "block";
+  launchCelebration();
+}, 30000);
+
+// Fireworks & confetti celebration
+function launchCelebration() {
+  for (let i = 0; i < 20; i++) {
+    setTimeout(() => {
+      const fw = document.createElement("div");
+      fw.className = "firework";
+      fw.style.left = Math.random() * window.innerWidth + "px";
+      fw.style.top = Math.random() * window.innerHeight/2 + "px";
+      document.body.appendChild(fw);
+      setTimeout(() => fw.remove(), 2000);
+
+      const conf = document.createElement("div");
+      conf.className = "confetti";
+      conf.innerText = "🎉";
+      conf.style.left = Math.random() * window.innerWidth + "px";
+      conf.style.top = "0px";
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 3000);
+    }, i*200);
+  }
+}
+
+// Quiz check
+function checkQuiz() {
+  let ans = document.getElementById("quizAnswer").value.trim();
+  if (ans.length > 0) {
+    window.location.href = "page13.html";
+  } else {
+    alert("Type something Panda 🐼💙!");
+  }
+}
+</script>
+
+</body>
+</html>
