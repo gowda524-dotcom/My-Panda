@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Page12 - Happy Birthday Radhae 💙</title>
+<title>Page12 - Happy Birthday Radhae 🙈💙</title>
 <style>
   body {
     margin: 0;
@@ -15,46 +15,55 @@
   }
   h1 {
     margin-top: 15px;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: bold;
     color: cyan;
   }
-  #slideshow {
+
+  /* Carousel container */
+  #carousel {
     width: 720px;
     height: 720px;
-    margin: 30px auto;
+    margin: 60px auto;
     position: relative;
-    perspective: 1000px;
+    perspective: 2000px;
   }
-  #slideshow img {
+  .carousel-ring {
     width: 100%;
     height: 100%;
-    object-fit: contain;
     position: absolute;
-    top: 0;
+    transform-style: preserve-3d;
+    animation: rotate 30s linear infinite;
+  }
+  .carousel-ring img {
+    position: absolute;
+    width: 720px;
+    height: 720px;
+    object-fit: contain;
     left: 0;
-    opacity: 0;
-    transform: rotateY(90deg);
-    transition: opacity 1s ease, transform 2s ease;
+    top: 0;
   }
-  #slideshow img.active {
-    opacity: 1;
-    transform: rotateY(0deg);
-    z-index: 10;
+
+  @keyframes rotate {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
   }
+
+  /* Floating emojis */
   .emoji {
     position: absolute;
-    font-size: 28px;
-    animation: floatUp 4s linear forwards;
+    font-size: 30px;
+    animation: floatUp 5s linear forwards;
     pointer-events: none;
   }
   @keyframes floatUp {
     0% { opacity: 1; transform: translateY(0) scale(1);}
     100% { opacity: 0; transform: translateY(-250px) scale(1.5);}
   }
+
   /* Quiz Box */
   .quiz-box {
-    margin-top: 30px;
+    margin-top: 20px;
     display: none;
   }
   .quiz-box input {
@@ -79,12 +88,13 @@
   .quiz-box button:hover {
     background: green;
   }
+
   /* Fireworks & confetti */
   .firework, .confetti {
     position: absolute;
     pointer-events: none;
   }
-  .firework::before, .firework::after {
+  .firework::before {
     content: "🎆";
     font-size: 28px;
     animation: explode 2s ease forwards;
@@ -107,17 +117,19 @@
 
 <h1>Happy Birthday Radhae 💙</h1>
 
-<div id="slideshow">
-  <img src="R1.jpg" class="active">
-  <img src="R2.jpg">
-  <img src="R3.jpg">
-  <img src="R4.jpg">
-  <img src="R5.jpg">
-  <img src="R6.jpg">
-  <img src="R7.jpg">
-  <img src="R8.jpg">
-  <img src="R9.jpg">
-  <img src="R10.jpg">
+<div id="carousel">
+  <div class="carousel-ring" id="ring">
+    <img src="R1.jpg">
+    <img src="R2.jpg">
+    <img src="R3.jpg">
+    <img src="R4.jpg">
+    <img src="R5.jpg">
+    <img src="R6.jpg">
+    <img src="R7.jpg">
+    <img src="R8.jpg">
+    <img src="R9.jpg">
+    <img src="R10.jpg">
+  </div>
 </div>
 
 <audio id="bgMusic" src="Page12.mp3" autoplay loop></audio>
@@ -130,20 +142,20 @@
 </div>
 
 <script>
-let slides = document.querySelectorAll("#slideshow img");
-let index = 0;
+// Arrange photos in a circle
+const ring = document.getElementById("ring");
+const images = ring.querySelectorAll("img");
+const total = images.length;
+const angle = 360 / total;
 
-// Slideshow rotation
-setInterval(() => {
-  slides[index].classList.remove("active");
-  index = (index + 1) % slides.length;
-  slides[index].classList.add("active");
-}, 3000);
+images.forEach((img, i) => {
+  img.style.transform = `rotateY(${i * angle}deg) translateZ(900px)`;
+});
 
 // Floating emojis
 setInterval(() => {
   createEmoji(["❤️‍🩹","🤗","😚","🙈","💙"][Math.floor(Math.random()*5)]);
-}, 800);
+}, 700);
 
 function createEmoji(symbol) {
   const emoji = document.createElement("div");
@@ -152,16 +164,16 @@ function createEmoji(symbol) {
   emoji.style.left = Math.random() * window.innerWidth + "px";
   emoji.style.top = window.innerHeight - 50 + "px";
   document.body.appendChild(emoji);
-  setTimeout(() => emoji.remove(), 4000);
+  setTimeout(() => emoji.remove(), 5000);
 }
 
-// Show quiz after 30 sec with effects
+// Show quiz after 30 sec + effects
 setTimeout(() => {
   document.getElementById("quizBox").style.display = "block";
   launchCelebration();
 }, 30000);
 
-// Fireworks & confetti celebration
+// Celebration
 function launchCelebration() {
   for (let i = 0; i < 20; i++) {
     setTimeout(() => {
@@ -189,7 +201,7 @@ function checkQuiz() {
   if (ans.length > 0) {
     window.location.href = "page13.html";
   } else {
-    alert("Type something Panda 🐼💙!");
+    alert("Type something Radhae💙!");
   }
 }
 </script>
