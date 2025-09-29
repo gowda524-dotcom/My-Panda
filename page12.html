@@ -45,17 +45,26 @@
     transform: translate(-50%, -50%) rotateY(0deg);
     animation: rotate 20s linear infinite;
   }
-
   .carousel img {
     position: absolute;
-    width: 450px;
-    height: 450px;
-    border-radius: 50%;
-    object-fit: cover;
+    width: 400px;       /* slightly smaller to fit full face */
+    height: 400px;
+    border-radius: 10px;  /* optional rounded corners */
+    object-fit: contain;   /* ensures full image fits */
     box-shadow: 0 0 25px #fff;
     transition: transform 0.5s;
+    background: #111;      /* fill background so smaller images don’t look odd */
   }
-
+  .carousel img {
+    position: absolute;
+    width: 400px;       /* slightly smaller to fit full face */
+    height: 400px;
+    border-radius: 10px;  /* optional rounded corners */
+    object-fit: contain;   /* ensures full image fits */
+    box-shadow: 0 0 25px #fff;
+    transition: transform 0.5s;
+    background: #111;      /* fill background so smaller images don’t look odd */
+}
   @keyframes rotate {
     0% { transform: translate(-50%, -50%) rotateY(0deg); }
     100% { transform: translate(-50%, -50%) rotateY(360deg); }
@@ -145,7 +154,6 @@
   <img src="R9.jpg" style="transform: rotateY(288deg) translateZ(600px) rotateX(-1deg);">
   <img src="R10.jpg" style="transform: rotateY(324deg) translateZ(600px) rotateX(4deg);">
 </div>
-
 <!-- Quiz Box -->
 <div id="quizBox">
   <p style="font-size:1.2em;">Unnaku pucha haa name ha type pannu</p>
