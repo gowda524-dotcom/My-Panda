@@ -14,15 +14,24 @@
     color: white;
   }
 
+  /* Top bold colorful text */
   h1 {
     position: absolute;
     top: 20px;
     width: 100%;
     text-align: center;
-    font-size: 2em;
+    font-size: 2.5em;
     font-weight: bold;
-    color: #00f;
+    background: linear-gradient(90deg, #ff0055, #ffcc00, #00ffff, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     z-index: 10;
+    animation: rainbowText 3s linear infinite;
+  }
+
+  @keyframes rainbowText {
+    0% { background-position: 0%; }
+    100% { background-position: 200%; }
   }
 
   /* Center 3D carousel */
@@ -43,7 +52,8 @@
     height: 450px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 20px #fff;
+    box-shadow: 0 0 25px #fff;
+    transition: transform 0.5s;
   }
 
   @keyframes rotate {
@@ -124,16 +134,16 @@
 
 <!-- Carousel -->
 <div class="carousel" id="carousel">
-  <img src="R1.jpg" style="transform: rotateY(0deg) translateZ(600px);">
-  <img src="R2.jpg" style="transform: rotateY(36deg) translateZ(600px);">
-  <img src="R3.jpg" style="transform: rotateY(72deg) translateZ(600px);">
-  <img src="R4.jpg" style="transform: rotateY(108deg) translateZ(600px);">
-  <img src="R5.jpg" style="transform: rotateY(144deg) translateZ(600px);">
-  <img src="R6.jpg" style="transform: rotateY(180deg) translateZ(600px);">
-  <img src="R7.jpg" style="transform: rotateY(216deg) translateZ(600px);">
-  <img src="R8.jpg" style="transform: rotateY(252deg) translateZ(600px);">
-  <img src="R9.jpg" style="transform: rotateY(288deg) translateZ(600px);">
-  <img src="R10.jpg" style="transform: rotateY(324deg) translateZ(600px);">
+  <img src="R1.jpg" style="transform: rotateY(0deg) translateZ(600px) rotateX(5deg);">
+  <img src="R2.jpg" style="transform: rotateY(36deg) translateZ(600px) rotateX(3deg);">
+  <img src="R3.jpg" style="transform: rotateY(72deg) translateZ(600px) rotateX(-2deg);">
+  <img src="R4.jpg" style="transform: rotateY(108deg) translateZ(600px) rotateX(4deg);">
+  <img src="R5.jpg" style="transform: rotateY(144deg) translateZ(600px) rotateX(-3deg);">
+  <img src="R6.jpg" style="transform: rotateY(180deg) translateZ(600px) rotateX(2deg);">
+  <img src="R7.jpg" style="transform: rotateY(216deg) translateZ(600px) rotateX(-5deg);">
+  <img src="R8.jpg" style="transform: rotateY(252deg) translateZ(600px) rotateX(3deg);">
+  <img src="R9.jpg" style="transform: rotateY(288deg) translateZ(600px) rotateX(-1deg);">
+  <img src="R10.jpg" style="transform: rotateY(324deg) translateZ(600px) rotateX(4deg);">
 </div>
 
 <!-- Quiz Box -->
