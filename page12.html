@@ -23,23 +23,27 @@
   /* Circle container */
   .circle {
     position: relative;
-    width: 400px;
-    height: 400px;
+    width: 500px;
+    height: 500px;
     margin: 80px auto;
-    animation: spin 25s linear infinite;
+    animation: spin 30s linear infinite;
+    transform-style: preserve-3d;
   }
   .circle img {
     position: absolute;
+    top: 50%;
+    left: 50%;
     width: 150px;
     height: 150px;
     border-radius: 20px;
     object-fit: cover;
+    transform-origin: center center -220px; /* circle radius */
     box-shadow: 0 0 15px white;
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg);}
-    100% { transform: rotate(360deg);}
+    0% { transform: rotateY(0deg);}
+    100% { transform: rotateY(360deg);}
   }
 
   /* Floating emojis */
@@ -58,7 +62,7 @@
   #quizBox {
     display: none;
     position: absolute;
-    top: 65%;
+    top: 70%;
     left: 50%;
     transform: translate(-50%,-50%);
     background: rgba(0,0,0,0.8);
@@ -99,17 +103,8 @@
 <h1>Happy Birthday Radhae 💙</h1>
 
 <!-- Rotating Circle -->
-<div class="circle">
-  <img src="R1.jpg" style="top:0; left:125px;">
-  <img src="R2.jpg" style="top:40px; left:250px;">
-  <img src="R3.jpg" style="top:125px; left:310px;">
-  <img src="R4.jpg" style="top:250px; left:250px;">
-  <img src="R5.jpg" style="top:310px; left:125px;">
-  <img src="R6.jpg" style="top:250px; left:0;">
-  <img src="R7.jpg" style="top:125px; left:-40px;">
-  <img src="R8.jpg" style="top:40px; left:0;">
-  <img src="R9.jpg" style="top:-30px; left:60px;">
-  <img src="R10.jpg" style="top:-30px; left:190px;">
+<div class="circle" id="circle">
+  <!-- Images will be placed by JS -->
 </div>
 
 <!-- Quiz -->
@@ -124,6 +119,16 @@
 <canvas id="fireworks"></canvas>
 
 <script>
+/* Place 10 photos evenly around circle */
+const circle = document.getElementById("circle");
+for (let i = 1; i <= 10; i++) {
+  const img = document.createElement("img");
+  img.src = `R${i}.jpg`;
+  const angle = (i-1) * (360/10);
+  img.style.transform = `rotateY(${angle}deg) translateZ(220px)`;
+  circle.appendChild(img);
+}
+
 /* Floating emojis */
 function createEmoji() {
   const symbols = ["❤️‍🩹","🤗","😚","🙈","💙"];
