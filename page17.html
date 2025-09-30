@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find the Panda Challenge!</title>
+    <title>The 25 Panda Challenge!</title>
     
     <style>
         /* General Setup */
@@ -53,7 +53,7 @@
         /* --- Panda Locks (Hidden treasure points) --- */
         .panda-lock {
             position: absolute;
-            font-size: 2.2em; /* Smaller emoji size for difficulty */
+            font-size: 2.0em; /* Small size for difficulty */
             cursor: pointer;
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
             opacity: 1;
@@ -68,34 +68,39 @@
             pointer-events: none;
         }
 
-        /* === TARGETED PANDA POSITIONS === */
-        /* NOTE: You may need to tweak these percentages slightly for a perfect fit on your image. */
+        /* ================================================= */
+        /* === 25 TARGETED PANDA POSITIONS (SCATTERED) === */
+        /* ================================================= */
+        /* These are scattered across the main body/figure in the image. */
 
-        /* 🐼 Panda 1: Lips/Mouth area */
-        #panda1 { 
-            top: 30%; 
-            left: 50%;
-            transform: translateX(-50%); 
-        }    
-
-        /* 🐼 Panda 2: Cheek area */
-        #panda2 { 
-            top: 35%; 
-            left: 60%;
-        }  
-
-        /* 🐼 Panda 3: Hip area */
-        #panda3 { 
-            top: 80%; 
-            left: 35%;
-        } 
-
-        /* 🐼 Panda 4: Navel/Stomach area */
-        #panda4 { 
-            top: 65%; 
-            right: 45%; 
-        } 
-        /* ==================================== */
+        #panda1 { top: 28%; left: 48%; } /* Lips/Face */
+        #panda2 { top: 32%; left: 62%; } /* Cheek/Shoulder */
+        #panda3 { top: 40%; left: 40%; } /* Chest area */
+        #panda4 { top: 45%; right: 40%; } /* Right Shoulder/Arm */
+        #panda5 { top: 50%; left: 55%; } /* Torso center */
+        #panda6 { top: 55%; left: 35%; } /* Left Hip area */
+        #panda7 { top: 60%; right: 30%; } /* Right side of body */
+        #panda8 { top: 65%; left: 45%; } /* Navel area */
+        #panda9 { top: 70%; right: 48%; } /* Lower torso/Stomach */
+        #panda10 { top: 75%; left: 52%; } /* Belt/Waist */
+        #panda11 { top: 80%; left: 30%; } /* Left Hip edge */
+        #panda12 { top: 85%; right: 38%; } /* Right Leg/Sari */
+        #panda13 { top: 58%; left: 65%; } /* Right Arm/Elbow */
+        #panda14 { top: 52%; left: 30%; } /* Left Arm/Sari */
+        #panda15 { top: 38%; right: 35%; } /* Neck/Sari detail */
+        #panda16 { top: 72%; left: 60%; } /* Right side of hip */
+        #panda17 { top: 88%; left: 44%; } /* Low on Sari */
+        #panda18 { top: 42%; left: 50%; } /* Center Chest */
+        #panda19 { top: 68%; right: 25%; } /* Far right side of body */
+        #panda20 { top: 48%; left: 25%; } /* Far left side of body */
+        #panda21 { top: 36%; right: 52%; } /* Center face/hair */
+        #panda22 { top: 62%; left: 38%; } /* Left stomach/side */
+        #panda23 { top: 78%; right: 20%; } /* Far right hip */
+        #panda24 { top: 82%; left: 58%; } /* Lower Sari/Cloth */
+        #panda25 { top: 35%; left: 42%; } /* Left cheek/ear */
+        
+        /* ================================================= */
+        /* ================================================= */
 
 
         /* --- Panda Animation (Glow and Bounce) --- */
@@ -117,7 +122,6 @@
             z-index: 20;
             display: none; 
             animation: bounceIn 1s ease-out;
-            /* Center the reveal box over the video */
             position: fixed; 
             top: 50%;
             left: 50%;
@@ -223,7 +227,7 @@
 <body>
     <audio id="backgroundSong" src="Page17.mp3" loop></audio>
 
-    <h1 class="main-title" style="z-index: 20;">Find 4 panda 🐼 and click them to reveal a surprise!</h1>
+    <h1 class="main-title" style="z-index: 20;">Click all the pandas🐼 to see Our 1st video My Bestest Friend ❤️‍🩹😚</h1>
     
     <div class="game-area" id="gameArea">
         
@@ -231,6 +235,28 @@
         <div class="panda-lock" id="panda2">🐼</div>
         <div class="panda-lock" id="panda3">🐼</div>
         <div class="panda-lock" id="panda4">🐼</div>
+        <div class="panda-lock" id="panda5">🐼</div>
+        <div class="panda-lock" id="panda6">🐼</div>
+        <div class="panda-lock" id="panda7">🐼</div>
+        <div class="panda-lock" id="panda8">🐼</div>
+        <div class="panda-lock" id="panda9">🐼</div>
+        <div class="panda-lock" id="panda10">🐼</div>
+        <div class="panda-lock" id="panda11">🐼</div>
+        <div class="panda-lock" id="panda12">🐼</div>
+        <div class="panda-lock" id="panda13">🐼</div>
+        <div class="panda-lock" id="panda14">🐼</div>
+        <div class="panda-lock" id="panda15">🐼</div>
+        <div class="panda-lock" id="panda16">🐼</div>
+        <div class="panda-lock" id="panda17">🐼</div>
+        <div class="panda-lock" id="panda18">🐼</div>
+        <div class="panda-lock" id="panda19">🐼</div>
+        <div class="panda-lock" id="panda20">🐼</div>
+        <div class="panda-lock" id="panda21">🐼</div>
+        <div class="panda-lock" id="panda22">🐼</div>
+        <div class="panda-lock" id="panda23">🐼</div>
+        <div class="panda-lock" id="panda24">🐼</div>
+        <div class="panda-lock" id="panda25">🐼</div>
+        
     </div>
 
     <div class="reveal-section" id="revealSection">
@@ -258,6 +284,7 @@
             const body = document.body;
 
             let foundPandas = 0;
+            const TOTAL_PANDAS = 25; // Define the total count
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '🎯', '👑', '🎂', '🙈', '🤭', '😂', '🥳', '🤩']; 
 
@@ -282,7 +309,7 @@
                         const y = rect.top + rect.height / 2;
                         createFireworksBurst(x, y);
 
-                        if (foundPandas === pandaLocks.length) {
+                        if (foundPandas === TOTAL_PANDAS) {
                             // Stop the confusion effects
                             clearInterval(emojiInterval);
                             clearInterval(confettiInterval);
@@ -294,7 +321,7 @@
             });
 
             function revealSurprise() {
-                // Ensure floating emojis don't get in the way of the reveal section
+                // Remove all floating effects
                 document.querySelectorAll('.floating-emoji').forEach(e => e.remove()); 
                 document.querySelectorAll('.confetti-fall').forEach(e => e.remove()); 
 
