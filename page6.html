@@ -60,30 +60,6 @@
       color: white;
       cursor: pointer;
     }
-    <!-- Background Music -->
-<audio id="bgMusic" src="Page6.mp3" autoplay loop></audio>
-
-<script>
-  const bgMusic = document.getElementById("bgMusic");
-
-  // Mobile autoplay fix
-  document.addEventListener("DOMContentLoaded", () => {
-    // Try to play immediately
-    let playPromise = bgMusic.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        // If autoplay blocked, wait for first tap/click
-        const resumeAudio = () => {
-          bgMusic.play();
-          document.removeEventListener("click", resumeAudio);
-          document.removeEventListener("touchstart", resumeAudio);
-        };
-        document.addEventListener("click", resumeAudio);
-        document.addEventListener("touchstart", resumeAudio);
-      });
-    }
-  });
-</script>
     /* Floating Emojis */
     .emoji {
       position: absolute;
@@ -121,13 +97,30 @@
     <button onclick="checkAnswer()">Submit</button>
   </div>
 
-  <!-- Background Song -->
-  <audio id="bg-music" src="page6.mp3" autoplay loop></audio>
+  <!-- Background Music -->
+  <audio id="bgMusic" src="Page6.mp3" autoplay loop></audio>
 
   <!-- Fireworks -->
   <canvas id="fireworks"></canvas>
 
   <script>
+    // Mobile autoplay fix
+    const bgMusic = document.getElementById("bgMusic");
+    document.addEventListener("DOMContentLoaded", () => {
+      let playPromise = bgMusic.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          const resumeAudio = () => {
+            bgMusic.play();
+            document.removeEventListener("click", resumeAudio);
+            document.removeEventListener("touchstart", resumeAudio);
+          };
+          document.addEventListener("click", resumeAudio);
+          document.addEventListener("touchstart", resumeAudio);
+        });
+      }
+    });
+
     // Floating Emojis
     const emojis = ["🤗","😚","💗","🙈"];
     function createEmoji() {
