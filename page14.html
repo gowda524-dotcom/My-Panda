@@ -1,243 +1,336 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Love Kiss Game 💋</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: radial-gradient(circle at center, #2b0030, #000000 80%);
-    color: white;
-    text-align: center;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-  }
-  h1 {
-    margin-top: 15px;
-    font-size: 22px;
-    text-shadow: 0 0 10px hotpink, 0 0 20px red, 0 0 30px purple;
-  }
-  #kissArea {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    margin-top: 20px;
-  }
-  .person {
-    position: absolute;
-    bottom: 20px;
-    width: 150px;
-    transition: all 1.5s ease-in-out;
-    filter: drop-shadow(0 0 15px white);
-  }
-  #her { left: 10%; z-index: 5; }
-  #you { right: 10%; z-index: 4; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Kissing Game!</title>
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars for floating elements */
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b); /* Grand background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+            position: relative; /* For absolute positioning of floating elements */
+        }
 
-  /* Kissing state → both move to center */
-  .kissingHer {
-    left: 50%;
-    transform: translateX(-100%) rotate(-6deg) scale(1.05);
-    filter: drop-shadow(0 0 25px pink);
-  }
-  .kissingYou {
-    right: 50%;
-    transform: translateX(0%) rotate(6deg) scale(1.05);
-    filter: drop-shadow(0 0 25px pink);
-  }
+        .container {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 30px 50px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 10; /* Ensure content is above floating elements */
+            position: relative;
+        }
 
-  #kissBtn {
-    padding: 12px 25px;
-    background: hotpink;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 18px;
-    cursor: pointer;
-    margin-top: 20px;
-    box-shadow: 0 0 15px hotpink, 0 0 30px red;
-  }
-  #counter {
-    margin-top: 15px;
-    font-size: 18px;
-    color: cyan;
-    text-shadow: 0 0 10px cyan, 0 0 20px blue;
-  }
-  .emoji {
-    position: absolute;
-    font-size: 26px;
-    animation: floatUp 2s linear forwards;
-    pointer-events: none;
-    z-index: 6;
-  }
-  @keyframes floatUp {
-    0% { opacity: 1; transform: translateY(0) scale(1);}
-    100% { opacity: 0; transform: translateY(-150px) scale(1.5);}
-  }
-  .quiz-box {
-    margin-top: 30px;
-    display: none;
-  }
-  .quiz-box input {
-    font-size: 18px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-    text-align: center;
-  }
-  .quiz-box button {
-    font-size: 18px;
-    padding: 8px 16px;
-    margin-left: 8px;
-    border: none;
-    border-radius: 8px;
-    background: limegreen;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  #fireworks {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-</style>
+        .game-title {
+            font-size: 3em;
+            color: #ffd700; /* Gold color */
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .game-description {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: #f0f0f0;
+        }
+
+        .character-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end; /* Align characters at the bottom */
+            width: 600px; /* Adjust as needed */
+            height: 300px; /* Adjust as needed */
+            margin: 40px auto;
+            position: relative;
+        }
+
+        .character {
+            width: 200px; /* Adjust size of your PNGs */
+            height: auto;
+            position: absolute;
+            transition: transform 0.8s ease-in-out; /* Smooth movement */
+        }
+
+        .left-character {
+            left: 0;
+            transform: translateX(0);
+        }
+
+        .right-character {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        /* Kissing animation */
+        .left-character.kiss {
+            transform: translateX(100px); /* Adjust distance to meet in center */
+        }
+
+        .right-character.kiss {
+            transform: translateX(-100px); /* Adjust distance to meet in center */
+        }
+
+        #kissButton {
+            background-color: #ff4d6d; /* Attractive button color */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.8em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #kissButton:hover {
+            background-color: #e03d5c;
+            transform: translateY(-3px);
+        }
+
+        .quiz-box {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 40px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            display: none; /* Hidden by default */
+            position: absolute; /* Position over existing content */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            z-index: 20;
+        }
+
+        .quiz-box h2 {
+            font-size: 2.2em;
+            color: #ff4d6d;
+            margin-bottom: 15px;
+        }
+
+        .quiz-box p {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+
+        .quiz-box input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 1.1em;
+        }
+
+        .quiz-box button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .quiz-box button:hover {
+            background-color: #45a049;
+        }
+
+        /* Floating Emojis/Confetti/Fireworks (CSS for basic animation) */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-50px) rotate(10deg); opacity: 0.8; }
+            100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2em;
+            animation: float 5s ease-in-out infinite;
+            opacity: 0;
+            z-index: 5;
+            pointer-events: none; /* Crucial: allows clicks on content behind the emoji */
+        }
+        
+        /* Basic Confetti Fall Animation setup */
+        .confetti {
+            position: absolute;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+
+    </style>
 </head>
 <body>
+    <div class="background-elements">
+        </div>
 
-<h1>Love Kiss Game 💋🔥</h1>
-<p style="color:yellow; text-shadow:0 0 10px yellow;">
-  Panda 🐼, 10 kisses kuduthaa quiz open aagum 😘💙
-</p>
+    <div class="container">
+        <h1 class="game-title">Kissing Game 😘🎯</h1>
+        <p class="game-description">Un Amma va kiss pannu 😘</p>
 
-<div id="kissArea">
-  <img src="her1.png" id="her" class="person">
-  <img src="you1.png" id="you" class="person">
-</div>
+        <div class="character-container">
+            <img src="her1.png" alt="Her" class="character left-character" id="her">
+            <img src="you1.png" alt="You" class="character right-character" id="you">
+        </div>
 
-<button id="kissBtn">Give Kiss 😘</button>
-<p id="counter">Kisses Given: 0 💋</p>
+        <button id="kissButton">Give Kiss 😘</button>
 
-<audio id="bgMusic" src="Page14.mp3" autoplay loop></audio>
+        <div id="quizBox" class="quiz-box">
+            <h2>Quiz Time!</h2>
+            <p>Un Amma ku I Love sollu 🤗...</p>
+            <input type="text" id="quizAnswer" placeholder="Type your answer here">
+            <button id="submitQuiz">Submit</button>
+        </div>
+    </div>
 
-<div class="quiz-box" id="quizBox">
-  <p><b>Un Amma Enna sollanumo solliko🤗</b></p>
-  <input type="text" id="quizAnswer" placeholder="Type here...">
-  <button onclick="checkQuiz()">Submit</button>
-</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const her = document.getElementById('her');
+            const you = document.getElementById('you');
+            const kissButton = document.getElementById('kissButton');
+            const quizBox = document.getElementById('quizBox');
+            const quizAnswer = document.getElementById('quizAnswer');
+            const submitQuiz = document.getElementById('submitQuiz');
+            const body = document.body;
 
-<canvas id="fireworks"></canvas>
+            let kissCount = 0;
+            const maxKisses = 10;
+            const animationDuration = 800; // Matches CSS transition time
 
-<script>
-let kisses = 0;
-const her = document.getElementById("her");
-const you = document.getElementById("you");
-const kissBtn = document.getElementById("kissBtn");
-const counter = document.getElementById("counter");
-const quizBox = document.getElementById("quizBox");
+            // --- Character Kissing Logic ---
+            kissButton.addEventListener('click', () => {
+                if (kissCount < maxKisses) {
+                    // Move characters for a kiss
+                    her.classList.add('kiss');
+                    you.classList.add('kiss');
 
-kissBtn.addEventListener("click", () => {
-  kisses++;
-  counter.innerText = `Kisses Given: ${kisses} 💋`;
+                    kissCount++;
 
-  // Move inward to center
-  her.classList.add("kissingHer");
-  you.classList.add("kissingYou");
+                    // After a short delay, move them back
+                    setTimeout(() => {
+                        her.classList.remove('kiss');
+                        you.classList.remove('kiss');
+                    }, animationDuration);
 
-  setTimeout(() => {
-    for (let i = 0; i < 8; i++) {
-      createEmoji(["❤️","💙","💜","💖","😘"][Math.floor(Math.random()*5)]);
-    }
-  }, 1500);
+                    if (kissCount === maxKisses) {
+                        kissButton.style.display = 'none'; // Hide button
+                        // Add a final burst of celebration!
+                        createFinalCelebration();
+                        setTimeout(() => {
+                            quizBox.style.display = 'block'; // Show quiz
+                        }, animationDuration + 500); // Delay after last kiss returns
+                    }
+                }
+            });
 
-  // Reset back
-  setTimeout(() => {
-    her.classList.remove("kissingHer");
-    you.classList.remove("kissingYou");
-    her.style.left = "10%";
-    you.style.right = "10%";
+            // --- Quiz Logic ---
+            submitQuiz.addEventListener('click', () => {
+                const answer = quizAnswer.value.trim();
+                if (answer !== '') {
+                    // Automatically redirect without warning
+                    window.location.href = 'page15.html'; 
+                } else {
+                    alert('Please type your sweet message for your Amma! 🤗');
+                }
+            });
 
-    if (kisses >= 10) {
-      quizBox.style.display = "block";
-      kissBtn.disabled = true;
-    }
-  }, 3000);
-});
+            // --- Floating Emojis, Confetti, Fireworks Animations ---
 
-function createEmoji(symbol) {
-  const emoji = document.createElement("div");
-  emoji.className = "emoji";
-  emoji.innerText = symbol;
-  emoji.style.left = Math.random() * window.innerWidth + "px";
-  emoji.style.top = "300px";
-  document.body.appendChild(emoji);
-  setTimeout(() => emoji.remove(), 2000);
-}
+            const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘'];
+            const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700'];
 
-function checkQuiz() {
-  let ans = document.getElementById("quizAnswer").value.trim();
-  if (ans.length > 0) {
-    window.location.href = "page15.html";
-  } else {
-    alert("Type something Panda 🐼🤗!");
-  }
-}
+            function createFloatingEmoji() {
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                body.appendChild(emoji);
 
-// Fireworks
-const canvas = document.getElementById('fireworks');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+                const size = Math.random() * 2 + 1;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.top = `${Math.random() * 100}vh`; // Start anywhere
+                emoji.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                emoji.style.animationDelay = `${Math.random() * 2}s`;
+                emoji.style.opacity = 1;
 
-let particles = [];
-function random(min, max) { return Math.random() * (max - min) + min; }
-function Particle(x, y, color) {
-  this.x = x; this.y = y;
-  this.color = color;
-  this.radius = random(2,4);
-  this.angle = random(0, 2 * Math.PI);
-  this.speed = random(2,8);
-  this.friction = 0.95;
-  this.gravity = 0.05;
-  this.alpha = 1;
-}
-Particle.prototype.update = function() {
-  this.x += Math.cos(this.angle) * this.speed;
-  this.y += Math.sin(this.angle) * this.speed + this.gravity;
-  this.speed *= this.friction;
-  this.alpha -= 0.01;
-}
-Particle.prototype.draw = function() {
-  ctx.save();
-  ctx.globalAlpha = this.alpha;
-  ctx.fillStyle = this.color;
-  ctx.beginPath();
-  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
-}
-function createFirework(x, y) {
-  const colors = ["#ff4da6", "#ffcc00", "#00ccff", "#ff0066", "#ffffff"];
-  for (let i = 0; i < 100; i++) {
-    particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
-  }
-}
-function animate() {
-  ctx.fillStyle = "rgba(0,0,0,0.2)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  particles.forEach((p, i) => {
-    p.update();
-    p.draw();
-    if (p.alpha <= 0) particles.splice(i, 1);
-  });
-  requestAnimationFrame(animate);
-}
-setInterval(() => createFirework(Math.random()*canvas.width, Math.random()*canvas.height/2), 2000);
-animate();
-</script>
+                // Remove emoji after animation cycle to prevent clutter
+                // Since 'float' is infinite, we just limit the total number or let them exist.
+                // For this, we'll let them float indefinitely for a grand effect.
+            }
 
+            function createConfetti() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 10 + 5}px`;
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-20px`; // Start above screen
+                confetti.style.opacity = Math.random() * 0.5 + 0.5;
+                
+                // Set the falling/spinning animation
+                confetti.style.transition = `top ${Math.random() * 5 + 3}s linear, transform ${Math.random() * 2 + 1}s linear, opacity ${Math.random() * 2 + 1}s ease-out`;
+
+                // Trigger fall
+                setTimeout(() => {
+                    confetti.style.top = `105vh`; // Fall below screen
+                    confetti.style.opacity = 0;
+                    confetti.style.transform = `rotate(${Math.random() * 360 + 720}deg)`; // Spin
+
+                    // Remove after falling
+                    confetti.addEventListener('transitionend', () => {
+                        confetti.remove();
+                    });
+                }, 50);
+            }
+            
+            // --- Final Celebration Burst ---
+            function createFinalCelebration() {
+                // Generate a big burst of confetti and emojis for the completion
+                for (let i = 0; i < 50; i++) {
+                    createConfetti();
+                    // Create an emoji that falls quickly like a firework spark
+                    const burstEmoji = document.createElement('span');
+                    burstEmoji.textContent = '💥'; 
+                    burstEmoji.classList.add('confetti'); // Reuse the class for positioning
+                    body.appendChild(burstEmoji);
+                    
+                    burstEmoji.style.fontSize = '2em';
+                    burstEmoji.style.left = `${Math.random() * 40 + 30}vw`; // Center area
+                    burstEmoji.style.top = `${Math.random() * 40 + 30}vh`; // Center area
+                    burstEmoji.style.transition = `all 1s ease-out`;
+                    
+                    // Burst out and fade
+                    setTimeout(() => {
+                        burstEmoji.style.top = `${Math.random() * 100}vh`;
+                        burstEmoji.style.left = `${Math.random() * 100}vw`;
+                        burstEmoji.style.opacity = 0;
+                        burstEmoji.remove();
+                    }, 50);
+                }
+            }
+
+
+            // Continuous generation of floating elements for a "grand" effect
+            setInterval(createFloatingEmoji, 300); // Floating Emojis
+            setInterval(createConfetti, 100); // Falling Confetti
+
+        });
+    </script>
 </body>
 </html>
