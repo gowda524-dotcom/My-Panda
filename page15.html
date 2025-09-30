@@ -213,75 +213,6 @@
     
     <button class="next-button" id="nextButton">Continue to Next Surprise! 🚀</button>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const puzzleGrid = document.getElementById('puzzleGrid');
-            const revealMessage = document.getElementById('revealMessage');
-            const clickSound = document.getElementById('clickSound');
-            const revealSound = document.getElementById('revealSound');
-            const backgroundSong = document.getElementById('backgroundSong');
-            const submitHug = document.getElementById('submitHug');
-            const hugAnswer = document.getElementById('hugAnswer');
-            const body = document.body;
-
-            const totalPieces = 10; // This defines the number of pieces (10)
-            let piecesRevealed = 0;
-            
-            const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '🎯', '👑', '🎂'];
-            const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50'];
-
-
-            // --- Autoplay Policy Fix & Continuous Emojis ---
-            document.body.addEventListener('click', () => {
-                if (backgroundSong.paused) {
-                    backgroundSong.play().catch(e => console.log('Autoplay failed:', e));
-                }
-            }, { once: true });
-            
-            // Start continuous floating emojis immediately
-            setInterval(createFloatingEmoji, 400); 
-
-
-            // --- Initialization: Create Puzzle Pieces ---
-            // This loop generates 10 pieces inside the puzzleGrid
-            for (let i = 0; i < totalPieces; i++) {
-                const piece = document.createElement('div');
-                piece.classList.add('puzzle-piece');
-                piece.dataset.id = i;
-                puzzleGrid.appendChild(piece);
-            }
-
-            const pieces = document.querySelectorAll('.puzzle-piece');
-
-            // --- Game Logic ---
-            // This listener handles the click on each individual piece
-            pieces.forEach(piece => {
-                piece.addEventListener('click', (event) => {
-                    if (!piece.classList.contains('revealed')) {
-                        // Play sound
-                        clickSound.currentTime = 0;
-                        clickSound.play().catch(e => console.log('Click sound failed:', e));
-                        
-                        // Reveal piece by setting opacity to 0
-                        piece.classList.add('revealed');
-                        piecesRevealed++;
-                        
-                        // Burst confetti and fireworks where clicked
-                        createFireworksBurst(event.clientX, event.clientY);
-
-                        // Check for completion
-                        if (piecesRevealed === totalPieces) {
-                            puzzleGrid.style.pointerEvents = 'none';
-                            
-                            setTimeout(() => {
-                                revealSound.play().catch(e => console.log('Reveal sound failed:', e));
-                                revealMessage.style.display = 'block';
-                                startContinuousConfetti(); // Grand confetti shower
-                            }, 600);
-                        }
-                    }
-                });
-            });
 
             // --- Final Quiz Submission Logic ---
             submitHug.addEventListener('click', () => {
@@ -295,6 +226,107 @@
                     alert('Give a virtual hug (type something) to proceed! 🤗');
                 }
             });
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const puzzleGrid = document.getElementById('puzzleGrid');
+        const revealMessage = document.getElementById('revealMessage');
+        const clickSound = document.getElementById('clickSound');
+        const revealSound = document.getElementById('revealSound');
+        const backgroundSong = document.getElementById('backgroundSong');
+        const submitHug = document.getElementById('submitHug');
+        const hugAnswer = document.getElementById('hugAnswer');
+        const body = document.body;
+
+        const totalPieces = 10;
+        let piecesRevealed = 0;
+        
+        const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '🎯', '👑', '🎂'];
+        const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50'];
+
+        // --- Core Game Initialization ---
+        function initializeGame() {
+            // Create Puzzle Pieces
+            for (let i = 0; i < totalPieces; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('puzzle-piece');
+                piece.dataset.id = i;
+                puzzleGrid.appendChild(piece);
+            }
+
+            const pieces = document.querySelectorAll('.puzzle-piece');
+
+            // Game Logic: Add click listener to each piece
+            pieces.forEach(piece => {
+                piece.addEventListener('click', (event) => {
+                    if (!piece.classList.contains('revealed')) {
+                        
+                        // Try to play sound (added catch for safety)
+                        clickSound.currentTime = 0;
+                        clickSound.play().catch(e => console.log('Click sound failed to play:', e));
+                        
+                        // Reveal piece
+                        piece.classList.add('revealed');
+                        piecesRevealed++;
+                        
+                        // Burst confetti and fireworks where clicked
+                        createFireworksBurst(event.clientX, event.clientY);
+
+                        // Check for completion
+                        if (piecesRevealed === totalPieces) {
+                            puzzleGrid.style.pointerEvents = 'none';
+                            
+                            setTimeout(() => {
+                                revealSound.play().catch(e => console.log('Reveal sound failed to play.'));
+                                revealMessage.style.display = 'block';
+                                startContinuousConfetti(); // Grand confetti shower
+                            }, 600);
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Run the game initialization
+        initializeGame();
+
+
+        // --- Autoplay Policy Fix & Continuous Emojis ---
+        document.body.addEventListener('click', () => {
+            if (backgroundSong.paused) {
+                backgroundSong.play().catch(e => console.log('Autoplay failed:', e));
+            }
+        }, { once: true });
+        
+        // Start continuous floating emojis immediately
+        setInterval(createFloatingEmoji, 400); 
+
+
+        // --- Final Quiz Submission Logic ---
+        submitHug.addEventListener('click', () => {
+            const answer = hugAnswer.value.trim();
+            
+            // Allow any text to proceed
+            if (answer !== '') {
+                backgroundSong.pause();
+                window.location.href = 'page16.html';
+            } else {
+                alert('Give a virtual hug (type something) to proceed! 🤗');
+            }
+        });
+        
+        
+        // --- Grand Party Effects Functions (unchanged, just for context) ---
+
+        function createFloatingEmoji() { /* ... function content ... */ }
+        function createConfettiPiece() { /* ... function content ... */ }
+        function startContinuousConfetti() { setInterval(createConfettiPiece, 80); }
+        function createFireworksBurst(x, y) { /* ... function content ... */ }
+
+        // NOTE: The full code for the Grand Party Effects functions must remain in your file.
+
+    });
+</script>
+
             
             
             // --- Grand Party Effects Functions ---
