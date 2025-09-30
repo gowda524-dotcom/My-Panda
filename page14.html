@@ -8,16 +8,16 @@
     <style>
         body {
             margin: 0;
-            overflow: hidden; /* Hide scrollbars for floating elements */
+            overflow: hidden; 
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(to right, #ff7e5f, #feb47b); /* Grand background */
+            background: linear-gradient(to right, #ff7e5f, #feb47b); 
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             color: white;
             text-align: center;
-            position: relative; /* For absolute positioning of floating elements */
+            position: relative; 
         }
 
         .container {
@@ -25,13 +25,13 @@
             padding: 30px 50px;
             border-radius: 20px;
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            z-index: 10; /* Ensure content is above floating elements */
+            z-index: 10; 
             position: relative;
         }
 
         .game-title {
             font-size: 3em;
-            color: #ffd700; /* Gold color */
+            color: #ffd700; 
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
         }
@@ -45,41 +45,45 @@
         .character-container {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end; /* Align characters at the bottom */
-            width: 600px; /* Adjust as needed */
-            height: 300px; /* Adjust as needed */
+            align-items: flex-end; 
+            width: 600px; 
+            height: 300px; 
             margin: 40px auto;
             position: relative;
         }
 
         .character {
-            width: 200px; /* Adjust size of your PNGs */
+            width: 200px; 
             height: auto;
             position: absolute;
-            transition: transform 0.8s ease-in-out; /* Smooth movement */
+            transition: transform 0.8s ease-in-out; 
         }
 
         .left-character {
             left: 0;
             transform: translateX(0);
+            z-index: 2; /* Ensures 'her' overlaps 'you' */
         }
 
         .right-character {
             right: 0;
             transform: translateX(0);
+            z-index: 1;
         }
 
-        /* Kissing animation - CORRECTED VALUES */
+        /* Kissing animation - CORRECTED FOR OVERLAP */
         .left-character.kiss {
-            transform: translateX(200px); /* Increased to move further right */
+            /* Move 20px further than the original 200px to overlap */
+            transform: translateX(220px); 
         }
 
         .right-character.kiss {
-            transform: translateX(-200px); /* Increased to move further left */
+            /* Move 20px further than the original 200px to overlap */
+            transform: translateX(-220px); 
         }
 
         #kissButton {
-            background-color: #ff4d6d; /* Attractive button color */
+            background-color: #ff4d6d; 
             color: white;
             border: none;
             padding: 15px 30px;
@@ -103,8 +107,8 @@
             border-radius: 15px;
             margin-top: 40px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            display: none; /* Hidden by default */
-            position: absolute; /* Position over existing content */
+            display: none; 
+            position: absolute; 
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -161,10 +165,9 @@
             animation: float 5s ease-in-out infinite;
             opacity: 0;
             z-index: 5;
-            pointer-events: none; /* Crucial: allows clicks on content behind the emoji */
+            pointer-events: none; 
         }
         
-        /* Basic Confetti Fall Animation setup */
         .confetti {
             position: absolute;
             pointer-events: none;
@@ -174,6 +177,8 @@
     </style>
 </head>
 <body>
+    <audio id="backgroundSong" src="Page14.mp3" autoplay loop></audio>
+
     <div class="background-elements">
         </div>
 
@@ -205,10 +210,19 @@
             const quizAnswer = document.getElementById('quizAnswer');
             const submitQuiz = document.getElementById('submitQuiz');
             const body = document.body;
+            const backgroundSong = document.getElementById('backgroundSong');
 
             let kissCount = 0;
             const maxKisses = 10;
-            const animationDuration = 800; // Matches CSS transition time
+            const animationDuration = 800; 
+            
+            // Fix for Autoplay Policy: Try to play the song when the user first interacts
+            document.body.addEventListener('click', () => {
+                if (backgroundSong.paused) {
+                    backgroundSong.play().catch(e => console.log('Autoplay failed:', e));
+                }
+            }, { once: true });
+
 
             // --- Character Kissing Logic ---
             kissButton.addEventListener('click', () => {
@@ -227,11 +241,10 @@
 
                     if (kissCount === maxKisses) {
                         kissButton.style.display = 'none'; // Hide button
-                        // Add a final burst of celebration!
                         createFinalCelebration();
                         setTimeout(() => {
                             quizBox.style.display = 'block'; // Show quiz
-                        }, animationDuration + 500); // Delay after last kiss returns
+                        }, animationDuration + 500); 
                     }
                 }
             });
@@ -240,7 +253,8 @@
             submitQuiz.addEventListener('click', () => {
                 const answer = quizAnswer.value.trim();
                 if (answer !== '') {
-                    // Automatically redirect without warning
+                    // Stop the song before redirecting
+                    backgroundSong.pause();
                     window.location.href = 'page15.html'; 
                 } else {
                     alert('Please type your sweet message for your Amma! 🤗');
@@ -261,14 +275,11 @@
                 const size = Math.random() * 2 + 1;
                 emoji.style.fontSize = `${size}em`;
                 emoji.style.left = `${Math.random() * 100}vw`;
-                emoji.style.top = `${Math.random() * 100}vh`; // Start anywhere
+                emoji.style.top = `${Math.random() * 100}vh`; 
                 emoji.style.animationDuration = `${Math.random() * 5 + 5}s`;
                 emoji.style.animationDelay = `${Math.random() * 2}s`;
                 emoji.style.opacity = 1;
 
-                // Remove emoji after animation cycle to prevent clutter
-                // Since 'float' is infinite, we just limit the total number or let them exist.
-                // For this, we'll let them float indefinitely for a grand effect.
             }
 
             function createConfetti() {
@@ -280,42 +291,35 @@
                 confetti.style.width = `${Math.random() * 10 + 5}px`;
                 confetti.style.height = `${Math.random() * 10 + 5}px`;
                 confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.top = `-20px`; // Start above screen
+                confetti.style.top = `-20px`; 
                 confetti.style.opacity = Math.random() * 0.5 + 0.5;
                 
-                // Set the falling/spinning animation
                 confetti.style.transition = `top ${Math.random() * 5 + 3}s linear, transform ${Math.random() * 2 + 1}s linear, opacity ${Math.random() * 2 + 1}s ease-out`;
 
-                // Trigger fall
                 setTimeout(() => {
-                    confetti.style.top = `105vh`; // Fall below screen
+                    confetti.style.top = `105vh`; 
                     confetti.style.opacity = 0;
-                    confetti.style.transform = `rotate(${Math.random() * 360 + 720}deg)`; // Spin
+                    confetti.style.transform = `rotate(${Math.random() * 360 + 720}deg)`; 
 
-                    // Remove after falling
                     confetti.addEventListener('transitionend', () => {
                         confetti.remove();
                     });
                 }, 50);
             }
             
-            // --- Final Celebration Burst ---
             function createFinalCelebration() {
-                // Generate a big burst of confetti and emojis for the completion
                 for (let i = 0; i < 50; i++) {
                     createConfetti();
-                    // Create an emoji that falls quickly like a firework spark
                     const burstEmoji = document.createElement('span');
                     burstEmoji.textContent = '💥'; 
-                    burstEmoji.classList.add('confetti'); // Reuse the class for positioning
+                    burstEmoji.classList.add('confetti'); 
                     body.appendChild(burstEmoji);
                     
                     burstEmoji.style.fontSize = '2em';
-                    burstEmoji.style.left = `${Math.random() * 40 + 30}vw`; // Center area
-                    burstEmoji.style.top = `${Math.random() * 40 + 30}vh`; // Center area
+                    burstEmoji.style.left = `${Math.random() * 40 + 30}vw`; 
+                    burstEmoji.style.top = `${Math.random() * 40 + 30}vh`; 
                     burstEmoji.style.transition = `all 1s ease-out`;
                     
-                    // Burst out and fade
                     setTimeout(() => {
                         burstEmoji.style.top = `${Math.random() * 100}vh`;
                         burstEmoji.style.left = `${Math.random() * 100}vw`;
@@ -325,10 +329,9 @@
                 }
             }
 
-
-            // Continuous generation of floating elements for a "grand" effect
-            setInterval(createFloatingEmoji, 300); // Floating Emojis
-            setInterval(createConfetti, 100); // Falling Confetti
+            // Continuous generation of floating elements
+            setInterval(createFloatingEmoji, 300); 
+            setInterval(createConfetti, 100); 
 
         });
     </script>
