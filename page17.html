@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlock the Love</title>
+    
+    <style>
+        /* General Setup */
+        body {
+            margin: 0;
+            overflow: hidden; 
+            font-family: 'Arial Black', Gadget, sans-serif; 
+            background: linear-gradient(to right bottom, #FFD700, #FF69B4, #8A2BE2);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+            position: relative; 
+            padding-top: 20px; /* Space for titles */
+        }
+
+        /* Titles */
+        .main-title {
+            font-size: 3.5em; 
+            color: #FFEB3B; 
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #FFD700, 0 0 20px rgba(255, 215, 0, 0.7); 
+            z-index: 15;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 1.8em; 
+            margin-bottom: 25px;
+            color: #FFC0CB; 
+            text-shadow: 0 0 5px #FFC0CB, 0 0 10px rgba(255, 192, 203, 0.5);
+            z-index: 15;
+        }
+
+        /* --- Game Board Container --- */
+        .game-board-container {
+            position: relative;
+            width: 90vw;
+            max-width: 800px; 
+            height: 60vh;
+            max-height: 500px;
+            
+            /* Apply the background image */
+            background-image: url('Page17.jpg'); 
+            background-size: cover;
+            background-position: center;
+            
+            border: 8px solid #333;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            z-index: 10;
+        }
+
+        /* --- Lock Icons (The hidden treasure points) --- */
+        .lock-icon {
+            position: absolute;
+            font-size: 3.5em; /* Large emoji size */
+            cursor: pointer;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            opacity: 1;
+            /* Glowing effect */
+            filter: drop-shadow(0 0 10px #FFEB3B) drop-shadow(0 0 20px #FF69B4);
+            animation: glow-shake 2s infinite alternate; /* Subtle shake and glow */
+            pointer-events: auto;
+        }
+
+        .lock-icon.unlocked {
+            opacity: 0;
+            pointer-events: none; /* Disable clicking after removal */
+        }
+
+        /* Specific Lock Positions (Adjust these percentages to hide them perfectly on your image) */
+        #lock1 { top: 10%; left: 8%; }    /* Heart Lock (Top-Left) */
+        #lock2 { top: 40%; right: 45%; }  /* Star Lock (Near Center) */
+        #lock3 { bottom: 10%; left: 30%; } /* Key Lock (Bottom-Left) */
+        #lock4 { bottom: 20%; right: 10%; } /* Hug Lock (Bottom-Right) */
+
+
+        /* --- Lock Animation (Glow and Shake) --- */
+        @keyframes glow-shake {
+            0%, 100% { 
+                transform: rotate(0deg); 
+                filter: drop-shadow(0 0 10px #FFEB3B) drop-shadow(0 0 15px #FF69B4);
+            }
+            50% { 
+                transform: rotate(2deg); 
+                filter: drop-shadow(0 0 15px #FFD700) drop-shadow(0 0 25px #FF1493);
+            }
+            75% { transform: rotate(-2deg); }
+        }
+
+
+        /* --- Grand Reveal Section --- */
+        .reveal-section {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px #FFEB3B; 
+            color: #333;
+            text-align: center;
+            margin-top: 30px;
+            z-index: 20;
+            display: none; /* Hidden until the game is won */
+            animation: bounceIn 1s ease-out;
+        }
+
+        .reveal-message {
+            font-size: 2.5em;
+            color: #D32F2F;
+            margin-bottom: 20px;
+        }
+
+        #specialVideo {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        #nextButton {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #nextButton:hover {
+            background-color: #45a049;
+        }
+        
+        /* --- Shared Grand Effects Animations --- */
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .firework-spark {
+            position: absolute;
+            animation: firework 0.6s ease-out forwards;
+            pointer-events: none;
+            z-index: 25;
+        }
+
+        @keyframes firework {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <audio id="backgroundSong" src="Page17.mp3" loop></audio>
+
+    <h1 class="main-title">A Special Surprise is Hidden! 🕵️‍♀️</h1>
+    <p class="subtitle">Find and click the 4 glowing locks below to reveal it.</p>
+
+    <div class="game-board-container" id="gameBoard">
+        <div class="lock-icon" id="lock1">❤️</div>
+        <div class="lock-icon" id="lock2">⭐</div>
+        <div class="lock-icon" id="lock3">🔑</div>
+        <div class="lock-icon" id="lock4">🫂</div>
+        
+    </div>
+
+    <div class="reveal-section" id="revealSection">
+        <h2 class="reveal-message">This Treasure is Just For You!</h2>
+        <video id="specialVideo" width="320" height="240" controls>
+            <source src="SpecialVideo.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <button id="nextButton">Continue to the Final Page! 🚀</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backgroundSong = document.getElementById('backgroundSong');
+            const locks = document.querySelectorAll('.lock-icon');
+            const revealSection = document.getElementById('revealSection');
+            const specialVideo = document.getElementById('specialVideo');
+            const nextButton = document.getElementById('nextButton');
+            const body = document.body;
+
+            let unlockedCount = 0;
+            const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
+
+            // --- Autoplay Audio Fix ---
+            // Attempts to play the music immediately, falls back to first user interaction
+            backgroundSong.play().catch(e => {
+                document.body.addEventListener('click', () => {
+                    backgroundSong.play().catch(e => console.log('Music still blocked.'));
+                }, { once: true });
+            });
+
+
+            // --- Game Logic ---
+            locks.forEach(lock => {
+                lock.addEventListener('click', (event) => {
+                    if (!lock.classList.contains('unlocked')) {
+                        // 1. Unlock the piece
+                        lock.classList.add('unlocked');
+                        unlockedCount++;
+                        
+                        // 2. Trigger Firework/Confetti Burst at the click location
+                        // Get coordinates relative to the entire page
+                        const rect = lock.getBoundingClientRect();
+                        const x = rect.left + rect.width / 2;
+                        const y = rect.top + rect.height / 2;
+                        createFireworksBurst(x, y);
+
+                        // 3. Check for Game Completion
+                        if (unlockedCount === locks.length) {
+                            setTimeout(revealPrize, 1000); // Wait for fireworks to fade slightly
+                        }
+                    }
+                });
+            });
+
+            function revealPrize() {
+                // Display the reveal section
+                revealSection.style.display = 'block';
+                
+                // Try to play the video (may also need a click on the video itself in some browsers)
+                specialVideo.play().catch(e => console.log('Video autoplay blocked.'));
+            }
+
+            // --- Navigation ---
+            nextButton.addEventListener('click', () => {
+                backgroundSong.pause();
+                specialVideo.pause();
+                window.location.href = 'page18.html';
+            });
+            
+            
+            // --- Fireworks Effect ---
+            function createFireworksBurst(x, y) { 
+                const burstContainer = document.createElement('div');
+                burstContainer.style.position = 'absolute';
+                burstContainer.style.left = `${x}px`;
+                burstContainer.style.top = `${y}px`;
+                burstContainer.style.zIndex = 25;
+                body.appendChild(burstContainer);
+                
+                // Add a central flash for dramatic effect
+                const flash = document.createElement('span');
+                flash.textContent = '💥';
+                flash.style.fontSize = '3em';
+                flash.style.position = 'absolute';
+                flash.style.transform = 'translate(-50%, -50%)';
+                flash.style.opacity = 1;
+                flash.style.animation = 'firework 0.5s ease-out forwards';
+                burstContainer.appendChild(flash);
+
+
+                for(let i = 0; i < 20; i++) {
+                    const spark = document.createElement('div');
+                    spark.style.width = '4px';
+                    spark.style.height = '4px';
+                    spark.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                    spark.style.borderRadius = '50%';
+                    spark.style.position = 'absolute';
+                    spark.style.transition = 'all 0.6s ease-out';
+                    burstContainer.appendChild(spark);
+                    
+                    setTimeout(() => {
+                        const angle = Math.random() * 360;
+                        const distance = Math.random() * 80 + 40;
+                        spark.style.transform = `translate(${Math.cos(angle * Math.PI / 180) * distance}px, ${Math.sin(angle * Math.PI / 180) * distance}px)`;
+                        spark.style.opacity = 0;
+                    }, 10);
+                }
+                
+                setTimeout(() => burstContainer.remove(), 700);
+            }
+        });
+    </script>
+</body>
+</html>
