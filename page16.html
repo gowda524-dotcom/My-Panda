@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ennoda Sweet bun 🤭🙈</title>
+    
+    <style>
+        /* General Setup */
+        body {
+            margin: 0;
+            overflow: hidden; /* Hide overflow for floating effects */
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* A playful font */
+            background: linear-gradient(to right bottom, #FFD700, #FF69B4, #8A2BE2); /* Vibrant gradient */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+            position: relative; 
+        }
+
+        /* Titles */
+        .main-title {
+            font-size: 4em; /* Larger, bolder text */
+            color: #FFEB3B; /* Bright yellow */
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px #FFD700, 0 0 25px rgba(255, 215, 0, 0.7), 0 0 35px rgba(255, 215, 0, 0.5); 
+            z-index: 15; /* Ensure titles are above effects */
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 2.2em; /* Slightly smaller for subtitle */
+            margin-bottom: 30px;
+            color: #FFC0CB; /* Pinkish tone */
+            text-shadow: 0 0 8px #FFC0CB, 0 0 15px rgba(255, 192, 203, 0.5);
+            z-index: 15;
+        }
+
+        /* Slideshow Container */
+        .slideshow-container {
+            position: relative;
+            width: 70vw; /* Responsive width */
+            max-width: 500px; /* Max width to prevent overly large images */
+            height: 50vh; /* Responsive height */
+            max-height: 400px; /* Max height */
+            background-color: rgba(255, 255, 255, 0.1); /* Slight background for context */
+            border: 5px solid white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Hide parts of images if they overflow after shaping */
+            margin-bottom: 40px;
+            z-index: 10;
+            transition: border-radius 1s ease-in-out, box-shadow 1s ease-in-out; /* Smooth shape and glow transitions */
+        }
+
+        .slideshow-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* IMPORTANT: Prevents cropping */
+            display: block;
+            opacity: 0; /* Start hidden for fade-in */
+            transition: opacity 1s ease-in-out; /* Smooth fade for images */
+            filter: drop-shadow(0 0 10px #FFD700) drop-shadow(0 0 20px #FF69B4); /* Initial glow */
+        }
+
+        /* Quiz Container */
+        .quiz-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px #FFEB3B, 0 0 50px rgba(255, 215, 0, 0.7);
+            color: #333;
+            text-align: center;
+            margin-top: 30px;
+            z-index: 20; /* Ensure quiz is on top */
+            display: none; /* Hidden by default */
+            animation: bounceIn 1s ease-out;
+            border: 5px solid #FFD700;
+        }
+
+        .quiz-question {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #FF1493; /* Deep pink */
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        #quizAnswer {
+            width: 80%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 3px solid #FF69B4; /* Hot pink border */
+            border-radius: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+        #quizAnswer:focus {
+            border-color: #8A2BE2; /* Blue-violet on focus */
+        }
+
+        #submitAnswer {
+            padding: 15px 30px;
+            font-size: 1.4em;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+        }
+
+        #submitAnswer:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        #submitAnswer:active {
+            transform: translateY(0);
+        }
+
+        /* --- Grand Effects Animations (Same as Page 15, ensures consistency) --- */
+        @keyframes bounceIn {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            75% { transform: translate(-50%, -50%) scale(0.95); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-70px) rotate(15deg); opacity: 0.8; }
+            100% { transform: translateY(0px) rotate(-15deg); opacity: 1; }
+        }
+        
+        @keyframes firework {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2.5em; 
+            animation: float 7s ease-in-out infinite;
+            opacity: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .confetti-fall {
+            position: absolute;
+            animation: fall 5s linear forwards;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-5vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <audio id="backgroundSong" src="Page16.mp3" loop></audio>
+
+    <h1 class="main-title">Ennoda Sweet bun 🤭🙈</h1>
+    <p class="subtitle">Cheeks Part-2</p>
+
+    <div class="slideshow-container" id="slideshowContainer">
+        <img class="slideshow-image" id="slideshowImage" src="" alt="Sweet Memory">
+    </div>
+
+    <div class="quiz-container" id="quizContainer">
+        <p class="quiz-question">Sweet Bun ha Saptukavaa🤭???</p>
+        <input type="text" id="quizAnswer" placeholder="Type anything...">
+        <button id="submitAnswer">Submit 🤗</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backgroundSong = document.getElementById('backgroundSong');
+            const slideshowImage = document.getElementById('slideshowImage');
+            const slideshowContainer = document.getElementById('slideshowContainer');
+            const quizContainer = document.getElementById('quizContainer');
+            const submitAnswer = document.getElementById('submitAnswer');
+            const body = document.body;
+
+            const imageFiles = [
+                'Cheek11.jpg', 'Cheek12.jpg', 'Cheek13.jpg', 'Cheek14.jpg', 'Cheek15.jpg',
+                'Cheek16.jpg', 'Cheek17.jpg', 'Cheek18.jpg', 'Cheek19.jpg', 'Cheek20.jpg'
+            ];
+            let currentImageIndex = 0;
+            const slideDuration = 4000; // 4 seconds per slide
+            let slideshowInterval;
+            let cycleCount = 0; // To track when all images have shown once
+
+            const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '🎯', '👑', '🎂', '🙈', '🤭'];
+            const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
+
+            // --- Autoplay background music ---
+            // User interaction is required for autoplay in most browsers
+            document.body.addEventListener('click', () => {
+                if (backgroundSong.paused) {
+                    backgroundSong.play().catch(e => console.log('Autoplay failed:', e));
+                }
+            }, { once: true });
+
+
+            // --- Slideshow Logic ---
+            function changeSlide() {
+                // Fade out current image (if any)
+                slideshowImage.style.opacity = '0';
+
+                setTimeout(() => {
+                    slideshowImage.src = imageFiles[currentImageIndex];
+                    applyDynamicStyles(); // Apply random shape and glow
+                    slideshowImage.style.opacity = '1'; // Fade in new image
+
+                    currentImageIndex++;
+                    if (currentImageIndex >= imageFiles.length) {
+                        currentImageIndex = 0; // Loop back to start
+                        cycleCount++; // Increment cycle count
+                        if (cycleCount === 1) { // After the first full cycle
+                            clearInterval(slideshowInterval); // Stop slideshow
+                            setTimeout(() => {
+                                quizContainer.style.display = 'block'; // Show quiz
+                                startContinuousConfetti(); // Grand confetti shower for quiz reveal
+                            }, slideDuration); // Wait for the last image to fade in
+                            return; // Don't restart slideshow if quiz is up
+                        }
+                    }
+
+                    // Trigger a firework burst with each new image (after quiz is not active)
+                    if (quizContainer.style.display === 'none') {
+                         createFireworksBurst(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                    }
+                   
+                }, 1000); // Allow 1 second for fade out before changing src and fading in
+            }
+
+            function applyDynamicStyles() {
+                // Random Border Radius for different shapes
+                const r1 = Math.floor(Math.random() * 50);
+                const r2 = Math.floor(Math.random() * 50);
+                const r3 = Math.floor(Math.random() * 50);
+                const r4 = Math.floor(Math.random() * 50);
+                slideshowContainer.style.borderRadius = `${r1}% ${r2}% ${r3}% ${r4}% / ${r4}% ${r1}% ${r2}% ${r3}%`;
+
+                // Dynamic Glow Effect
+                const glowColor1 = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                const glowColor2 = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                slideshowContainer.style.boxShadow = `0 0 20px ${glowColor1}, 0 0 40px ${glowColor2}`;
+                slideshowImage.style.filter = `drop-shadow(0 0 10px ${glowColor1}) drop-shadow(0 0 20px ${glowColor2})`;
+            }
+
+            // Start the initial slide and then set interval
+            changeSlide();
+            slideshowInterval = setInterval(changeSlide, slideDuration);
+
+
+            // --- Quiz Submission Logic ---
+            submitAnswer.addEventListener('click', () => {
+                const answer = document.getElementById('quizAnswer').value.trim();
+                if (answer !== '') {
+                    backgroundSong.pause();
+                    window.location.href = 'page17.html'; // Navigate to next page
+                } else {
+                    alert('Come on, give a sweet answer! 🤗');
+                }
+            });
+
+
+            // --- Grand Effects Functions (Reused and adapted for Page 16) ---
+            
+            // Continuous Floating Emojis
+            setInterval(createFloatingEmoji, 400); 
+
+            function createFloatingEmoji() {
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                body.appendChild(emoji);
+
+                const size = Math.random() * 2 + 1.5;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.top = `${Math.random() * 100}vh`;
+                emoji.style.animationDuration = `${Math.random() * 5 + 7}s`;
+                emoji.style.animationDelay = `${Math.random() * 2}s`;
+                emoji.style.opacity = 1;
+
+                emoji.addEventListener('animationend', () => {
+                    emoji.remove();
+                });
+            }
+
+            // Continuous Confetti (for quiz reveal and possibly background)
+            let confettiInterval;
+            function startContinuousConfetti() {
+                confettiInterval = setInterval(createConfettiPiece, 80);
+                // Optionally stop after some time if it's too much
+                setTimeout(() => clearInterval(confettiInterval), 15000); // Stops after 15 seconds
+            }
+
+            function createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`;
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 3 + 4}s`;
+                confetti.style.opacity = 1;
+                
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+            
+            // Fireworks Bursts
+            function createFireworksBurst(x, y) { 
+                const burstContainer = document.createElement('div');
+                burstContainer.style.position = 'absolute';
+                burstContainer.style.left = `${x}px`;
+                burstContainer.style.top = `${y}px`;
+                burstContainer.style.zIndex = 25;
+                body.appendChild(burstContainer);
+                
+                const flash = document.createElement('span');
+                flash.textContent = '💥';
+                flash.style.fontSize = '3em';
+                flash.style.position = 'absolute';
+                flash.style.transform = 'translate(-50%, -50%)';
+                flash.style.opacity = 1;
+                flash.style.animation = 'firework 0.5s ease-out forwards';
+                burstContainer.appendChild(flash);
+
+
+                for(let i = 0; i < 15; i++) {
+                    const spark = document.createElement('div');
+                    spark.style.width = '3px';
+                    spark.style.height = '3px';
+                    spark.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                    spark.style.borderRadius = '50%';
+                    spark.style.position = 'absolute';
+                    spark.style.transition = 'all 0.6s ease-out';
+                    burstContainer.appendChild(spark);
+                    
+                    setTimeout(() => {
+                        const angle = Math.random() * 360;
+                        const distance = Math.random() * 80 + 40;
+                        spark.style.transform = `translate(${Math.cos(angle * Math.PI / 180) * distance}px, ${Math.sin(angle * Math.PI / 180) * distance}px)`;
+                        spark.style.opacity = 0;
+                    }, 10);
+                }
+                
+                setTimeout(() => burstContainer.remove(), 700);
+            }
+        });
+    </script>
+</body>
+</html>
