@@ -188,7 +188,6 @@
     </style>
 </head>
 <body>
-    <audio id="clickSound" src="click.mp3"></audio>
     <audio id="revealSound" src="reveal.mp3"></audio>
     <audio id="backgroundSong" src="Page15.mp3" loop></audio>
     
@@ -225,14 +224,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const revealMessage = document.getElementById('revealMessage');
-            const clickSound = document.getElementById('clickSound');
             const revealSound = document.getElementById('revealSound');
             const backgroundSong = document.getElementById('backgroundSong');
             const submitHug = document.getElementById('submitHug');
             const hugAnswer = document.getElementById('hugAnswer');
             const body = document.body;
             
-            // This grabs ALL 10 pieces hardcoded above
             const pieces = document.querySelectorAll('.puzzle-piece');
             const totalPieces = pieces.length;
             let piecesRevealed = 0;
@@ -246,9 +243,7 @@
                 piece.addEventListener('click', (event) => {
                     if (!piece.classList.contains('revealed')) {
                         
-                        // Sound and Reveal
-                        clickSound.currentTime = 0;
-                        clickSound.play().catch(e => console.log('Click sound failed to play.'));
+                        // REVEAL IS THE ONLY ACTION HERE
                         piece.classList.add('revealed');
                         piecesRevealed++;
                         
@@ -261,6 +256,7 @@
                             document.getElementById('puzzleGrid').style.pointerEvents = 'none';
                             
                             setTimeout(() => {
+                                // Only play the sound if the file exists and is allowed by the browser
                                 revealSound.play().catch(e => console.log('Reveal sound failed to play.'));
                                 revealMessage.style.display = 'block';
                                 startContinuousConfetti(); 
