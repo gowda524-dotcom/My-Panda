@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -157,9 +157,11 @@ kissBtn.addEventListener("click", () => {
   kisses++;
   counter.innerText = `Kisses Given: ${kisses} 💋`;
 
-  // Move to center
-  her.style.left = "40%";
-  you.style.right = "40%";
+  // Move both to the center and overlap
+  her.style.left = "50%";
+  her.style.transform = "translateX(-120%)"; 
+  you.style.right = "50%";
+  you.style.transform = "translateX(120%)"; 
 
   setTimeout(() => {
     her.classList.add("kissing");
@@ -174,11 +176,12 @@ kissBtn.addEventListener("click", () => {
   // Separate after 3s
   setTimeout(() => {
     her.style.left = "10%";
+    her.style.transform = "translateX(0)";
     you.style.right = "10%";
+    you.style.transform = "translateX(0)";
     her.classList.remove("kissing");
     you.classList.remove("kissing");
 
-    // After 10 kisses show quiz
     if (kisses >= 10) {
       quizBox.style.display = "block";
       kissBtn.disabled = true;
