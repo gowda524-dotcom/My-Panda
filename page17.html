@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unlock the Love</title>
+    <title>Find the Panda Challenge!</title>
     
     <style>
         /* General Setup */
@@ -11,7 +11,12 @@
             margin: 0;
             overflow: hidden; 
             font-family: 'Arial Black', Gadget, sans-serif; 
-            background: linear-gradient(to right bottom, #FFD700, #FF69B4, #8A2BE2);
+            /* Full background image */
+            background-image: url('Page17.jpg'); 
+            background-size: cover; /* Cover the entire viewport */
+            background-position: center;
+            background-attachment: fixed; /* Keeps background fixed during scrolling if any */
+            
             display: flex;
             flex-direction: column;
             justify-content: flex-start; 
@@ -20,7 +25,19 @@
             color: white;
             text-align: center;
             position: relative; 
-            padding-top: 20px; /* Space for titles */
+            padding-top: 20px; 
+        }
+
+        /* Overlay to make text readable over busy background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* Dark semi-transparent overlay */
+            z-index: 1; /* Below text, above background */
         }
 
         /* Titles */
@@ -41,61 +58,35 @@
             z-index: 15;
         }
 
-        /* --- Game Board Container --- */
-        .game-board-container {
-            position: relative;
-            width: 90vw;
-            max-width: 800px; 
-            height: 60vh;
-            max-height: 500px;
-            
-            /* Apply the background image */
-            background-image: url('Page17.jpg'); 
-            background-size: cover;
-            background-position: center;
-            
-            border: 8px solid #333;
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
-            z-index: 10;
-        }
-
-        /* --- Lock Icons (The hidden treasure points) --- */
-        .lock-icon {
+        /* --- Panda Locks (Hidden treasure points) --- */
+        .panda-lock {
             position: absolute;
-            font-size: 3.5em; /* Large emoji size */
+            font-size: 2.2em; /* Smaller emoji size for difficulty */
             cursor: pointer;
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
             opacity: 1;
-            /* Glowing effect */
-            filter: drop-shadow(0 0 10px #FFEB3B) drop-shadow(0 0 20px #FF69B4);
-            animation: glow-shake 2s infinite alternate; /* Subtle shake and glow */
-            pointer-events: auto;
+            /* Subtle glow and gentle bounce to hint at their presence */
+            filter: drop-shadow(0 0 5px rgba(255,255,0,0.8)) drop-shadow(0 0 10px rgba(255,100,200,0.6));
+            animation: panda-bounce 3s infinite alternate ease-in-out; 
+            z-index: 20; /* Above all background effects but below text */
         }
 
-        .lock-icon.unlocked {
+        .panda-lock.found {
             opacity: 0;
             pointer-events: none; /* Disable clicking after removal */
         }
 
-        /* Specific Lock Positions (Adjust these percentages to hide them perfectly on your image) */
-        #lock1 { top: 10%; left: 8%; }    /* Heart Lock (Top-Left) */
-        #lock2 { top: 40%; right: 45%; }  /* Star Lock (Near Center) */
-        #lock3 { bottom: 10%; left: 30%; } /* Key Lock (Bottom-Left) */
-        #lock4 { bottom: 20%; right: 10%; } /* Hug Lock (Bottom-Right) */
+        /* Specific Panda Positions (Adjust these percentages to hide them perfectly on YOUR Page17.jpg) */
+        /* Make them genuinely hard to find! */
+        #panda1 { top: 15%; left: 10%; }    
+        #panda2 { top: 50%; right: 25%; }  
+        #panda3 { bottom: 10%; left: 40%; } 
+        #panda4 { bottom: 30%; right: 15%; } 
 
-
-        /* --- Lock Animation (Glow and Shake) --- */
-        @keyframes glow-shake {
-            0%, 100% { 
-                transform: rotate(0deg); 
-                filter: drop-shadow(0 0 10px #FFEB3B) drop-shadow(0 0 15px #FF69B4);
-            }
-            50% { 
-                transform: rotate(2deg); 
-                filter: drop-shadow(0 0 15px #FFD700) drop-shadow(0 0 25px #FF1493);
-            }
-            75% { transform: rotate(-2deg); }
+        /* --- Panda Animation (Glow and Bounce) --- */
+        @keyframes panda-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
 
@@ -120,14 +111,32 @@
         }
 
         #specialVideo {
-            max-width: 100%;
-            height: auto;
+            max-width: 90vw; /* Make video responsive */
+            max-height: 70vh; /* Control video height */
+            width: auto; /* Maintain aspect ratio */
+            height: auto; /* Maintain aspect ratio */
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
             margin-bottom: 20px;
         }
-
-        #nextButton {
+        
+        /* Quiz Input Styling (reusing from page 16 for consistency) */
+        #quizAnswer {
+            width: 80%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 3px solid #FF69B4; /* Hot pink border */
+            border-radius: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+        #quizAnswer:focus {
+            border-color: #8A2BE2; /* Blue-violet on focus */
+        }
+        
+        #submitAnswer {
             padding: 15px 30px;
             font-size: 1.5em;
             background-color: #4CAF50;
@@ -136,9 +145,10 @@
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        #nextButton:hover {
+        #submitAnswer:hover {
             background-color: #45a049;
         }
         
@@ -160,45 +170,74 @@
             100% { transform: scale(0); opacity: 0; }
         }
 
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-70px) rotate(15deg); opacity: 0.8; }
+            100% { transform: translateY(0px) rotate(-15deg); opacity: 1; }
+        }
+        
+        .floating-emoji {
+            position: absolute;
+            font-size: 2.5em; 
+            animation: float 7s ease-in-out infinite;
+            opacity: 0;
+            z-index: 5; /* Below pandas, above background overlay */
+            pointer-events: none;
+        }
+        
+        .confetti-fall {
+            position: absolute;
+            animation: fall 5s linear forwards;
+            pointer-events: none;
+            z-index: 6; /* Below pandas, above background overlay */
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-5vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
     <audio id="backgroundSong" src="Page17.mp3" loop></audio>
 
-    <h1 class="main-title">A Special Surprise is Hidden! 🕵️‍♀️</h1>
-    <p class="subtitle">Find and click the 4 glowing locks below to reveal it.</p>
-
-    <div class="game-board-container" id="gameBoard">
-        <div class="lock-icon" id="lock1">❤️</div>
-        <div class="lock-icon" id="lock2">⭐</div>
-        <div class="lock-icon" id="lock3">🔑</div>
-        <div class="lock-icon" id="lock4">🫂</div>
-        
+    <h1 class="main-title">Find 4 panda 🐼 and click them to reveal a surprise!</h1>
+    <div class="game-area" id="gameArea">
+        <div class="panda-lock" id="panda1">🐼</div>
+        <div class="panda-lock" id="panda2">🐼</div>
+        <div class="panda-lock" id="panda3">🐼</div>
+        <div class="panda-lock" id="panda4">🐼</div>
     </div>
 
     <div class="reveal-section" id="revealSection">
-        <h2 class="reveal-message">This Treasure is Just For You!</h2>
-        <video id="specialVideo" width="320" height="240" controls>
+        <h2 class="reveal-message">🐼 You Found All The Pandas! 🐼</h2>
+        <video id="specialVideo" controls autoplay>
             <source src="SpecialVideo.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        <button id="nextButton">Continue to the Final Page! 🚀</button>
+        <div class="quiz-container">
+            <p class="quiz-question">Lov uuu panda 🐼😚</p>
+            <input type="text" id="quizAnswer" placeholder="Type anything...">
+            <button id="submitAnswer">Submit 🤗</button>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const backgroundSong = document.getElementById('backgroundSong');
-            const locks = document.querySelectorAll('.lock-icon');
+            const pandaLocks = document.querySelectorAll('.panda-lock');
             const revealSection = document.getElementById('revealSection');
             const specialVideo = document.getElementById('specialVideo');
-            const nextButton = document.getElementById('nextButton');
+            const quizAnswer = document.getElementById('quizAnswer');
+            const submitAnswer = document.getElementById('submitAnswer');
             const body = document.body;
 
-            let unlockedCount = 0;
+            let foundPandas = 0;
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
+            const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '🎯', '👑', '🎂', '🙈', '🤭', '😂', '🥳', '🤩']; // More emojis for confusion
 
             // --- Autoplay Audio Fix ---
-            // Attempts to play the music immediately, falls back to first user interaction
             backgroundSong.play().catch(e => {
                 document.body.addEventListener('click', () => {
                     backgroundSong.play().catch(e => console.log('Music still blocked.'));
@@ -206,46 +245,96 @@
             });
 
 
-            // --- Game Logic ---
-            locks.forEach(lock => {
-                lock.addEventListener('click', (event) => {
-                    if (!lock.classList.contains('unlocked')) {
-                        // 1. Unlock the piece
-                        lock.classList.add('unlocked');
-                        unlockedCount++;
+            // --- Panda Game Logic ---
+            pandaLocks.forEach(panda => {
+                panda.addEventListener('click', (event) => {
+                    if (!panda.classList.contains('found')) {
+                        panda.classList.add('found'); // Make panda disappear
+                        foundPandas++;
                         
-                        // 2. Trigger Firework/Confetti Burst at the click location
-                        // Get coordinates relative to the entire page
-                        const rect = lock.getBoundingClientRect();
+                        // Firework Burst at the panda's location
+                        const rect = panda.getBoundingClientRect();
                         const x = rect.left + rect.width / 2;
                         const y = rect.top + rect.height / 2;
                         createFireworksBurst(x, y);
 
-                        // 3. Check for Game Completion
-                        if (unlockedCount === locks.length) {
-                            setTimeout(revealPrize, 1000); // Wait for fireworks to fade slightly
+                        if (foundPandas === pandaLocks.length) {
+                            setTimeout(revealSurprise, 1000); // Wait for last firework
                         }
                     }
                 });
             });
 
-            function revealPrize() {
-                // Display the reveal section
-                revealSection.style.display = 'block';
+            function revealSurprise() {
+                // Ensure floating emojis don't get in the way of the reveal section
+                document.querySelectorAll('.floating-emoji').forEach(e => e.remove()); 
                 
-                // Try to play the video (may also need a click on the video itself in some browsers)
-                specialVideo.play().catch(e => console.log('Video autoplay blocked.'));
+                revealSection.style.display = 'block';
+                // Attempt to autoplay video
+                specialVideo.play().catch(e => console.log('Video autoplay blocked, user interaction needed.'));
             }
 
-            // --- Navigation ---
-            nextButton.addEventListener('click', () => {
-                backgroundSong.pause();
-                specialVideo.pause();
-                window.location.href = 'page18.html';
+            // --- Quiz Submission Logic ---
+            submitAnswer.addEventListener('click', () => {
+                const answer = quizAnswer.value.trim();
+                if (answer !== '') { // Any text submission moves to next page
+                    backgroundSong.pause();
+                    specialVideo.pause();
+                    window.location.href = 'page18.html';
+                } else {
+                    alert('Come on, give your panda some love! 🤗');
+                }
             });
             
+            // --- Grand Effects Functions (Enhanced for more confusion) ---
             
-            // --- Fireworks Effect ---
+            // Continuous Floating Emojis (More frequent and random)
+            setInterval(createFloatingEmoji, 200); // More frequent emojis
+
+            function createFloatingEmoji() {
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                body.appendChild(emoji);
+
+                const size = Math.random() * 2 + 1.5;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.top = `${Math.random() * 100}vh`;
+                emoji.style.animationDuration = `${Math.random() * 5 + 7}s`;
+                emoji.style.animationDelay = `${Math.random() * 2}s`;
+                emoji.style.opacity = Math.random() * 0.5 + 0.5; // Varying opacity
+                emoji.style.color = `hsl(${Math.random() * 360}, 100%, 75%)`; // Random colors
+
+                emoji.addEventListener('animationend', () => {
+                    emoji.remove();
+                });
+            }
+
+            // Continuous Confetti (Background noise to confuse)
+            setInterval(createConfettiPiece, 150); // More frequent confetti
+
+            function createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 10 + 5}px`; // Larger confetti
+                confetti.style.height = `${Math.random() * 10 + 5}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 4 + 5}s`; // Slower fall
+                confetti.style.opacity = Math.random() * 0.7 + 0.3; // Varying opacity
+                
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+            
+            // Fireworks Bursts (Triggered by finding pandas)
             function createFireworksBurst(x, y) { 
                 const burstContainer = document.createElement('div');
                 burstContainer.style.position = 'absolute';
@@ -254,10 +343,9 @@
                 burstContainer.style.zIndex = 25;
                 body.appendChild(burstContainer);
                 
-                // Add a central flash for dramatic effect
                 const flash = document.createElement('span');
                 flash.textContent = '💥';
-                flash.style.fontSize = '3em';
+                flash.style.fontSize = '3.5em';
                 flash.style.position = 'absolute';
                 flash.style.transform = 'translate(-50%, -50%)';
                 flash.style.opacity = 1;
@@ -265,25 +353,25 @@
                 burstContainer.appendChild(flash);
 
 
-                for(let i = 0; i < 20; i++) {
+                for(let i = 0; i < 25; i++) { // More sparks
                     const spark = document.createElement('div');
-                    spark.style.width = '4px';
-                    spark.style.height = '4px';
+                    spark.style.width = '5px'; // Larger sparks
+                    spark.style.height = '5px';
                     spark.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
                     spark.style.borderRadius = '50%';
                     spark.style.position = 'absolute';
-                    spark.style.transition = 'all 0.6s ease-out';
+                    spark.style.transition = 'all 0.7s ease-out'; // Longer spark trail
                     burstContainer.appendChild(spark);
                     
                     setTimeout(() => {
                         const angle = Math.random() * 360;
-                        const distance = Math.random() * 80 + 40;
+                        const distance = Math.random() * 100 + 50; // Further distance
                         spark.style.transform = `translate(${Math.cos(angle * Math.PI / 180) * distance}px, ${Math.sin(angle * Math.PI / 180) * distance}px)`;
                         spark.style.opacity = 0;
                     }, 10);
                 }
                 
-                setTimeout(() => burstContainer.remove(), 700);
+                setTimeout(() => burstContainer.remove(), 800); // Longer burst duration
             }
         });
     </script>
