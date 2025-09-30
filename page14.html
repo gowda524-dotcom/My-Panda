@@ -34,23 +34,24 @@
     width: 150px;
     transition: all 1.5s ease-in-out;
     filter: drop-shadow(0 0 15px white);
-    z-index: 2;
   }
   #her {
     left: 10%;
+    z-index: 5; /* always on top */
   }
   #you {
     right: 10%;
+    z-index: 4; /* stays behind */
   }
-  /* Kissing state */
+  /* Kissing state (both move inward) */
   .kissingHer {
     left: 50%;
-    transform: translateX(-40%) rotate(-6deg) scale(1.05);
+    transform: translateX(-60%) rotate(-6deg) scale(1.05);
     filter: drop-shadow(0 0 25px pink);
   }
   .kissingYou {
     right: 50%;
-    transform: translateX(40%) rotate(6deg) scale(1.05);
+    transform: translateX(-40%) rotate(6deg) scale(1.05);
     filter: drop-shadow(0 0 25px pink);
   }
   #kissBtn {
@@ -79,7 +80,7 @@
     font-size: 26px;
     animation: floatUp 2s linear forwards;
     pointer-events: none;
-    z-index: 3;
+    z-index: 6;
   }
   @keyframes floatUp {
     0% { opacity: 1; transform: translateY(0) scale(1);}
@@ -164,7 +165,7 @@ kissBtn.addEventListener("click", () => {
   kisses++;
   counter.innerText = `Kisses Given: ${kisses} 💋`;
 
-  // Move them close
+  // Move them close (inward)
   her.classList.add("kissingHer");
   you.classList.add("kissingYou");
 
