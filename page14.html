@@ -34,22 +34,23 @@
     width: 150px;
     transition: all 1.5s ease-in-out;
     filter: drop-shadow(0 0 15px white);
-    z-index: 2;
   }
   #her {
     left: 10%;
+    z-index: 5; /* girl in front */
   }
   #you {
     right: 10%;
+    z-index: 4; /* boy behind */
   }
-  /* tilt when kissing */
+  /* tilt + overlap when kissing */
   .kissingHer {
-    transform: translateX(-90%) rotate(-8deg) scale(1.05);
+    transform: translateX(-70%) rotate(-8deg) scale(1.05);
     filter: drop-shadow(0 0 25px pink);
   }
   .kissingYou {
-    transform: translateX(90%) rotate(8deg) scale(1.05);
-    filter: drop-shadow(0 0 25px pink);
+    transform: translateX(60%) rotate(8deg) scale(1.05);
+    filter: drop-shadow(0 0 20px pink);
   }
   #kissBtn {
     padding: 12px 25px;
@@ -77,13 +78,12 @@
     font-size: 26px;
     animation: floatUp 2s linear forwards;
     pointer-events: none;
-    z-index: 3;
+    z-index: 10;
   }
   @keyframes floatUp {
     0% { opacity: 1; transform: translateY(0) scale(1);}
     100% { opacity: 0; transform: translateY(-150px) scale(1.5);}
   }
-  /* Quiz styles */
   .quiz-box {
     margin-top: 30px;
     display: none;
@@ -159,7 +159,7 @@ kissBtn.addEventListener("click", () => {
   kisses++;
   counter.innerText = `Kisses Given: ${kisses} 💋`;
 
-  // Move to center
+  // Move both to center
   her.style.left = "50%";
   you.style.right = "50%";
 
