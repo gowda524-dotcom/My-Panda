@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>kiss Time ❤️🤗</title>
+<title>Kissing Game 💋❤️</title>
 <style>
   body {
     margin: 0;
@@ -16,8 +16,9 @@
   h1 {
     margin-top: 15px;
     font-size: 22px;
+    color: pink;
   }
-  #hugArea {
+  #kissArea {
     position: relative;
     width: 100%;
     height: 400px;
@@ -27,8 +28,8 @@
   .person {
     position: absolute;
     bottom: 20px;
-    width: 150px;
-    transition: all 1.5s ease-in-out;
+    width: 180px;
+    transition: all 1.2s ease-in-out;
   }
   #her {
     left: 10%;
@@ -36,19 +37,23 @@
   #you {
     right: 10%;
   }
-  .hugging {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 20px pink);
+  .kissing {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 25px hotpink);
   }
-  #hugBtn {
+  #kissBtn {
     padding: 12px 25px;
-    background: hotpink;
+    background: deeppink;
     color: white;
     border: none;
     border-radius: 25px;
     font-size: 18px;
     cursor: pointer;
     margin-top: 20px;
+  }
+  #kissBtn:disabled {
+    background: gray;
+    cursor: not-allowed;
   }
   #counter {
     margin-top: 15px;
@@ -57,18 +62,18 @@
   }
   .emoji {
     position: absolute;
-    font-size: 26px;
-    animation: floatUp 2s linear forwards;
+    font-size: 28px;
+    animation: floatUp 3s linear forwards;
     pointer-events: none;
   }
   @keyframes floatUp {
     0% { opacity: 1; transform: translateY(0) scale(1);}
-    100% { opacity: 0; transform: translateY(-150px) scale(1.5);}
+    100% { opacity: 0; transform: translateY(-200px) scale(1.6);}
   }
-  /* Quiz styles */
+  /* Quiz box */
   .quiz-box {
     margin-top: 30px;
-    display: none; /* Hidden until 10 hugs */
+    display: none;
   }
   .quiz-box input {
     font-size: 18px;
@@ -92,74 +97,100 @@
   .quiz-box button:hover {
     background: green;
   }
+  /* Fireworks canvas */
+  #fireworks {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
 
-<h1> Amma🌍 😘🤗</h1>
-<p style="color:yellow;">Un Amma ku  kiss Pannu😘🤗… Vaa 10 hug kudu 🫂</p>
+<h1>Love Kiss Game 💙💋</h1>
+<p style="color:yellow;">Vaa Panda 🐼… 10 kisses kudu 🥰😘</p>
 
-<div id="hugArea">
-  <img src="her1.png" id="her1" class="person">
-  <img src="you1.png" id="you1" class="person">
+<div id="kissArea">
+  <img src="her1.png" id="her" class="person">
+  <img src="you1.png" id="you" class="person">
 </div>
 
-<button id="hugBtn">Give kiss😘 </button>
-<p id="counter">kiss Given: 0 😘</p>
+<button id="kissBtn">Kiss 💋</button>
+<p id="counter">Kisses: 0/10 💞</p>
 
-<audio id="hugSound" src="Page14.mp3" preload="auto"></audio>
+<audio id="kissSound" src="Page14.mp3" autoplay loop></audio>
+
+<!-- Fireworks -->
+<canvas id="fireworks"></canvas>
 
 <!-- Quiz Box -->
 <div class="quiz-box" id="quizBox">
-  <p><b>Happy ya Panda??</b></p>
+  <p><b>Un Amma Enna sollanumo solliko 🤗</b></p>
   <input type="text" id="quizAnswer" placeholder="Type here...">
   <button onclick="checkQuiz()">Submit</button>
 </div>
 
 <script>
-let hugs = 0;
-const her = document.getElementById("her1");
-const you = document.getElementById("you1");
-const hugBtn = document.getElementById("hugBtn");
+let kisses = 0;
+const her = document.getElementById("her");
+const you = document.getElementById("you");
+const kissBtn = document.getElementById("kissBtn");
 const counter = document.getElementById("counter");
-const hugSound = document.getElementById("hugSound");
+const kissSound = document.getElementById("kissSound");
 const quizBox = document.getElementById("quizBox");
 
-hugBtn.addEventListener("click", () => {
-  hugs++;
-  counter.innerText = `Kiss Given: ${kiss} 😘`;
+// Fireworks setup
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+let particles = [];
 
-  // Move images to center
-  her.style.left = "40%";
-  you.style.right = "40%";
+function random(min, max) { return Math.random() * (max - min) + min; }
+function Particle(x, y, color) {
+  this.x = x; this.y = y; this.color = color;
+  this.radius = random(2,4);
+  this.angle = random(0, 2 * Math.PI);
+  this.speed = random(2,8);
+  this.friction = 0.95;
+  this.gravity = 0.05;
+  this.alpha = 1;
+}
+Particle.prototype.update = function() {
+  this.x += Math.cos(this.angle) * this.speed;
+  this.y += Math.sin(this.angle) * this.speed + this.gravity;
+  this.speed *= this.friction;
+  this.alpha -= 0.01;
+}
+Particle.prototype.draw = function() {
+  ctx.save();
+  ctx.globalAlpha = this.alpha;
+  ctx.fillStyle = this.color;
+  ctx.beginPath();
+  ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+function createFirework(x, y) {
+  const colors = ["#ff4da6","#ffcc00","#00ccff","#ff0066","#ffffff"];
+  for (let i=0; i<80; i++) {
+    particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
+  }
+}
+function animateFireworks() {
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i) => {
+    p.update(); p.draw();
+    if(p.alpha <= 0) particles.splice(i,1);
+  });
+  requestAnimationFrame(animateFireworks);
+}
+animateFireworks();
 
-  setTimeout(() => {
-    // Hugging effect
-    her.classList.add("hugging");
-    you.classList.add("hugging");
-    hugSound.play();
-
-    // Floating emojis
-    for (let i = 0; i < 8; i++) {
-      createEmoji(["❤️","🫂","😘","💖","🤗"][Math.floor(Math.random()*5)]);
-    }
-  }, 1500);
-
-  // Separate after 3s
-  setTimeout(() => {
-    her.style.left = "10%";
-    you.style.right = "10%";
-    her.classList.remove("hugging");
-    you.classList.remove("hugging");
-
-    // Show quiz only after 10 hugs
-    if (hugs >= 10) {
-      quizBox.style.display = "block";
-      hugBtn.disabled = true; // Stop more kiss
-    }
-  }, 3000);
-});
-
+// Floating emojis
 function createEmoji(symbol) {
   const emoji = document.createElement("div");
   emoji.className = "emoji";
@@ -167,17 +198,52 @@ function createEmoji(symbol) {
   emoji.style.left = Math.random() * window.innerWidth + "px";
   emoji.style.top = "300px";
   document.body.appendChild(emoji);
-
-  setTimeout(() => emoji.remove(), 2000);
+  setTimeout(() => emoji.remove(), 3000);
 }
+
+kissBtn.addEventListener("click", () => {
+  kisses++;
+  counter.innerText = `Kisses: ${kisses}/10 💞`;
+
+  // Move together
+  her.style.left = "40%";
+  you.style.right = "40%";
+
+  setTimeout(() => {
+    her.classList.add("kissing");
+    you.classList.add("kissing");
+
+    kissSound.play();
+
+    // effects
+    createFirework(window.innerWidth/2, window.innerHeight/2);
+    for (let i=0; i<10; i++) {
+      createEmoji(["❤️","💙","💜","💖","😘","💋"][Math.floor(Math.random()*6)]);
+    }
+  }, 1200);
+
+  // Separate after 2.5s
+  setTimeout(() => {
+    her.style.left = "10%";
+    you.style.right = "10%";
+    her.classList.remove("kissing");
+    you.classList.remove("kissing");
+
+    if (kisses >= 10) {
+      quizBox.style.display = "block";
+      kissBtn.disabled = true;
+    }
+  }, 2500);
+});
 
 // Quiz check
 function checkQuiz() {
   let ans = document.getElementById("quizAnswer").value.trim();
   if (ans.length > 0) {
-    window.location.href = "page12.html";
+    createFirework(window.innerWidth/2, window.innerHeight/2);
+    setTimeout(() => { window.location.href = "page15.html"; }, 2000);
   } else {
-    alert("Un Amma ku love you sollu!");
+    alert("Sollu Panda 🐼🤗!");
   }
 }
 </script>
