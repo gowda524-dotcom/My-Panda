@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Memory Box!</title>
+    
+    <style>
+        /* General Setup */
+        body {
+            margin: 0;
+            overflow: hidden; 
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #4CAF50, #81C784); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+            position: relative; 
+        }
+
+        /* Text Styling */
+        .game-title {
+            font-size: 3.5em; 
+            color: #FFEB3B; 
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #FFEB3B, 0 0 20px rgba(255, 255, 0, 0.5); 
+            z-index: 10;
+        }
+
+        .game-description {
+            font-size: 1.6em;
+            margin-bottom: 30px;
+            color: #f0f0f0;
+            z-index: 10;
+        }
+
+        /* --- Memory Box (The centerpiece) --- */
+        .memory-box {
+            position: relative;
+            width: 550px; 
+            height: 380px; 
+            background-image: url('Page15.jpg'); 
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 30px #FF5722, 0 0 50px rgba(255, 87, 34, 0.5); 
+            border: 10px solid #FFF;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .puzzle-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(2, 1fr); 
+            z-index: 20;
+        }
+
+        .puzzle-piece {
+            background-color: #5D4037; 
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.7); 
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            opacity: 1;
+            transition: opacity 0.6s ease-out; 
+            pointer-events: auto; 
+            animation: flicker 4s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        .puzzle-piece.revealed {
+            opacity: 0;
+            pointer-events: none; 
+        }
+
+        /* --- Reveal Message & Quiz Box (MODIFIED) --- */
+        .reveal-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            padding: 20px; /* Reduced padding to fit quiz */
+            background: rgba(255, 255, 255, 0.98);
+            color: #333; /* Darker text for readability over white background */
+            border-radius: 20px; 
+            box-shadow: 0 0 30px rgba(255, 20, 147, 1); 
+            font-size: 1.5em; /* Smaller font for quiz text */
+            font-weight: bold;
+            display: none;
+            z-index: 30;
+            animation: bounceIn 1s ease-out;
+            border: 5px solid #FFC107; 
+        }
+
+        .reveal-message h2 {
+            color: #D32F2F;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        /* Quiz Input Styling */
+        #hugAnswer {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #FF5722;
+            border-radius: 8px;
+            font-size: 1em;
+            text-align: center;
+        }
+        
+        /* Submit Button Styling */
+        #submitHug {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: background-color 0.3s;
+        }
+        
+        #submitHug:hover {
+            background-color: #45a049;
+        }
+
+
+        @keyframes bounceIn {
+            0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            75% { transform: translate(-50%, -50%) scale(0.95); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .next-button {
+            display: none; /* Hide the original button */
+        }
+
+        /* --- Grand Effects (Confetti, Emojis, Fireworks) --- */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-70px) rotate(15deg); opacity: 0.8; }
+            100% { transform: translateY(0px) rotate(-15deg); opacity: 1; }
+        }
+        
+        @keyframes firework {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2.5em; 
+            animation: float 7s ease-in-out infinite;
+            opacity: 0;
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        .confetti-fall {
+            position: absolute;
+            animation: fall 5s linear forwards;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-5vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <audio id="clickSound" src="click.mp3"></audio>
+    <audio id="revealSound" src="reveal.mp3"></audio>
+    <audio id="backgroundSong" src="Page15.mp3" loop></audio>
+    
+    <h1 class="game-title">The Memory Box 💖</h1>
+    <p class="game-description">Click on the box below to uncover a special memory! ✨</p>
+
+    <div class="memory-box" id="memoryBox">
+        <div class="puzzle-grid" id="puzzleGrid">
+            </div>
+        
+        <div class="reveal-message" id="revealMessage">
+            This moment, this memory, is priceless. Just like you. <br>
+            
+            <div id="quizContainer">
+                <h2>Oru hug 🫂 kudu next page ku polam..</h2>
+                <input type="text" id="hugAnswer" placeholder="Type a big hug here..." required>
+                <button id="submitHug">Hug and Go! 🤗</button>
+            </div>
+        </div>
+    </div>
+    
+    <button class="next-button" id="nextButton">Continue to Next Surprise! 🚀</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const puzzleGrid = document.getElementById('puzzleGrid');
+            const revealMessage = document.getElementById('revealMessage');
+            const clickSound = document.getElementById('clickSound');
+            const revealSound = document.getElementById('revealSound');
+            const backgroundSong = document.getElementById('backgroundSong');
+            const submitHug = document.getElementById('submitHug');
+            const hugAnswer = document.getElementById('hugAnswer');
+            const body = document.body;
+
+            const totalPieces = 10;
+            let piecesRevealed = 0;
+            
+            const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '🎯', '👑', '🎂'];
+            const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50'];
+
+
+            // --- Autoplay Policy Fix & Continuous Emojis ---
+            document.body.addEventListener('click', () => {
+                if (backgroundSong.paused) {
+                    backgroundSong.play().catch(e => console.log('Autoplay failed:', e));
+                }
+            }, { once: true });
+            
+            // Start continuous floating emojis immediately
+            setInterval(createFloatingEmoji, 400); 
+
+
+            // --- Initialization: Create Puzzle Pieces ---
+            for (let i = 0; i < totalPieces; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('puzzle-piece');
+                piece.dataset.id = i;
+                puzzleGrid.appendChild(piece);
+            }
+
+            const pieces = document.querySelectorAll('.puzzle-piece');
+
+            // --- Game Logic ---
+            pieces.forEach(piece => {
+                piece.addEventListener('click', (event) => {
+                    if (!piece.classList.contains('revealed')) {
+                        // Play sound
+                        clickSound.currentTime = 0;
+                        clickSound.play().catch(e => console.log('Click sound failed:', e));
+                        
+                        // Reveal piece
+                        piece.classList.add('revealed');
+                        piecesRevealed++;
+                        
+                        // Burst confetti and fireworks where clicked
+                        createFireworksBurst(event.clientX, event.clientY);
+
+                        // Check for completion
+                        if (piecesRevealed === totalPieces) {
+                            puzzleGrid.style.pointerEvents = 'none';
+                            
+                            setTimeout(() => {
+                                revealSound.play().catch(e => console.log('Reveal sound failed:', e));
+                                revealMessage.style.display = 'block';
+                                startContinuousConfetti(); // Grand confetti shower
+                            }, 600);
+                        }
+                    }
+                });
+            });
+
+            // --- Final Quiz Submission Logic (NEW) ---
+            submitHug.addEventListener('click', () => {
+                const answer = hugAnswer.value.trim();
+                
+                // Allow any text to proceed
+                if (answer !== '') {
+                    backgroundSong.pause();
+                    window.location.href = 'page16.html';
+                } else {
+                    alert('Give a virtual hug (type something) to proceed! 🤗');
+                }
+            });
+            
+            
+            // --- Grand Party Effects Functions (Unchanged) ---
+
+            function createFloatingEmoji() {
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                body.appendChild(emoji);
+
+                const size = Math.random() * 2 + 1.5;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.top = `${Math.random() * 100}vh`;
+                emoji.style.animationDuration = `${Math.random() * 5 + 7}s`;
+                emoji.style.animationDelay = `${Math.random() * 2}s`;
+                emoji.style.opacity = 1;
+            }
+
+            function createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`;
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 3 + 4}s`;
+                confetti.style.opacity = 1;
+                
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+            
+            function startContinuousConfetti() {
+                setInterval(createConfettiPiece, 80); 
+            }
+            
+            function createFireworksBurst(x, y) {
+                const burstContainer = document.createElement('div');
+                burstContainer.style.position = 'absolute';
+                burstContainer.style.left = `${x}px`;
+                burstContainer.style.top = `${y}px`;
+                burstContainer.style.zIndex = 25;
+                body.appendChild(burstContainer);
+                
+                const flash = document.createElement('span');
+                flash.textContent = '💥';
+                flash.style.fontSize = '3em';
+                flash.style.position = 'absolute';
+                flash.style.transform = 'translate(-50%, -50%)';
+                flash.style.opacity = 1;
+                flash.style.animation = 'firework 0.5s ease-out forwards';
+                burstContainer.appendChild(flash);
+
+
+                for(let i = 0; i < 15; i++) {
+                    const spark = document.createElement('div');
+                    spark.style.width = '3px';
+                    spark.style.height = '3px';
+                    spark.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                    spark.style.borderRadius = '50%';
+                    spark.style.position = 'absolute';
+                    spark.style.transition = 'all 0.6s ease-out';
+                    burstContainer.appendChild(spark);
+                    
+                    setTimeout(() => {
+                        const angle = Math.random() * 360;
+                        const distance = Math.random() * 80 + 40;
+                        spark.style.transform = `translate(${Math.cos(angle * Math.PI / 180) * distance}px, ${Math.sin(angle * Math.PI / 180) * distance}px)`;
+                        spark.style.opacity = 0;
+                    }, 10);
+                }
+                
+                setTimeout(() => burstContainer.remove(), 700);
+            }
+        });
+    </script>
+</body>
+</html>
