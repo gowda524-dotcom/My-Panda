@@ -59,6 +59,7 @@
             width: 100%;
             height: 100%;
             display: grid;
+            /* 5 columns and 2 rows = 10 pieces total */
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(2, 1fr); 
             z-index: 20;
@@ -67,7 +68,8 @@
         .puzzle-piece {
             background-color: #5D4037; 
             box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.7); 
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            /* INCREASED BORDER FOR CLARITY */
+            border: 2px solid rgba(255, 255, 255, 0.8); 
             opacity: 1;
             transition: opacity 0.6s ease-out; 
             pointer-events: auto; 
@@ -84,19 +86,19 @@
             pointer-events: none; 
         }
 
-        /* --- Reveal Message & Quiz Box (MODIFIED) --- */
+        /* --- Reveal Message & Quiz Box --- */
         .reveal-message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 90%;
-            padding: 20px; /* Reduced padding to fit quiz */
+            padding: 20px; 
             background: rgba(255, 255, 255, 0.98);
-            color: #333; /* Darker text for readability over white background */
+            color: #333; 
             border-radius: 20px; 
             box-shadow: 0 0 30px rgba(255, 20, 147, 1); 
-            font-size: 1.5em; /* Smaller font for quiz text */
+            font-size: 1.5em; 
             font-weight: bold;
             display: none;
             z-index: 30;
@@ -147,7 +149,7 @@
         }
 
         .next-button {
-            display: none; /* Hide the original button */
+            display: none; 
         }
 
         /* --- Grand Effects (Confetti, Emojis, Fireworks) --- */
@@ -222,7 +224,7 @@
             const hugAnswer = document.getElementById('hugAnswer');
             const body = document.body;
 
-            const totalPieces = 10;
+            const totalPieces = 10; // This defines the number of pieces (10)
             let piecesRevealed = 0;
             
             const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '🎯', '👑', '🎂'];
@@ -241,6 +243,7 @@
 
 
             // --- Initialization: Create Puzzle Pieces ---
+            // This loop generates 10 pieces inside the puzzleGrid
             for (let i = 0; i < totalPieces; i++) {
                 const piece = document.createElement('div');
                 piece.classList.add('puzzle-piece');
@@ -251,6 +254,7 @@
             const pieces = document.querySelectorAll('.puzzle-piece');
 
             // --- Game Logic ---
+            // This listener handles the click on each individual piece
             pieces.forEach(piece => {
                 piece.addEventListener('click', (event) => {
                     if (!piece.classList.contains('revealed')) {
@@ -258,7 +262,7 @@
                         clickSound.currentTime = 0;
                         clickSound.play().catch(e => console.log('Click sound failed:', e));
                         
-                        // Reveal piece
+                        // Reveal piece by setting opacity to 0
                         piece.classList.add('revealed');
                         piecesRevealed++;
                         
@@ -279,7 +283,7 @@
                 });
             });
 
-            // --- Final Quiz Submission Logic (NEW) ---
+            // --- Final Quiz Submission Logic ---
             submitHug.addEventListener('click', () => {
                 const answer = hugAnswer.value.trim();
                 
@@ -293,7 +297,7 @@
             });
             
             
-            // --- Grand Party Effects Functions (Unchanged) ---
+            // --- Grand Party Effects Functions ---
 
             function createFloatingEmoji() {
                 const emoji = document.createElement('span');
