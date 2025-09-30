@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -42,8 +42,13 @@
   #you {
     right: 10%;
   }
-  .kissing {
-    transform: scale(1.1);
+  /* tilt when kissing */
+  .kissingHer {
+    transform: translateX(-80%) rotate(-8deg) scale(1.05);
+    filter: drop-shadow(0 0 25px pink);
+  }
+  .kissingYou {
+    transform: translateX(80%) rotate(8deg) scale(1.05);
     filter: drop-shadow(0 0 25px pink);
   }
   #kissBtn {
@@ -81,7 +86,7 @@
   /* Quiz styles */
   .quiz-box {
     margin-top: 30px;
-    display: none; /* Hidden until 10 kisses */
+    display: none;
     z-index: 2;
     position: relative;
   }
@@ -108,7 +113,6 @@
   .quiz-box button:hover {
     background: green;
   }
-  /* Fireworks canvas behind */
   #fireworks {
     position: fixed;
     top: 0;
@@ -135,14 +139,12 @@
 
 <audio id="bgMusic" src="Page14.mp3" autoplay loop></audio>
 
-<!-- Quiz Box -->
 <div class="quiz-box" id="quizBox">
   <p><b>Un Amma Enna sollanumo solliko🤗</b></p>
   <input type="text" id="quizAnswer" placeholder="Type here...">
   <button onclick="checkQuiz()">Submit</button>
 </div>
 
-<!-- Fireworks -->
 <canvas id="fireworks"></canvas>
 
 <script>
@@ -157,30 +159,25 @@ kissBtn.addEventListener("click", () => {
   kisses++;
   counter.innerText = `Kisses Given: ${kisses} 💋`;
 
-  // Move both to the center and overlap
+  // Move to center
   her.style.left = "50%";
-  her.style.transform = "translateX(-120%)"; 
   you.style.right = "50%";
-  you.style.transform = "translateX(120%)"; 
 
   setTimeout(() => {
-    her.classList.add("kissing");
-    you.classList.add("kissing");
+    her.classList.add("kissingHer");
+    you.classList.add("kissingYou");
 
-    // Floating emojis
     for (let i = 0; i < 8; i++) {
       createEmoji(["❤️","💙","💜","💖","😘"][Math.floor(Math.random()*5)]);
     }
   }, 1500);
 
-  // Separate after 3s
+  // Separate
   setTimeout(() => {
     her.style.left = "10%";
-    her.style.transform = "translateX(0)";
+    her.classList.remove("kissingHer");
     you.style.right = "10%";
-    you.style.transform = "translateX(0)";
-    her.classList.remove("kissing");
-    you.classList.remove("kissing");
+    you.classList.remove("kissingYou");
 
     if (kisses >= 10) {
       quizBox.style.display = "block";
@@ -199,7 +196,6 @@ function createEmoji(symbol) {
   setTimeout(() => emoji.remove(), 2000);
 }
 
-// Quiz check
 function checkQuiz() {
   let ans = document.getElementById("quizAnswer").value.trim();
   if (ans.length > 0) {
