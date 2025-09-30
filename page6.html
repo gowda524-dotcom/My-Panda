@@ -60,6 +60,30 @@
       color: white;
       cursor: pointer;
     }
+    <!-- Background Music -->
+<audio id="bgMusic" src="Page6.mp3" autoplay loop></audio>
+
+<script>
+  const bgMusic = document.getElementById("bgMusic");
+
+  // Mobile autoplay fix
+  document.addEventListener("DOMContentLoaded", () => {
+    // Try to play immediately
+    let playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // If autoplay blocked, wait for first tap/click
+        const resumeAudio = () => {
+          bgMusic.play();
+          document.removeEventListener("click", resumeAudio);
+          document.removeEventListener("touchstart", resumeAudio);
+        };
+        document.addEventListener("click", resumeAudio);
+        document.addEventListener("touchstart", resumeAudio);
+      });
+    }
+  });
+</script>
     /* Floating Emojis */
     .emoji {
       position: absolute;
