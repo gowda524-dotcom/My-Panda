@@ -11,16 +11,16 @@
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif; 
-            background: linear-gradient(135deg, #FFC0CB 0%, #FF69B4 100%); /* Sweet Pink Gradient */
+            background: linear-gradient(135deg, #FFC0CB 0%, #FF69B4 100%); 
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Start from the top */
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             color: #333;
             text-align: center;
             position: relative; 
-            overflow-x: hidden; /* Prevent horizontal scroll from effects */
+            overflow-x: hidden; 
             padding-bottom: 50px;
         }
         
@@ -28,7 +28,7 @@
         .firework-spark, .floating-emoji, .confetti-fall {
             position: fixed; 
             pointer-events: none;
-            z-index: 1; /* Below content */
+            z-index: 1; 
         }
         
         @keyframes float {
@@ -53,8 +53,8 @@
 
         /* --- Titles and Instructions --- */
         .main-title {
-            font-size: 2.5em; /* Adjusted size for long text */
-            color: #D32F2F; /* Deep Red */
+            font-size: 2.3em; 
+            color: #D32F2F; 
             margin-top: 30px;
             padding: 0 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
@@ -74,20 +74,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px; /* Reduced gap to bring them closer */
+            gap: 20px; 
             margin: 20px 0 40px;
             z-index: 10;
             position: relative;
             width: 90%;
-            max-width: 700px;
+            max-width: 600px;
         }
 
         .photo-frame {
-            width: 45%; /* Use percentage for responsiveness */
-            height: 300px; /* Increased fixed height */
-            max-width: 300px; 
+            width: 45%; 
+            height: 250px; /* Standardized height */
+            max-width: 250px; 
             border: 8px solid #FFD700; 
-            border-radius: 15px; /* Square/Rectangle frames for full image */
+            border-radius: 15px; 
             overflow: hidden;
             box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
             background-color: white;
@@ -96,7 +96,7 @@
         .photo-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensures full image is visible without cropping her face */
+            object-fit: cover; 
             display: block;
         }
 
@@ -123,7 +123,7 @@
 
         /* --- Flying Kiss Animation --- */
         .flying-kiss {
-            position: fixed; /* Use fixed for accurate screen-wide positioning */
+            position: fixed; 
             font-size: 3em; 
             animation-duration: 4s;
             animation-timing-function: ease-in-out;
@@ -138,7 +138,7 @@
             100% { opacity: 0; transform: translate(var(--target-x), var(--target-y)); }
         }
         
-        /* --- Quiz/Navigation Area --- */
+        /* --- Quiz/Navigation Area (Final Step) --- */
         .quiz-container {
             width: 90%;
             max-width: 500px;
@@ -146,7 +146,7 @@
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            display: none; /* Initially hidden */
+            display: none; 
             flex-direction: column;
             align-items: center;
             z-index: 10;
@@ -191,16 +191,16 @@
     <p class="kiss-count" id="kissCountDisplay">Exchanges Completed: 0 / 10</p>
 
     <div class="photo-layout">
-        <div class="photo-frame" id="receiverFrame">
-            <img src="HerPhoto.png" alt="Her Photo">
-        </div>
-        
         <div class="photo-frame" id="senderFrame">
             <img src="YourPhoto.png" alt="Your Photo">
         </div>
+        
+        <div class="photo-frame" id="receiverFrame">
+            <img src="HerPhoto.png" alt="Her Photo">
+        </div>
     </div>
     
-    <button id="kissButton">Send a Kiss! 💋</button>
+    <button id="kissButton">Send a Kiss! 😘</button>
     
     <div class="quiz-container" id="quizContainer">
         <p class="quiz-question">Pothum Pothum Lips Pain vanthurum 🤭🤭...</p>
@@ -222,11 +222,10 @@
             let exchangeCount = 0;
             let isAnimating = false;
 
-            const KISS_DELAY = 150; // ms between each kiss launch
-            const ANIMATION_DURATION = 3500; // 3.5 seconds for the flight
-            const TOTAL_KISSES_PER_EXCHANGE = 11; // 1 from her + 10 from you
+            const KISS_DELAY = 150; 
+            const ANIMATION_DURATION = 3500; 
 
-            // --- Continuous Grand Effects Logic ---
+            // --- Continuous Grand Effects Logic (Same as Page 18) ---
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚']; 
             
@@ -270,13 +269,13 @@
                 const senderRect = senderFrame.getBoundingClientRect();
                 const receiverRect = receiverFrame.getBoundingClientRect();
 
-                // Sender (Your Photo)
+                // Sender (Your Photo - Left)
                 const senderCenter = {
                     x: senderRect.left + senderRect.width / 2,
                     y: senderRect.top + senderRect.height / 2
                 };
 
-                // Receiver (Her Photo)
+                // Receiver (Her Photo - Right)
                 const receiverCenter = {
                     x: receiverRect.left + receiverRect.width / 2,
                     y: receiverRect.top + receiverRect.height / 2
@@ -285,17 +284,15 @@
                 return { senderCenter, receiverCenter };
             }
 
-            // --- Animation Logic ---
-
             // 1. Single kiss from Her Photo (Receiver) to Your Photo (Sender)
             function kissFromHerToYou() {
                 const { senderCenter, receiverCenter } = getKissTargets();
 
                 const kiss = document.createElement('span');
                 kiss.classList.add('flying-kiss');
-                kiss.textContent = '💖'; 
+                kiss.textContent = '😘'; 
 
-                // Start: Receiver Center, End: Sender Center
+                // Start: Receiver Center (right), End: Sender Center (left)
                 const targetX = senderCenter.x - receiverCenter.x;
                 const targetY = senderCenter.y - receiverCenter.y;
                 
@@ -323,7 +320,7 @@
             function kissesFromYouToHer() {
                 const { senderCenter, receiverCenter } = getKissTargets();
 
-                // Start: Sender Center, End: Receiver Center
+                // Start: Sender Center (left), End: Receiver Center (right)
                 const targetX = receiverCenter.x - senderCenter.x;
                 const targetY = receiverCenter.y - senderCenter.y;
 
@@ -345,7 +342,7 @@
                     // Apply the animation
                     kiss.style.animationName = 'flyKiss';
                     kiss.style.animationDuration = `${ANIMATION_DURATION / 1000}s`;
-                    kiss.style.animationDelay = `${KISS_DELAY * (i + 1) / 1000}s`; // Stagger the launch
+                    kiss.style.animationDelay = `${KISS_DELAY * (i + 1) / 1000}s`; 
 
                     document.body.appendChild(kiss);
                     
@@ -371,7 +368,10 @@
                 kissFromHerToYou();
 
                 // 2. Ten kisses from you to her (starts after a short pause)
-                kissesFromYouToHer();
+                // We add a short delay to ensure the single kiss has a head start/separate event
+                setTimeout(() => {
+                    kissesFromYouToHer();
+                }, 100); 
 
                 // --- Completion Timeout ---
                 // Wait for the 10th kiss to launch + animation time + a small buffer
