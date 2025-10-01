@@ -53,15 +53,19 @@
             margin-bottom: 30px;
         }
 
-        /* --- Central Photo Carousel Container --- */
+        /* --- Central Photo Carousel Container - **FIXED SIZE** --- */
         #carousel-container {
-            width: 300px; 
-            height: 300px;
+            /* Max width/height 920px, but using viewport height for better mobile fit */
+            width: 85vh; 
+            height: 85vh; 
+            max-width: 920px; 
+            max-height: 920px; 
+            
             position: relative;
-            margin-bottom: 40px;
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
-            border: 10px solid white;
-            border-radius: 15px;
+            margin: 10px 0 20px;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            border: 15px solid white;
+            border-radius: 20px;
             overflow: hidden; 
             background-color: #333;
         }
@@ -92,7 +96,7 @@
             position: absolute;
             z-index: 1;
             /* Rotation effect */
-            animation: gentleRotate 8s linear infinite; 
+            animation: gentleRotate 12s linear infinite; /* Slower rotation for smoother look */
         }
         
         /* --- Quiz Area --- */
@@ -109,6 +113,7 @@
             max-width: 90%;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
+            margin-bottom: 20px; /* Ensure space at the bottom */
         }
         
         #quizContainer.active {
@@ -144,7 +149,7 @@
             transition: background-color 0.3s;
         }
         
-        /* --- Grand Effects CSS --- */
+        /* --- Grand Effects CSS (Unchanged) --- */
         .firework-spark, .floating-emoji, .confetti-fall {
             position: fixed; 
             pointer-events: none;
@@ -224,7 +229,7 @@
                 { file: 'Cheek30.jpg' }
             ];
 
-            // --- 2. GRAND EFFECTS LOGIC (Continuous from Page 19) ---
+            // --- 2. GRAND EFFECTS LOGIC (Unchanged) ---
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚']; 
             
@@ -266,13 +271,13 @@
             // --- 3. CAROUSEL LOGIC ---
 
             function createSlides() {
-                slidesData.forEach((data, index) => {
+                slidesData.forEach((data) => {
                     const slideDiv = document.createElement('div');
                     slideDiv.classList.add('slide');
                     
                     const img = document.createElement('img');
                     img.src = data.file;
-                    img.alt = `Cheek Photo ${index + 1}`;
+                    img.alt = `Cheek Photo`;
                     
                     slideDiv.appendChild(img);
                     carouselContainer.appendChild(slideDiv);
@@ -318,9 +323,13 @@
                 showSlide(0);
                 slideshowInterval = setInterval(nextSlide, SLIDE_DURATION);
                 
-                // Try to play music
+                // **MUSIC AUTOPLAY FIX**
                 if (music) {
-                    music.play().catch(e => {}); 
+                    music.play().catch(e => {
+                        // This handles the browser block. The music will likely start when the user interacts 
+                        // with the page (like clicking the input field or submit button).
+                        console.log("Music autoplay blocked. It will likely start on the next user tap.");
+                    }); 
                 }
             }
 
