@@ -6,7 +6,7 @@
     <title>The Digital Flying Kiss</title>
     
     <style>
-        /* General Setup */
+        /* --- General Setup & Continuous Effects --- */
         body {
             margin: 0;
             padding: 0;
@@ -14,30 +14,59 @@
             background: linear-gradient(135deg, #FFC0CB 0%, #FF69B4 100%); /* Sweet Pink Gradient */
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Start from the top */
             align-items: center;
             min-height: 100vh;
             color: #333;
             text-align: center;
             position: relative; 
-            overflow: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll from effects */
+            padding-bottom: 50px;
         }
         
-        /* Titles and Instructions */
-        .main-title {
-            font-size: 3em; 
-            color: #D32F2F; /* Deep Red */
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            z-index: 10;
+        /* Continuous Effects CSS (Confetti, Fireworks) */
+        .firework-spark, .floating-emoji, .confetti-fall {
+            position: fixed; 
+            pointer-events: none;
+            z-index: 1; /* Below content */
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh); opacity: 0; } 
+            50% { transform: translateY(50vh) rotate(15deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(-15deg); opacity: 0; }
+        }
+        
+        .floating-emoji {
+            font-size: 2.5em; 
+            animation: float 10s linear infinite; 
+        }
+        
+        @keyframes confetti-fall-slow {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
         }
 
-        .subtitle {
-            font-size: 1.2em; 
-            margin-bottom: 30px; 
-            color: #8A2BE2; /* Blue-Violet */
+        .confetti-fall {
+            animation: confetti-fall-slow 15s linear infinite;
+        }
+
+        /* --- Titles and Instructions --- */
+        .main-title {
+            font-size: 2.5em; /* Adjusted size for long text */
+            color: #D32F2F; /* Deep Red */
+            margin-top: 30px;
+            padding: 0 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             z-index: 10;
+        }
+        
+        .kiss-count {
+            font-size: 1.8em;
+            color: #8A2BE2; 
             font-weight: bold;
+            margin-bottom: 20px;
+            z-index: 10;
         }
 
         /* --- Photo Container Layout --- */
@@ -45,57 +74,57 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 50px;
-            margin-bottom: 40px;
+            gap: 20px; /* Reduced gap to bring them closer */
+            margin: 20px 0 40px;
             z-index: 10;
             position: relative;
+            width: 90%;
+            max-width: 700px;
         }
 
         .photo-frame {
-            width: 200px; 
-            height: 200px;
-            border: 5px solid #FFD700; /* Gold frame */
-            border-radius: 50%; /* Circular images */
+            width: 45%; /* Use percentage for responsiveness */
+            height: 300px; /* Increased fixed height */
+            max-width: 300px; 
+            border: 8px solid #FFD700; 
+            border-radius: 15px; /* Square/Rectangle frames for full image */
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
             background-color: white;
-            transition: transform 0.3s;
         }
         
         .photo-frame img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Ensures full image is visible without cropping her face */
+            display: block;
         }
 
-        /* Hover effect for fun */
-        .photo-frame:hover {
-            transform: scale(1.05);
-        }
-        
         /* --- Kiss Button --- */
         #kissButton {
             padding: 15px 30px;
             font-size: 1.5em;
-            background-color: #FF1493; /* Deep Pink */
+            background-color: #FF1493; 
             color: white;
             border: none;
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             transition: background-color 0.3s, transform 0.2s;
             z-index: 10;
+            margin-bottom: 40px;
         }
 
         #kissButton:disabled {
             background-color: #ccc;
             cursor: not-allowed;
+            transform: scale(0.95);
         }
 
         /* --- Flying Kiss Animation --- */
         .flying-kiss {
-            position: absolute;
-            font-size: 2em; 
+            position: fixed; /* Use fixed for accurate screen-wide positioning */
+            font-size: 3em; 
             animation-duration: 4s;
             animation-timing-function: ease-in-out;
             opacity: 0;
@@ -103,39 +132,53 @@
             pointer-events: none;
         }
 
-        /* Keyframes for the kiss movement: Start (Source) -> Target -> Fade Out */
         @keyframes flyKiss {
-            0% { 
-                opacity: 1;
-                transform: translate(0, 0); 
-                filter: drop-shadow(0 0 5px pink);
-            }
-            50% { 
-                opacity: 1; 
-                /* The main arc of the flight towards the middle of the receiving photo */
-                transform: translate(var(--target-x), var(--target-y)); 
-            }
-            100% { 
-                opacity: 0; 
-                /* Fade out slightly beyond the target */
-                transform: translate(var(--target-x), var(--target-y)); 
-            }
+            0% { opacity: 1; transform: translate(0, 0); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: translate(var(--target-x), var(--target-y)); }
         }
         
-        /* --- Navigation Button (Midpoint) --- */
-        #nextPageButton {
-            display: none;
-            padding: 20px 40px;
-            font-size: 1.8em;
-            background-color: #4CAF50; /* Green for GO */
+        /* --- Quiz/Navigation Area --- */
+        .quiz-container {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .quiz-question {
+            font-size: 1.5em;
+            color: #D32F2F; 
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #quizAnswer {
+            width: 80%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 3px solid #FF69B4; 
+            border-radius: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            outline: none;
+        }
+        
+        #submitAnswer {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            border-radius: 40px;
+            border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            margin-top: 30px;
-            transition: background-color 0.3s, transform 0.2s;
-            z-index: 10;
+            transition: background-color 0.3s;
         }
 
     </style>
@@ -143,22 +186,27 @@
 <body>
     <audio id="kissSound" src="Kiss.mp3"></audio>
 
-    <h1 class="main-title">Send Me Your Love!</h1>
-    <p class="subtitle">Click the button to send 10 flying kisses and unlock our next chapter! 💖</p>
+    <h1 class="main-title">Oii Kolanthaaa un Frnd ku Flying kiss 😘 kudu... Happy Birthday kolanthaaa 😚</h1>
+    
+    <p class="kiss-count" id="kissCountDisplay">Exchanges Completed: 0 / 10</p>
 
     <div class="photo-layout">
-        <div class="photo-frame" id="senderFrame">
-            <img src="YourPhoto.png" alt="Your Photo">
-        </div>
-        
         <div class="photo-frame" id="receiverFrame">
             <img src="HerPhoto.png" alt="Her Photo">
+        </div>
+        
+        <div class="photo-frame" id="senderFrame">
+            <img src="YourPhoto.png" alt="Your Photo">
         </div>
     </div>
     
     <button id="kissButton">Send a Kiss! 💋</button>
     
-    <button id="nextPageButton">Start Chapter 2: The Midpoint ➡️</button>
+    <div class="quiz-container" id="quizContainer">
+        <p class="quiz-question">Pothum Pothum Lips Pain vanthurum 🤭🤭...</p>
+        <input type="text" id="quizAnswer" placeholder="Type anything...">
+        <button id="submitAnswer">Submit 🤗</button>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -166,112 +214,195 @@
             const senderFrame = document.getElementById('senderFrame');
             const receiverFrame = document.getElementById('receiverFrame');
             const kissSound = document.getElementById('kissSound');
-            const nextPageButton = document.getElementById('nextPageButton');
-            const mainTitle = document.querySelector('.main-title');
-            const subtitle = document.querySelector('.subtitle');
+            const kissCountDisplay = document.getElementById('kissCountDisplay');
+            const quizContainer = document.getElementById('quizContainer');
+            const submitAnswer = document.getElementById('submitAnswer');
+            const body = document.body;
 
-            const KISS_COUNT = 10;
-            const KISS_DELAY = 300; // ms between each kiss launch
-            const ANIMATION_DURATION = 4000; // 4 seconds for the flight
-
+            let exchangeCount = 0;
             let isAnimating = false;
+
+            const KISS_DELAY = 150; // ms between each kiss launch
+            const ANIMATION_DURATION = 3500; // 3.5 seconds for the flight
+            const TOTAL_KISSES_PER_EXCHANGE = 11; // 1 from her + 10 from you
+
+            // --- Continuous Grand Effects Logic ---
+            const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
+            const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚']; 
+            
+            setInterval(createFloatingEmoji, 300); 
+            function createFloatingEmoji() {
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                body.appendChild(emoji);
+                const size = Math.random() * 1.5 + 1.5;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.animationDuration = `${Math.random() * 8 + 10}s`;
+                emoji.style.animationDelay = `${Math.random() * 5}s`;
+                emoji.style.opacity = Math.random() * 0.5 + 0.5; 
+                setTimeout(() => emoji.remove(), 20000);
+            }
+
+            setInterval(createConfettiPiece, 200); 
+            function createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`; 
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 10 + 15}s`; 
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                confetti.style.opacity = Math.random() * 0.7 + 0.3; 
+                
+                setTimeout(() => confetti.remove(), 25000); 
+            }
 
             // --- Get Coordinates ---
             function getKissTargets() {
                 const senderRect = senderFrame.getBoundingClientRect();
                 const receiverRect = receiverFrame.getBoundingClientRect();
 
+                // Sender (Your Photo)
                 const senderCenter = {
                     x: senderRect.left + senderRect.width / 2,
                     y: senderRect.top + senderRect.height / 2
                 };
 
+                // Receiver (Her Photo)
                 const receiverCenter = {
                     x: receiverRect.left + receiverRect.width / 2,
                     y: receiverRect.top + receiverRect.height / 2
                 };
-
-                // Calculate the translation needed for the kiss to start at sender and land at receiver
-                const targetX = receiverCenter.x - senderCenter.x;
-                const targetY = receiverCenter.y - senderCenter.y;
                 
-                return { senderCenter, targetX, targetY };
+                return { senderCenter, receiverCenter };
             }
 
-
             // --- Animation Logic ---
-            function launchKiss(index) {
-                const { senderCenter, targetX, targetY } = getKissTargets();
+
+            // 1. Single kiss from Her Photo (Receiver) to Your Photo (Sender)
+            function kissFromHerToYou() {
+                const { senderCenter, receiverCenter } = getKissTargets();
 
                 const kiss = document.createElement('span');
                 kiss.classList.add('flying-kiss');
-                kiss.textContent = '😘'; 
-                
-                // Set the initial position (sender center)
-                kiss.style.left = `${senderCenter.x}px`;
-                kiss.style.top = `${senderCenter.y}px`;
-                
-                // Set the CSS variables for the animation
-                // Add a little randomness (±15px) to the target to make the flight path less robotic
-                const randomX = targetX + (Math.random() - 0.5) * 30;
-                const randomY = targetY + (Math.random() - 0.5) * 30;
+                kiss.textContent = '💖'; 
 
-                kiss.style.setProperty('--target-x', `${randomX}px`);
-                kiss.style.setProperty('--target-y', `${randomY}px`);
+                // Start: Receiver Center, End: Sender Center
+                const targetX = senderCenter.x - receiverCenter.x;
+                const targetY = senderCenter.y - receiverCenter.y;
+                
+                kiss.style.left = `${receiverCenter.x}px`;
+                kiss.style.top = `${receiverCenter.y}px`;
+                
+                // Set CSS variables for animation
+                kiss.style.setProperty('--target-x', `${targetX}px`);
+                kiss.style.setProperty('--target-y', `${targetY}px`);
 
-                // Apply the animation
                 kiss.style.animationName = 'flyKiss';
                 kiss.style.animationDuration = `${ANIMATION_DURATION / 1000}s`;
-                kiss.style.animationDelay = `${index * KISS_DELAY / 1000}s`; // Stagger the launch
+                kiss.style.animationDelay = '0s';
 
                 document.body.appendChild(kiss);
                 
-                // Play sound
+                // Play sound once
                 kissSound.currentTime = 0;
                 kissSound.play().catch(e => console.log('Kiss sound failed to play.'));
 
-                // Remove the kiss element after animation is complete
-                setTimeout(() => {
-                    kiss.remove();
-                }, ANIMATION_DURATION + (index * KISS_DELAY));
+                setTimeout(() => kiss.remove(), ANIMATION_DURATION);
             }
 
+            // 2. Ten kisses from Your Photo (Sender) to Her Photo (Receiver)
+            function kissesFromYouToHer() {
+                const { senderCenter, receiverCenter } = getKissTargets();
 
-            // --- Button Click Handler ---
-            kissButton.addEventListener('click', () => {
-                if (isAnimating) return;
+                // Start: Sender Center, End: Receiver Center
+                const targetX = receiverCenter.x - senderCenter.x;
+                const targetY = receiverCenter.y - senderCenter.y;
+
+                for (let i = 0; i < 10; i++) {
+                    const kiss = document.createElement('span');
+                    kiss.classList.add('flying-kiss');
+                    kiss.textContent = '😘'; 
+
+                    kiss.style.left = `${senderCenter.x}px`;
+                    kiss.style.top = `${senderCenter.y}px`;
+                    
+                    // Add a little randomness (±20px)
+                    const randomX = targetX + (Math.random() - 0.5) * 40;
+                    const randomY = targetY + (Math.random() - 0.5) * 40;
+
+                    kiss.style.setProperty('--target-x', `${randomX}px`);
+                    kiss.style.setProperty('--target-y', `${randomY}px`);
+
+                    // Apply the animation
+                    kiss.style.animationName = 'flyKiss';
+                    kiss.style.animationDuration = `${ANIMATION_DURATION / 1000}s`;
+                    kiss.style.animationDelay = `${KISS_DELAY * (i + 1) / 1000}s`; // Stagger the launch
+
+                    document.body.appendChild(kiss);
+                    
+                    // Play sound with each kiss launch
+                    setTimeout(() => {
+                        kissSound.currentTime = 0;
+                        kissSound.play().catch(e => {});
+                    }, KISS_DELAY * (i + 1));
+
+                    // Remove the kiss element after animation is complete
+                    setTimeout(() => kiss.remove(), ANIMATION_DURATION + (KISS_DELAY * (i + 1)));
+                }
+            }
+
+            // --- Main Exchange Handler ---
+            function startKissExchange() {
+                if (isAnimating || exchangeCount >= 10) return;
 
                 isAnimating = true;
                 kissButton.disabled = true;
 
-                for (let i = 0; i < KISS_COUNT; i++) {
-                    launchKiss(i);
-                }
+                // 1. Single kiss from her to you (starts immediately)
+                kissFromHerToYou();
+
+                // 2. Ten kisses from you to her (starts after a short pause)
+                kissesFromYouToHer();
 
                 // --- Completion Timeout ---
-                // Add an extra second for flair after the last kiss finishes
-                const totalAnimationTime = (KISS_COUNT * KISS_DELAY) + ANIMATION_DURATION + 1000; 
+                // Wait for the 10th kiss to launch + animation time + a small buffer
+                const totalAnimationTime = (10 * KISS_DELAY) + ANIMATION_DURATION + 500; 
 
                 setTimeout(() => {
                     isAnimating = false;
-                    
-                    // Final Reveal
-                    mainTitle.textContent = "The Kisses Landed! My Love is All Yours. 🥰";
-                    subtitle.textContent = "You've earned the key to the next major milestone in our journey!";
-                    kissButton.style.display = 'none';
-                    nextPageButton.style.display = 'block';
+                    exchangeCount++;
+                    kissCountDisplay.textContent = `Exchanges Completed: ${exchangeCount} / 10`;
+
+                    if (exchangeCount < 10) {
+                        kissButton.disabled = false;
+                    } else {
+                        // --- Game Over: Reveal Quiz ---
+                        kissButton.style.display = 'none';
+                        quizContainer.style.display = 'flex';
+                    }
 
                 }, totalAnimationTime);
-            });
+            }
 
-            // --- Navigation ---
-            nextPageButton.addEventListener('click', () => {
-                // Ensure sound is paused before navigating
-                kissSound.pause();
+            // --- Event Listeners ---
+            kissButton.addEventListener('click', startKissExchange);
+            
+            // --- Quiz Navigation ---
+            submitAnswer.addEventListener('click', () => {
+                // Any text submission automatically navigates to the next page
                 window.location.href = 'page20.html'; 
             });
-            
-            // Re-calculate coordinates on resize
+
+            // Re-calculate coordinates on resize to ensure correct kiss trajectory
             window.addEventListener('resize', getKissTargets);
         });
     </script>
