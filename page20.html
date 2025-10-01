@@ -20,80 +20,74 @@
             color: white;
             text-align: center;
             position: relative; 
-            overflow: hidden; /* Important for full-screen effects */
+            overflow: hidden; 
         }
         
-        /* Elements for the slideshow and text */
-        .content-container {
-            position: relative;
+        /* --- Slideshow Background Container --- */
+        #slideshow-background {
+            position: fixed; /* Covers the whole viewport */
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100%;
+            z-index: 1; /* Lowest Z-index */
+        }
+
+        .slide-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover; /* Ensures image covers, centered */
+            background-position: center center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out; /* Smooth cross-fade */
+        }
+
+        .slide-background.active {
+            opacity: 1;
+        }
+
+        /* --- Content Overlay (Titles, Captions, Quiz) --- */
+        .content-overlay {
+            position: relative; /* Stacks above slideshow */
+            width: 100%;
+            min-height: 100vh; /* Ensures it covers the full height */
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between; /* Space out top titles, center caption, bottom quiz */
             align-items: center;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.2); /* Slight overlay for contrast */
+            z-index: 10; /* Higher Z-index than slideshow */
+            background: rgba(0, 0, 0, 0.4); /* Darker overlay for text readability */
+            padding: 20px; /* Add some padding around edges */
+            box-sizing: border-box; /* Include padding in width/height */
         }
 
         /* --- Titles --- */
+        .header-titles {
+            margin-top: 30px;
+            z-index: 12; /* Above other content */
+        }
         .main-title {
             font-size: 3.5em; 
             font-weight: bold;
             color: #FFD700; /* Gold */
-            text-shadow: 3px 3px 5px rgba(0,0,0,0.5);
-            margin: 10px 0 0;
+            text-shadow: 3px 3px 3px rgba(0,0,0,0.7);
+            margin: 0;
+            padding: 0 10px;
         }
         
         .subtitle {
             font-size: 1.5em; 
             color: #f0f; /* Magenta */
-            text-shadow: 2px 2px 3px rgba(0,0,0,0.4);
-            margin-bottom: 20px;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.6);
+            margin-top: 5px;
+            padding: 0 10px;
         }
 
-        /* --- Slideshow Area --- */
-        #slideshow-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5; /* Below the text and quiz */
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out; /* Fade transition */
-        }
-
-        .slide.active {
-            opacity: 1;
-        }
-
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures image fills the screen, may crop but looks best for background */
-            position: absolute;
-            top: 0;
-            left: 0;
-            /* Reset transform for unique effects */
-            transform: none; 
-            transition: transform 4s linear, filter 1s; /* Transition for unique effects */
-        }
-        
-        /* --- Caption Overlay --- */
-        .caption {
-            position: absolute;
-            bottom: 10%;
-            left: 50%;
-            transform: translateX(-50%);
+        /* --- Caption Display Area --- */
+        #caption-display {
             background: rgba(0, 0, 0, 0.6);
             padding: 15px 25px;
             border-radius: 10px;
@@ -104,16 +98,18 @@
             pointer-events: none;
             text-shadow: 1px 1px 2px #FF69B4;
             width: 80%;
-            max-width: 400px;
+            max-width: 450px;
+            margin: auto; /* Centers it vertically when not quiz */
+            transform: translateY(0); /* Reset for quiz transition */
+            z-index: 11;
         }
-        
-        .slide.active .caption {
+
+        #caption-display.active {
             opacity: 1;
         }
         
         /* --- Quiz Area --- */
         #quizContainer {
-            position: relative;
             background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 15px;
@@ -124,9 +120,16 @@
             z-index: 20;
             color: #333;
             max-width: 90%;
-            margin-top: 20px;
+            margin-bottom: 50px; /* Space from bottom */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
         }
         
+        #quizContainer.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .quiz-question {
             font-size: 1.6em;
             color: #FF1493; 
@@ -183,38 +186,43 @@
             animation: confetti-fall-slow 15s linear infinite;
         }
 
-        /* Unique Effects Keyframes */
+        /* --- Dynamic Photo Effects (on the background image) --- */
 
-        @keyframes spin {
-            0% { transform: rotate(0deg) scale(1); }
-            100% { transform: rotate(360deg) scale(1.05); }
+        /* Ken Burns Zoom & Pan */
+        @keyframes kenBurnsZoomPan {
+            0% { background-size: 100%; background-position: 0% 0%; }
+            50% { background-size: 120%; background-position: 100% 100%; }
+            100% { background-size: 100%; background-position: 0% 0%; }
         }
 
-        @keyframes zoomPan {
-            0% { transform: scale(1) translate(0, 0); }
-            50% { transform: scale(1.15) translate(-5%, -5%); }
-            100% { transform: scale(1) translate(0, 0); }
+        /* Gentle Zoom */
+        @keyframes gentleZoom {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
         }
         
-        @keyframes bounceIn {
-            0% { transform: scale(0.8); filter: blur(10px); }
-            50% { transform: scale(1.05); filter: blur(0px); }
-            100% { transform: scale(1); }
+        /* Subtle Horizontal Pan */
+        @keyframes horizontalPan {
+            0% { background-position: 0% center; }
+            100% { background-position: 100% center; }
         }
 
     </style>
 </head>
 <body>
-    <audio id="bgMusic" src="Page20.mp3" loop autoplay preload="auto"></audio>
+    <audio id="bgMusic" src="Page20.mp3" loop preload="auto"></audio>
 
-    <div class="content-container">
-        <h1 class="main-title">Cheeks Part-3</h1>
-        <p class="subtitle">Achoo Azhagu🙈Killitae erukanum</p>
+    <div id="slideshow-background">
+        </div>
+
+    <div class="content-overlay">
+        <div class="header-titles">
+            <h1 class="main-title">Cheeks Part-3</h1>
+            <p class="subtitle">Achoo Azhagu🙈Killitae erukanum</p>
+        </div>
         
-        <div id="slideshow-container">
-            </div>
-
-        <div id="quizContainer">
+        <div id="caption-display"></div> <div id="quizContainer">
             <p class="quiz-question">Iniku oru time niyae killiko...</p>
             <input type="text" id="quizAnswer" placeholder="Type anything...">
             <button id="submitAnswer">Submit 🤗</button>
@@ -224,27 +232,28 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const body = document.body;
-            const slideshowContainer = document.getElementById('slideshow-container');
+            const slideshowBackground = document.getElementById('slideshow-background');
+            const captionDisplay = document.getElementById('caption-display');
             const quizContainer = document.getElementById('quizContainer');
             const submitAnswer = document.getElementById('submitAnswer');
             const music = document.getElementById('bgMusic');
 
-            const SLIDE_DURATION = 4500; // 4.5 seconds per photo
+            const SLIDE_DURATION = 4000; // 4 seconds per photo (shorter for faster pace)
             let currentSlideIndex = 0;
             let slideshowInterval;
             
             // --- 1. SLIDESHOW DATA (Photos and Captions) ---
             const slidesData = [
-                { file: 'Cheek21.jpg', caption: 'Our cheeks touched, and the world paused.', effect: 'spin' },
-                { file: 'Cheek22.jpg', caption: 'A smile so bright, it lights up my life.', effect: 'zoomPan' },
-                { file: 'Cheek23.jpg', caption: 'Remember this laugh? Pure gold.', effect: 'bounceIn' },
-                { file: 'Cheek24.jpg', caption: 'Every angle, every moment, perfection.', effect: 'zoomPan' },
-                { file: 'Cheek25.jpg', caption: 'The sweet blush of our memories.', effect: 'spin' },
-                { file: 'Cheek26.jpg', caption: 'Just us, being wonderfully us.', effect: 'bounceIn' },
-                { file: 'Cheek27.jpg', caption: 'My favorite view, always.', effect: 'zoomPan' },
-                { file: 'Cheek28.jpg', caption: 'Where joy lives, forever in your eyes.', effect: 'spin' },
-                { file: 'Cheek29.jpg', caption: 'Wrapped in warmth, our story unfolds.', effect: 'bounceIn' },
-                { file: 'Cheek30.jpg', caption: 'And these cheeks will share a thousand more smiles. ❤️', effect: 'zoomPan' }
+                { file: 'Cheek21.jpg', caption: 'Our cheeks touched, and the world paused.', effect: 'kenBurnsZoomPan' },
+                { file: 'Cheek22.jpg', caption: 'A smile so bright, it lights up my life.', effect: 'gentleZoom' },
+                { file: 'Cheek23.jpg', caption: 'Remember this laugh? Pure gold.', effect: 'horizontalPan' },
+                { file: 'Cheek24.jpg', caption: 'Every angle, every moment, perfection.', effect: 'kenBurnsZoomPan' },
+                { file: 'Cheek25.jpg', caption: 'The sweet blush of our memories.', effect: 'gentleZoom' },
+                { file: 'Cheek26.jpg', caption: 'Just us, being wonderfully us.', effect: 'horizontalPan' },
+                { file: 'Cheek27.jpg', caption: 'My favorite view, always.', effect: 'kenBurnsZoomPan' },
+                { file: 'Cheek28.jpg', caption: 'Where joy lives, forever in your eyes.', effect: 'gentleZoom' },
+                { file: 'Cheek29.jpg', caption: 'Wrapped in warmth, our story unfolds.', effect: 'horizontalPan' },
+                { file: 'Cheek30.jpg', caption: 'And these cheeks will share a thousand more smiles. ❤️', effect: 'kenBurnsZoomPan' }
             ];
 
             // --- 2. GRAND EFFECTS LOGIC (Copied from Page 19) ---
@@ -291,61 +300,52 @@
             function createSlides() {
                 slidesData.forEach((data, index) => {
                     const slideDiv = document.createElement('div');
-                    slideDiv.classList.add('slide');
-                    slideDiv.setAttribute('data-index', index);
-                    
-                    const img = document.createElement('img');
-                    img.src = data.file;
-                    img.alt = `Cheek Photo ${index + 1}`;
+                    slideDiv.classList.add('slide-background');
+                    slideDiv.style.backgroundImage = `url(${data.file})`;
                     
                     // Apply unique animation based on data
-                    if (data.effect === 'spin') {
-                        img.style.animation = 'spin 15s linear infinite alternate';
-                    } else if (data.effect === 'zoomPan') {
-                        img.style.animation = 'zoomPan 20s ease-in-out infinite alternate';
-                    } else if (data.effect === 'bounceIn') {
-                        img.style.animation = 'bounceIn 1s forwards'; // Non-looping entrance
+                    if (data.effect === 'kenBurnsZoomPan') {
+                        slideDiv.style.animation = 'kenBurnsZoomPan ' + (SLIDE_DURATION / 1000 + 2) + 's ease-in-out infinite alternate';
+                    } else if (data.effect === 'gentleZoom') {
+                        slideDiv.style.animation = 'gentleZoom ' + (SLIDE_DURATION / 1000 + 2) + 's ease-in-out infinite alternate';
+                    } else if (data.effect === 'horizontalPan') {
+                        slideDiv.style.animation = 'horizontalPan ' + (SLIDE_DURATION / 1000 + 2) + 's linear infinite alternate';
                     }
 
-                    const captionDiv = document.createElement('div');
-                    captionDiv.classList.add('caption');
-                    captionDiv.textContent = data.caption;
-
-                    slideDiv.appendChild(img);
-                    slideDiv.appendChild(captionDiv);
-                    slideshowContainer.appendChild(slideDiv);
+                    slideshowBackground.appendChild(slideDiv);
                 });
             }
 
             function showSlide(index) {
-                const slides = document.querySelectorAll('.slide');
+                const slides = document.querySelectorAll('.slide-background');
                 if (slides.length === 0) return;
 
-                // Deactivate all slides
                 slides.forEach(slide => slide.classList.remove('active'));
-
-                // Activate the current slide
+                
                 const targetSlide = slides[index];
                 if (targetSlide) {
                     targetSlide.classList.add('active');
+                    captionDisplay.textContent = slidesData[index].caption;
+                    captionDisplay.classList.add('active'); // Show caption
                 }
             }
             
             function nextSlide() {
-                // If we're at the last slide, stop the slideshow and reveal the quiz
                 if (currentSlideIndex >= slidesData.length - 1) {
                     clearInterval(slideshowInterval);
+                    captionDisplay.classList.remove('active'); // Hide final caption
                     
-                    // Pause the music slightly for dramatic effect
+                    // Slightly dim music and stop looping
                     if (music) {
                         music.volume = 0.5; 
                         music.loop = false;
                     } 
                     
-                    // Reveal the final quiz
+                    // Reveal the final quiz after a small delay
                     setTimeout(() => {
                         quizContainer.style.display = 'flex';
-                    }, SLIDE_DURATION / 2); // Wait for the transition to settle
+                        quizContainer.classList.add('active');
+                    }, 1000); // Wait for the last slide transition to settle
                     return;
                 }
 
@@ -358,15 +358,17 @@
                 showSlide(0);
                 slideshowInterval = setInterval(nextSlide, SLIDE_DURATION);
                 
-                // Ensure music starts playing (in case autoplay was blocked)
+                // Try to play music
                 if (music) {
-                    music.play().catch(e => console.warn("Music autoplay failed."));
+                    music.play().catch(e => {
+                        console.log("Music autoplay blocked, waiting for user interaction.");
+                        // Optional: Add a subtle instruction for the user to tap to play music
+                    });
                 }
             }
 
             // --- 4. NAVIGATION ---
             submitAnswer.addEventListener('click', () => {
-                // Stop music and effects before navigating
                 if (music) music.pause();
                 window.location.href = 'page21.html'; 
             });
