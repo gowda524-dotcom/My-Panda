@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Digital Flying Kiss</title>
+    
+    <style>
+        /* General Setup */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #FFC0CB 0%, #FF69B4 100%); /* Sweet Pink Gradient */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            text-align: center;
+            position: relative; 
+            overflow: hidden;
+        }
+        
+        /* Titles and Instructions */
+        .main-title {
+            font-size: 3em; 
+            color: #D32F2F; /* Deep Red */
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .subtitle {
+            font-size: 1.2em; 
+            margin-bottom: 30px; 
+            color: #8A2BE2; /* Blue-Violet */
+            z-index: 10;
+            font-weight: bold;
+        }
+
+        /* --- Photo Container Layout --- */
+        .photo-layout {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            margin-bottom: 40px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .photo-frame {
+            width: 200px; 
+            height: 200px;
+            border: 5px solid #FFD700; /* Gold frame */
+            border-radius: 50%; /* Circular images */
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            background-color: white;
+            transition: transform 0.3s;
+        }
+        
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Hover effect for fun */
+        .photo-frame:hover {
+            transform: scale(1.05);
+        }
+        
+        /* --- Kiss Button --- */
+        #kissButton {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background-color: #FF1493; /* Deep Pink */
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: background-color 0.3s, transform 0.2s;
+            z-index: 10;
+        }
+
+        #kissButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* --- Flying Kiss Animation --- */
+        .flying-kiss {
+            position: absolute;
+            font-size: 2em; 
+            animation-duration: 4s;
+            animation-timing-function: ease-in-out;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        /* Keyframes for the kiss movement: Start (Source) -> Target -> Fade Out */
+        @keyframes flyKiss {
+            0% { 
+                opacity: 1;
+                transform: translate(0, 0); 
+                filter: drop-shadow(0 0 5px pink);
+            }
+            50% { 
+                opacity: 1; 
+                /* The main arc of the flight towards the middle of the receiving photo */
+                transform: translate(var(--target-x), var(--target-y)); 
+            }
+            100% { 
+                opacity: 0; 
+                /* Fade out slightly beyond the target */
+                transform: translate(var(--target-x), var(--target-y)); 
+            }
+        }
+        
+        /* --- Navigation Button (Midpoint) --- */
+        #nextPageButton {
+            display: none;
+            padding: 20px 40px;
+            font-size: 1.8em;
+            background-color: #4CAF50; /* Green for GO */
+            color: white;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            margin-top: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+            z-index: 10;
+        }
+
+    </style>
+</head>
+<body>
+    <audio id="kissSound" src="Kiss.mp3"></audio>
+
+    <h1 class="main-title">Send Me Your Love!</h1>
+    <p class="subtitle">Click the button to send 10 flying kisses and unlock our next chapter! 💖</p>
+
+    <div class="photo-layout">
+        <div class="photo-frame" id="senderFrame">
+            <img src="YourPhoto.png" alt="Your Photo">
+        </div>
+        
+        <div class="photo-frame" id="receiverFrame">
+            <img src="HerPhoto.png" alt="Her Photo">
+        </div>
+    </div>
+    
+    <button id="kissButton">Send a Kiss! 💋</button>
+    
+    <button id="nextPageButton">Start Chapter 2: The Midpoint ➡️</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const kissButton = document.getElementById('kissButton');
+            const senderFrame = document.getElementById('senderFrame');
+            const receiverFrame = document.getElementById('receiverFrame');
+            const kissSound = document.getElementById('kissSound');
+            const nextPageButton = document.getElementById('nextPageButton');
+            const mainTitle = document.querySelector('.main-title');
+            const subtitle = document.querySelector('.subtitle');
+
+            const KISS_COUNT = 10;
+            const KISS_DELAY = 300; // ms between each kiss launch
+            const ANIMATION_DURATION = 4000; // 4 seconds for the flight
+
+            let isAnimating = false;
+
+            // --- Get Coordinates ---
+            function getKissTargets() {
+                const senderRect = senderFrame.getBoundingClientRect();
+                const receiverRect = receiverFrame.getBoundingClientRect();
+
+                const senderCenter = {
+                    x: senderRect.left + senderRect.width / 2,
+                    y: senderRect.top + senderRect.height / 2
+                };
+
+                const receiverCenter = {
+                    x: receiverRect.left + receiverRect.width / 2,
+                    y: receiverRect.top + receiverRect.height / 2
+                };
+
+                // Calculate the translation needed for the kiss to start at sender and land at receiver
+                const targetX = receiverCenter.x - senderCenter.x;
+                const targetY = receiverCenter.y - senderCenter.y;
+                
+                return { senderCenter, targetX, targetY };
+            }
+
+
+            // --- Animation Logic ---
+            function launchKiss(index) {
+                const { senderCenter, targetX, targetY } = getKissTargets();
+
+                const kiss = document.createElement('span');
+                kiss.classList.add('flying-kiss');
+                kiss.textContent = '😘'; 
+                
+                // Set the initial position (sender center)
+                kiss.style.left = `${senderCenter.x}px`;
+                kiss.style.top = `${senderCenter.y}px`;
+                
+                // Set the CSS variables for the animation
+                // Add a little randomness (±15px) to the target to make the flight path less robotic
+                const randomX = targetX + (Math.random() - 0.5) * 30;
+                const randomY = targetY + (Math.random() - 0.5) * 30;
+
+                kiss.style.setProperty('--target-x', `${randomX}px`);
+                kiss.style.setProperty('--target-y', `${randomY}px`);
+
+                // Apply the animation
+                kiss.style.animationName = 'flyKiss';
+                kiss.style.animationDuration = `${ANIMATION_DURATION / 1000}s`;
+                kiss.style.animationDelay = `${index * KISS_DELAY / 1000}s`; // Stagger the launch
+
+                document.body.appendChild(kiss);
+                
+                // Play sound
+                kissSound.currentTime = 0;
+                kissSound.play().catch(e => console.log('Kiss sound failed to play.'));
+
+                // Remove the kiss element after animation is complete
+                setTimeout(() => {
+                    kiss.remove();
+                }, ANIMATION_DURATION + (index * KISS_DELAY));
+            }
+
+
+            // --- Button Click Handler ---
+            kissButton.addEventListener('click', () => {
+                if (isAnimating) return;
+
+                isAnimating = true;
+                kissButton.disabled = true;
+
+                for (let i = 0; i < KISS_COUNT; i++) {
+                    launchKiss(i);
+                }
+
+                // --- Completion Timeout ---
+                // Add an extra second for flair after the last kiss finishes
+                const totalAnimationTime = (KISS_COUNT * KISS_DELAY) + ANIMATION_DURATION + 1000; 
+
+                setTimeout(() => {
+                    isAnimating = false;
+                    
+                    // Final Reveal
+                    mainTitle.textContent = "The Kisses Landed! My Love is All Yours. 🥰";
+                    subtitle.textContent = "You've earned the key to the next major milestone in our journey!";
+                    kissButton.style.display = 'none';
+                    nextPageButton.style.display = 'block';
+
+                }, totalAnimationTime);
+            });
+
+            // --- Navigation ---
+            nextPageButton.addEventListener('click', () => {
+                // Ensure sound is paused before navigating
+                kissSound.pause();
+                window.location.href = 'page20.html'; 
+            });
+            
+            // Re-calculate coordinates on resize
+            window.addEventListener('resize', getKissTargets);
+        });
+    </script>
+</body>
+</html>
