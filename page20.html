@@ -6,7 +6,7 @@
     <title>Page 20: Cheeks Part-3</title>
     
     <style>
-        /* --- General Setup & Grand Effects (Continuous from Page 19) --- */
+        /* --- General Setup & Grand Effects --- */
         body {
             margin: 0;
             padding: 0;
@@ -23,89 +23,76 @@
             overflow: hidden; 
         }
         
-        /* --- Slideshow Background Container --- */
-        #slideshow-background {
-            position: fixed; /* Covers the whole viewport */
-            top: 0;
-            left: 0;
+        /* --- Content Overlay (Titles, Carousel, Quiz) --- */
+        .content-overlay {
+            position: relative;
             width: 100%;
-            height: 100%;
-            z-index: 1; /* Lowest Z-index */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            align-items: center;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.2);
+            padding-top: 20px;
         }
 
-        .slide-background {
+        /* --- Titles --- */
+        .main-title {
+            font-size: 3.5em; 
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 3px 3px 3px rgba(0,0,0,0.7);
+            margin: 10px 0 0;
+        }
+        
+        .subtitle {
+            font-size: 1.5em; 
+            color: #f0f; 
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.6);
+            margin-bottom: 30px;
+        }
+
+        /* --- Central Photo Carousel Container --- */
+        #carousel-container {
+            width: 300px; 
+            height: 300px;
+            position: relative;
+            margin-bottom: 40px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+            border: 10px solid white;
+            border-radius: 15px;
+            overflow: hidden; 
+            background-color: #333;
+        }
+        
+        /* Individual Photo Slide */
+        .slide {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-size: cover; /* Ensures image covers, centered */
-            background-position: center center;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out; /* Smooth cross-fade */
-        }
-
-        .slide-background.active {
-            opacity: 1;
-        }
-
-        /* --- Content Overlay (Titles, Captions, Quiz) --- */
-        .content-overlay {
-            position: relative; /* Stacks above slideshow */
-            width: 100%;
-            min-height: 100vh; /* Ensures it covers the full height */
+            transition: opacity 1.0s ease-in-out; 
             display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Space out top titles, center caption, bottom quiz */
+            justify-content: center;
             align-items: center;
-            z-index: 10; /* Higher Z-index than slideshow */
-            background: rgba(0, 0, 0, 0.4); /* Darker overlay for text readability */
-            padding: 20px; /* Add some padding around edges */
-            box-sizing: border-box; /* Include padding in width/height */
         }
 
-        /* --- Titles --- */
-        .header-titles {
-            margin-top: 30px;
-            z-index: 12; /* Above other content */
-        }
-        .main-title {
-            font-size: 3.5em; 
-            font-weight: bold;
-            color: #FFD700; /* Gold */
-            text-shadow: 3px 3px 3px rgba(0,0,0,0.7);
-            margin: 0;
-            padding: 0 10px;
-        }
-        
-        .subtitle {
-            font-size: 1.5em; 
-            color: #f0f; /* Magenta */
-            text-shadow: 2px 2px 2px rgba(0,0,0,0.6);
-            margin-top: 5px;
-            padding: 0 10px;
-        }
-
-        /* --- Caption Display Area --- */
-        #caption-display {
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-size: 1.4em;
-            color: #fff;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-            pointer-events: none;
-            text-shadow: 1px 1px 2px #FF69B4;
-            width: 80%;
-            max-width: 450px;
-            margin: auto; /* Centers it vertically when not quiz */
-            transform: translateY(0); /* Reset for quiz transition */
-            z-index: 11;
-        }
-
-        #caption-display.active {
+        .slide.active {
             opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            /* Ensure the image is visible without cropping within the frame */
+            object-fit: contain; 
+            position: absolute;
+            z-index: 1;
+            /* Rotation effect */
+            animation: gentleRotate 8s linear infinite; 
         }
         
         /* --- Quiz Area --- */
@@ -120,14 +107,12 @@
             z-index: 20;
             color: #333;
             max-width: 90%;
-            margin-bottom: 50px; /* Space from bottom */
             opacity: 0;
-            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            transition: opacity 0.5s ease-in-out;
         }
         
         #quizContainer.active {
             opacity: 1;
-            transform: translateY(0);
         }
 
         .quiz-question {
@@ -158,8 +143,8 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
-        /* --- Continuous Grand Effects CSS --- */
+        
+        /* --- Grand Effects CSS --- */
         .firework-spark, .floating-emoji, .confetti-fall {
             position: fixed; 
             pointer-events: none;
@@ -185,27 +170,11 @@
         .confetti-fall {
             animation: confetti-fall-slow 15s linear infinite;
         }
-
-        /* --- Dynamic Photo Effects (on the background image) --- */
-
-        /* Ken Burns Zoom & Pan */
-        @keyframes kenBurnsZoomPan {
-            0% { background-size: 100%; background-position: 0% 0%; }
-            50% { background-size: 120%; background-position: 100% 100%; }
-            100% { background-size: 100%; background-position: 0% 0%; }
-        }
-
-        /* Gentle Zoom */
-        @keyframes gentleZoom {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
-        }
         
-        /* Subtle Horizontal Pan */
-        @keyframes horizontalPan {
-            0% { background-position: 0% center; }
-            100% { background-position: 100% center; }
+        /* Photo Rotation Keyframe */
+        @keyframes gentleRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
     </style>
@@ -213,16 +182,16 @@
 <body>
     <audio id="bgMusic" src="Page20.mp3" loop preload="auto"></audio>
 
-    <div id="slideshow-background">
-        </div>
-
     <div class="content-overlay">
         <div class="header-titles">
             <h1 class="main-title">Cheeks Part-3</h1>
             <p class="subtitle">Achoo Azhagu🙈Killitae erukanum</p>
         </div>
         
-        <div id="caption-display"></div> <div id="quizContainer">
+        <div id="carousel-container">
+            </div>
+
+        <div id="quizContainer">
             <p class="quiz-question">Iniku oru time niyae killiko...</p>
             <input type="text" id="quizAnswer" placeholder="Type anything...">
             <button id="submitAnswer">Submit 🤗</button>
@@ -232,31 +201,30 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const body = document.body;
-            const slideshowBackground = document.getElementById('slideshow-background');
-            const captionDisplay = document.getElementById('caption-display');
+            const carouselContainer = document.getElementById('carousel-container');
             const quizContainer = document.getElementById('quizContainer');
             const submitAnswer = document.getElementById('submitAnswer');
             const music = document.getElementById('bgMusic');
 
-            const SLIDE_DURATION = 4000; // 4 seconds per photo (shorter for faster pace)
+            const SLIDE_DURATION = 3500; // 3.5 seconds per photo
             let currentSlideIndex = 0;
             let slideshowInterval;
             
-            // --- 1. SLIDESHOW DATA (Photos and Captions) ---
+            // --- 1. SLIDESHOW DATA (Photos Only) ---
             const slidesData = [
-                { file: 'Cheek21.jpg', caption: 'Our cheeks touched, and the world paused.', effect: 'kenBurnsZoomPan' },
-                { file: 'Cheek22.jpg', caption: 'A smile so bright, it lights up my life.', effect: 'gentleZoom' },
-                { file: 'Cheek23.jpg', caption: 'Remember this laugh? Pure gold.', effect: 'horizontalPan' },
-                { file: 'Cheek24.jpg', caption: 'Every angle, every moment, perfection.', effect: 'kenBurnsZoomPan' },
-                { file: 'Cheek25.jpg', caption: 'The sweet blush of our memories.', effect: 'gentleZoom' },
-                { file: 'Cheek26.jpg', caption: 'Just us, being wonderfully us.', effect: 'horizontalPan' },
-                { file: 'Cheek27.jpg', caption: 'My favorite view, always.', effect: 'kenBurnsZoomPan' },
-                { file: 'Cheek28.jpg', caption: 'Where joy lives, forever in your eyes.', effect: 'gentleZoom' },
-                { file: 'Cheek29.jpg', caption: 'Wrapped in warmth, our story unfolds.', effect: 'horizontalPan' },
-                { file: 'Cheek30.jpg', caption: 'And these cheeks will share a thousand more smiles. ❤️', effect: 'kenBurnsZoomPan' }
+                { file: 'Cheek21.jpg' },
+                { file: 'Cheek22.jpg' },
+                { file: 'Cheek23.jpg' },
+                { file: 'Cheek24.jpg' },
+                { file: 'Cheek25.jpg' },
+                { file: 'Cheek26.jpg' },
+                { file: 'Cheek27.jpg' },
+                { file: 'Cheek28.jpg' },
+                { file: 'Cheek29.jpg' },
+                { file: 'Cheek30.jpg' }
             ];
 
-            // --- 2. GRAND EFFECTS LOGIC (Copied from Page 19) ---
+            // --- 2. GRAND EFFECTS LOGIC (Continuous from Page 19) ---
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚']; 
             
@@ -295,29 +263,24 @@
                 setTimeout(() => confetti.remove(), 25000); 
             }
             
-            // --- 3. SLIDESHOW LOGIC ---
+            // --- 3. CAROUSEL LOGIC ---
 
             function createSlides() {
                 slidesData.forEach((data, index) => {
                     const slideDiv = document.createElement('div');
-                    slideDiv.classList.add('slide-background');
-                    slideDiv.style.backgroundImage = `url(${data.file})`;
+                    slideDiv.classList.add('slide');
                     
-                    // Apply unique animation based on data
-                    if (data.effect === 'kenBurnsZoomPan') {
-                        slideDiv.style.animation = 'kenBurnsZoomPan ' + (SLIDE_DURATION / 1000 + 2) + 's ease-in-out infinite alternate';
-                    } else if (data.effect === 'gentleZoom') {
-                        slideDiv.style.animation = 'gentleZoom ' + (SLIDE_DURATION / 1000 + 2) + 's ease-in-out infinite alternate';
-                    } else if (data.effect === 'horizontalPan') {
-                        slideDiv.style.animation = 'horizontalPan ' + (SLIDE_DURATION / 1000 + 2) + 's linear infinite alternate';
-                    }
-
-                    slideshowBackground.appendChild(slideDiv);
+                    const img = document.createElement('img');
+                    img.src = data.file;
+                    img.alt = `Cheek Photo ${index + 1}`;
+                    
+                    slideDiv.appendChild(img);
+                    carouselContainer.appendChild(slideDiv);
                 });
             }
 
             function showSlide(index) {
-                const slides = document.querySelectorAll('.slide-background');
+                const slides = document.querySelectorAll('.slide');
                 if (slides.length === 0) return;
 
                 slides.forEach(slide => slide.classList.remove('active'));
@@ -325,27 +288,24 @@
                 const targetSlide = slides[index];
                 if (targetSlide) {
                     targetSlide.classList.add('active');
-                    captionDisplay.textContent = slidesData[index].caption;
-                    captionDisplay.classList.add('active'); // Show caption
                 }
             }
             
             function nextSlide() {
                 if (currentSlideIndex >= slidesData.length - 1) {
                     clearInterval(slideshowInterval);
-                    captionDisplay.classList.remove('active'); // Hide final caption
                     
-                    // Slightly dim music and stop looping
+                    // Pause the music slightly for dramatic effect
                     if (music) {
                         music.volume = 0.5; 
                         music.loop = false;
                     } 
                     
-                    // Reveal the final quiz after a small delay
+                    // Reveal the final quiz
                     setTimeout(() => {
                         quizContainer.style.display = 'flex';
                         quizContainer.classList.add('active');
-                    }, 1000); // Wait for the last slide transition to settle
+                    }, 1000); 
                     return;
                 }
 
@@ -360,10 +320,7 @@
                 
                 // Try to play music
                 if (music) {
-                    music.play().catch(e => {
-                        console.log("Music autoplay blocked, waiting for user interaction.");
-                        // Optional: Add a subtle instruction for the user to tap to play music
-                    });
+                    music.play().catch(e => {}); 
                 }
             }
 
