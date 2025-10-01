@@ -53,9 +53,8 @@
             margin-bottom: 30px;
         }
 
-        /* --- Central Photo Carousel Container - **FIXED SIZE** --- */
+        /* --- Central Photo Carousel Container - **LARGE SIZE** --- */
         #carousel-container {
-            /* Max width/height 920px, but using viewport height for better mobile fit */
             width: 85vh; 
             height: 85vh; 
             max-width: 920px; 
@@ -91,12 +90,10 @@
         .slide img {
             width: 100%;
             height: 100%;
-            /* Ensure the image is visible without cropping within the frame */
             object-fit: contain; 
             position: absolute;
             z-index: 1;
-            /* Rotation effect */
-            animation: gentleRotate 12s linear infinite; /* Slower rotation for smoother look */
+            animation: gentleRotate 12s linear infinite; 
         }
         
         /* --- Quiz Area --- */
@@ -113,7 +110,7 @@
             max-width: 90%;
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
-            margin-bottom: 20px; /* Ensure space at the bottom */
+            margin-bottom: 20px;
         }
         
         #quizContainer.active {
@@ -149,7 +146,7 @@
             transition: background-color 0.3s;
         }
         
-        /* --- Grand Effects CSS (Unchanged) --- */
+        /* --- Grand Effects CSS --- */
         .firework-spark, .floating-emoji, .confetti-fall {
             position: fixed; 
             pointer-events: none;
@@ -211,21 +208,15 @@
             const submitAnswer = document.getElementById('submitAnswer');
             const music = document.getElementById('bgMusic');
 
-            const SLIDE_DURATION = 3500; // 3.5 seconds per photo
+            const SLIDE_DURATION = 3500; 
             let currentSlideIndex = 0;
             let slideshowInterval;
             
             // --- 1. SLIDESHOW DATA (Photos Only) ---
             const slidesData = [
-                { file: 'Cheek21.jpg' },
-                { file: 'Cheek22.jpg' },
-                { file: 'Cheek23.jpg' },
-                { file: 'Cheek24.jpg' },
-                { file: 'Cheek25.jpg' },
-                { file: 'Cheek26.jpg' },
-                { file: 'Cheek27.jpg' },
-                { file: 'Cheek28.jpg' },
-                { file: 'Cheek29.jpg' },
+                { file: 'Cheek21.jpg' }, { file: 'Cheek22.jpg' }, { file: 'Cheek23.jpg' }, 
+                { file: 'Cheek24.jpg' }, { file: 'Cheek25.jpg' }, { file: 'Cheek26.jpg' }, 
+                { file: 'Cheek27.jpg' }, { file: 'Cheek28.jpg' }, { file: 'Cheek29.jpg' }, 
                 { file: 'Cheek30.jpg' }
             ];
 
@@ -268,7 +259,7 @@
                 setTimeout(() => confetti.remove(), 25000); 
             }
             
-            // --- 3. CAROUSEL LOGIC ---
+            // --- 3. CAROUSEL & SLIDESHOW LOGIC ---
 
             function createSlides() {
                 slidesData.forEach((data) => {
@@ -300,13 +291,11 @@
                 if (currentSlideIndex >= slidesData.length - 1) {
                     clearInterval(slideshowInterval);
                     
-                    // Pause the music slightly for dramatic effect
                     if (music) {
                         music.volume = 0.5; 
                         music.loop = false;
                     } 
                     
-                    // Reveal the final quiz
                     setTimeout(() => {
                         quizContainer.style.display = 'flex';
                         quizContainer.classList.add('active');
@@ -322,13 +311,18 @@
                 createSlides();
                 showSlide(0);
                 slideshowInterval = setInterval(nextSlide, SLIDE_DURATION);
-                
-                // **MUSIC AUTOPLAY FIX**
+
+                // **MUSIC AUTOPLAY FINAL ATTEMPT**
                 if (music) {
-                    music.play().catch(e => {
-                        // This handles the browser block. The music will likely start when the user interacts 
-                        // with the page (like clicking the input field or submit button).
-                        console.log("Music autoplay blocked. It will likely start on the next user tap.");
+                    music.volume = 0; // Start muted
+                    music.play().then(() => {
+                        // If successfully started (even muted), wait a moment, then turn up volume
+                        setTimeout(() => {
+                            music.volume = 1; 
+                        }, 500); 
+                    }).catch(e => {
+                        console.log("Direct autoplay failed. Requires user interaction.");
+                        // If it fails, the user will have to tap the screen once (e.g., to input the answer).
                     }); 
                 }
             }
@@ -339,7 +333,7 @@
                 window.location.href = 'page21.html'; 
             });
 
-            // Start the main attraction
+            // Start the main event immediately on load
             startSlideshow();
         });
     </script>
