@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Moments Timeline</title>
+    <title>Golden Moments Finale</title>
     
     <style>
         /* General Setup */
@@ -19,7 +19,8 @@
             color: #333;
             text-align: center;
             position: relative; 
-            padding-bottom: 80px; /* Space for the footer/button */
+            padding-bottom: 250px; /* Increased space for the large quiz area */
+            overflow-x: hidden;
         }
         
         /* Titles */
@@ -29,6 +30,7 @@
             margin-top: 30px; 
             margin-bottom: 5px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
         }
 
         .subtitle {
@@ -36,13 +38,15 @@
             margin-bottom: 40px; 
             color: #FF69B4; /* Hot Pink */
             font-style: italic;
+            z-index: 10;
         }
 
-        /* --- Timeline Card Styling --- */
+        /* --- Timeline Card Styling (Kept) --- */
         .timeline-container {
             width: 90%;
             max-width: 600px;
             margin: 0 auto;
+            z-index: 10;
         }
 
         .timeline-card {
@@ -64,16 +68,15 @@
             transform: translateY(0);
         }
 
-        /* Photo inside the card (Polaroid style) */
         .card-photo {
             width: 100%;
             height: auto;
             border-radius: 8px;
             margin-bottom: 15px;
-            border: 10px solid #F8F8FF; /* Ghost White for inner frame */
+            border: 10px solid #F8F8FF; 
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             object-fit: cover;
-            aspect-ratio: 1 / 1; /* Keep photos square/uniform for effect */
+            aspect-ratio: 1 / 1; 
         }
 
         .card-text {
@@ -83,90 +86,139 @@
             font-weight: bold;
         }
 
-        /* --- Footer and Navigation --- */
+        /* --- Quiz/Footer Area (Replaced Next Button) --- */
         .footer-area {
-            position: sticky;
+            position: fixed;
             bottom: 0;
             width: 100%;
-            padding: 15px 0;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
             z-index: 50;
         }
-
-        .progress-message {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        #nextChapterButton {
-            padding: 15px 35px;
+        
+        .quiz-question {
             font-size: 1.5em;
-            background-color: #FFD700; /* Gold button */
-            color: #333;
+            color: #D32F2F; /* Deep red for emphasis */
+            margin-bottom: 15px;
+            font-weight: bold;
+            padding: 0 10px;
+        }
+
+        #quizAnswer {
+            width: 80%;
+            max-width: 400px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 3px solid #FF69B4; 
+            border-radius: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+        #quizAnswer:focus {
+            border-color: #8A2BE2; 
+        }
+        
+        #submitAnswer {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background-color: #4CAF50;
+            color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: background-color 0.3s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: background-color 0.3s, transform 0.2s;
-            animation: pulse 2s infinite;
         }
 
-        #nextChapterButton:hover {
-            background-color: #FFC0CB; /* Pink on hover */
-            transform: scale(1.05);
-            animation: none;
+        #submitAnswer:hover {
+            background-color: #45a049;
         }
 
-        /* Pulse Animation for Button */
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        /* --- Continuous Grand Effects CSS --- */
+        .firework-spark, .floating-emoji, .confetti-fall {
+            position: fixed; /* Fixed so they cover the whole screen, not just the scrollable content */
+            pointer-events: none;
+            z-index: 1; /* Below content */
         }
+
+        @keyframes firework {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh); opacity: 0; } /* Start from bottom */
+            50% { transform: translateY(50vh) rotate(15deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(-15deg); opacity: 0; } /* Exit above top */
+        }
+        
+        .floating-emoji {
+            font-size: 2.5em; 
+            animation: float 10s linear infinite; /* Slower, continuous floating */
+        }
+        
+        @keyframes confetti-fall-slow {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti-fall {
+            animation: confetti-fall-slow 15s linear infinite; /* Very slow, long cycle */
+        }
+
     </style>
 </head>
 <body>
     <audio id="backgroundSong" src="Page18.mp3" loop></audio>
 
     <h1 class="main-title">Our Golden Moments ✨</h1>
-    <p class="subtitle">A scroll through the chapters of our love story...</p>
+    <p class="subtitle">A scroll through the chapters of our Friendship story...</p>
 
     <div class="timeline-container">
         
         <div class="timeline-card" data-index="1">
             <img src="Memory1.jpg" class="card-photo" alt="First Memory">
-            <p class="card-text">Chapter 1: The Beginning. Remember that first time we laughed so hard we cried? It was then I knew this was special. 🥰</p>
+            <p class="card-text">Chapter 1: Namma 1st Selfie di loosu🤗😚🫶🥰</p>
         </div>
 
         <div class="timeline-card" data-index="2">
             <img src="Memory2.jpg" class="card-photo" alt="Second Memory">
-            <p class="card-text">Chapter 2: Adventure Time! That spontaneous trip to [Place] remains one of my favorite memories. Every journey is better with you. 🌍</p>
+            <p class="card-text">Chapter 2: My Bestest Friend Forever 💙🫂😚Ni Ennoda Happy place 🤗</p>
         </div>
 
         <div class="timeline-card" data-index="3">
             <img src="Memory3.jpg" class="card-photo" alt="Third Memory">
-            <p class="card-text">Chapter 3: Quiet Comfort. These simple moments—the coffee, the hugs, the silence—are the foundation of everything. My safe space. ❤️</p>
+            <p class="card-text">Chapter 3: Pongal Appo edutha photo Azhaga Eruka edhula Panda 🐼 mari🙈😚😚</p>
         </div>
         
         <div class="timeline-card" data-index="4">
             <img src="Memory4.jpg" class="card-photo" alt="Fourth Memory">
-            <p class="card-text">Chapter 4: The Best Friend. More than anything, you're the one person I can always be myself with. To many more years of this beautiful friendship! 🥂</p>
+            <p class="card-text">Chapter 4: The Best Friend. More than anything, you're the one person I can always be myself with. To many more years of this beautiful friendship! Cheers to Another year di Thangoo😚🥂 Happy Birthday My Bestest Friend 💙🫂</p>
         </div>
 
     </div>
 
     <div class="footer-area">
-        <p class="progress-message">Only **2 more chapters** to the Grand Finale! 🥹</p>
-        <button id="nextChapterButton">Next Chapter! ✨</button>
+        <div class="quiz-container">
+            <p class="quiz-question">Namma Friendship lifelong epdiye erukanum loosu 🤗...Lov uuu Forever 😚😚En chello Friend ❤️‍🩹..Thanks Loosu 🫶</p>
+            <input type="text" id="quizAnswer" placeholder="Type anything...">
+            <button id="submitAnswer">Submit 🤗</button>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const backgroundSong = document.getElementById('backgroundSong');
             const cards = document.querySelectorAll('.timeline-card');
-            const nextButton = document.getElementById('nextChapterButton');
+            const quizAnswer = document.getElementById('quizAnswer');
+            const submitAnswer = document.getElementById('submitAnswer');
+            const body = document.body;
+
+            const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
+            const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚']; 
 
             // --- Autoplay Audio Fix ---
             backgroundSong.play().catch(e => {
@@ -177,17 +229,15 @@
 
             // --- Scroll Animation Logic (Intersection Observer) ---
             const observerOptions = {
-                root: null, // relative to the viewport
+                root: null, 
                 rootMargin: '0px',
-                threshold: 0.2 // trigger when 20% of the item is visible
+                threshold: 0.2
             };
 
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        // Optional: Stop observing once it's visible
-                        // observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
@@ -197,10 +247,103 @@
             });
 
 
-            // --- Navigation ---
-            nextButton.addEventListener('click', () => {
-                backgroundSong.pause();
-                window.location.href = 'page19.html'; 
+            // --- Continuous Grand Effects Logic ---
+            
+            // Floating Emojis
+            setInterval(createFloatingEmoji, 300); 
+            function createFloatingEmoji() {
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                body.appendChild(emoji);
+
+                const size = Math.random() * 1.5 + 1.5;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.animationDuration = `${Math.random() * 8 + 10}s`;
+                emoji.style.animationDelay = `${Math.random() * 5}s`;
+                emoji.style.opacity = Math.random() * 0.5 + 0.5; 
+                
+                setTimeout(() => emoji.remove(), 20000); // Remove after a long time
+            }
+
+            // Confetti Fall
+            setInterval(createConfettiPiece, 200); 
+            function createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`; 
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 10 + 15}s`; 
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                confetti.style.opacity = Math.random() * 0.7 + 0.3; 
+                
+                setTimeout(() => confetti.remove(), 25000); // Remove after a long time
+            }
+            
+            // Firework/Blasts (Occasional bursts)
+            setInterval(() => {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                createFireworksBurst(x, y);
+            }, 3000); // Every 3 seconds
+
+            function createFireworksBurst(x, y) { 
+                const burstContainer = document.createElement('div');
+                burstContainer.style.position = 'fixed'; // Fixed for full screen coverage
+                burstContainer.style.left = `${x}px`;
+                burstContainer.style.top = `${y}px`;
+                burstContainer.style.zIndex = 2;
+                body.appendChild(burstContainer);
+                
+                // Blast effect
+                const flash = document.createElement('span');
+                flash.textContent = '💥';
+                flash.style.fontSize = '4em';
+                flash.style.position = 'absolute';
+                flash.style.transform = 'translate(-50%, -50%)';
+                flash.style.opacity = 1;
+                flash.style.animation = 'firework 0.5s ease-out forwards';
+                burstContainer.appendChild(flash);
+
+
+                for(let i = 0; i < 30; i++) { 
+                    const spark = document.createElement('div');
+                    spark.style.width = '5px'; 
+                    spark.style.height = '5px';
+                    spark.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                    spark.style.borderRadius = '50%';
+                    spark.style.position = 'absolute';
+                    spark.style.transition = 'all 0.7s ease-out'; 
+                    burstContainer.appendChild(spark);
+                    
+                    setTimeout(() => {
+                        const angle = Math.random() * 360;
+                        const distance = Math.random() * 100 + 50; 
+                        spark.style.transform = `translate(${Math.cos(angle * Math.PI / 180) * distance}px, ${Math.sin(angle * Math.PI / 180) * distance}px)`;
+                        spark.style.opacity = 0;
+                    }, 10);
+                }
+                
+                setTimeout(() => burstContainer.remove(), 800); 
+            }
+
+            // --- Navigation Logic ---
+            submitAnswer.addEventListener('click', () => {
+                const answer = quizAnswer.value.trim();
+                if (answer !== '') { 
+                    backgroundSong.pause();
+                    window.location.href = 'page19.html'; // Move to the unique game page
+                } else {
+                    alert('Give your friend some love! Type anything to continue. 🤗');
+                }
             });
         });
     </script>
