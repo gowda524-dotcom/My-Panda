@@ -96,9 +96,9 @@
         .photo-frame img {
             width: 100%;
             height: 100%;
-            /* FIX: Use 'contain' to ensure full image visibility, 'cover' crops */
+            /* FIX: Use 'contain' to ensure full image visibility */
             object-fit: contain; 
-            object-position: center; /* Center the image within the frame */
+            object-position: center; 
             display: block;
         }
 
@@ -186,7 +186,7 @@
     </style>
 </head>
 <body>
-    <audio id="kissSound" src="Kiss.mp3"></audio>
+    <audio id="kissSound" src="Kiss.mp3" preload="auto"></audio>
 
     <h1 class="main-title">Oii Kolanthaaa un Frnd ku Flying kiss 😘 kudu... Happy Birthday kolanthaaa 😚</h1>
     
@@ -216,10 +216,17 @@
             const senderFrame = document.getElementById('senderFrame');
             const receiverFrame = document.getElementById('receiverFrame');
             const kissSound = document.getElementById('kissSound');
-            const kissCountDisplay = document('kissCountDisplay');
+            const kissCountDisplay = document.getElementById('kissCountDisplay'); // CORRECTED LINE
             const quizContainer = document.getElementById('quizContainer');
             const submitAnswer = document.getElementById('submitAnswer');
             const body = document.body;
+
+            // Null checks for essential elements (helps debug if files are missing)
+            if (!kissButton || !senderFrame || !receiverFrame || !kissCountDisplay || !quizContainer) {
+                console.error("Critical HTML elements missing. Check IDs.");
+                return;
+            }
+
 
             let exchangeCount = 0;
             let isAnimating = false;
@@ -227,9 +234,17 @@
             const KISS_DELAY = 150; 
             const ANIMATION_DURATION = 3500; 
 
-            // --- Continuous Grand Effects Logic (Same as Page 18) ---
+            // --- Continuous Grand Effects Logic ---
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚']; 
+            
+            // Function to safely play sound
+            function safePlayKissSound() {
+                if (kissSound) {
+                    kissSound.currentTime = 0;
+                    kissSound.play().catch(e => console.warn("Kiss sound failed to play. Check Kiss.mp3 file."));
+                }
+            }
             
             setInterval(createFloatingEmoji, 300); 
             function createFloatingEmoji() {
@@ -268,6 +283,9 @@
 
             // --- Get Coordinates ---
             function getKissTargets() {
+                // Ensure frames are loaded before getting coordinates
+                if (!senderFrame || !receiverFrame) return null;
+
                 const senderRect = senderFrame.getBoundingClientRect();
                 const receiverRect = receiverFrame.getBoundingClientRect();
 
@@ -288,7 +306,9 @@
 
             // 1. Single kiss from Her Photo (Receiver) to Your Photo (Sender)
             function kissFromHerToYou() {
-                const { senderCenter, receiverCenter } = getKissTargets();
+                const targets = getKissTargets();
+                if (!targets) return;
+                const { senderCenter, receiverCenter } = targets;
 
                 const kiss = document.createElement('span');
                 kiss.classList.add('flying-kiss');
@@ -310,17 +330,16 @@
                 kiss.style.animationDelay = '0s';
 
                 document.body.appendChild(kiss);
-                
-                // Play sound once
-                kissSound.currentTime = 0;
-                kissSound.play().catch(e => console.log('Kiss sound failed to play.'));
+                safePlayKissSound();
 
                 setTimeout(() => kiss.remove(), ANIMATION_DURATION);
             }
 
             // 2. Ten kisses from Your Photo (Sender) to Her Photo (Receiver)
             function kissesFromYouToHer() {
-                const { senderCenter, receiverCenter } = getKissTargets();
+                const targets = getKissTargets();
+                if (!targets) return;
+                const { senderCenter, receiverCenter } = targets;
 
                 // Start: Sender Center (left), End: Receiver Center (right)
                 const targetX = receiverCenter.x - senderCenter.x;
@@ -349,10 +368,7 @@
                     document.body.appendChild(kiss);
                     
                     // Play sound with each kiss launch
-                    setTimeout(() => {
-                        kissSound.currentTime = 0;
-                        kissSound.play().catch(e => {});
-                    }, KISS_DELAY * (i + 1));
+                    setTimeout(safePlayKissSound, KISS_DELAY * (i + 1));
 
                     // Remove the kiss element after animation is complete
                     setTimeout(() => kiss.remove(), ANIMATION_DURATION + (KISS_DELAY * (i + 1)));
@@ -370,13 +386,11 @@
                 kissFromHerToYou();
 
                 // 2. Ten kisses from you to her (starts after a short pause)
-                // We add a short delay to ensure the single kiss has a head start/separate event
                 setTimeout(() => {
                     kissesFromYouToHer();
                 }, 100); 
 
                 // --- Completion Timeout ---
-                // Wait for the 10th kiss to launch + animation time + a small buffer
                 const totalAnimationTime = (10 * KISS_DELAY) + ANIMATION_DURATION + 500; 
 
                 setTimeout(() => {
@@ -393,18 +407,16 @@
                     }
 
                 }, totalAnimationTime);
-            });
+            }
 
             // --- Event Listeners ---
             kissButton.addEventListener('click', startKissExchange);
             
             // --- Quiz Navigation ---
             submitAnswer.addEventListener('click', () => {
-                // Any text submission automatically navigates to the next page
                 window.location.href = 'page20.html'; 
             });
 
-            // Re-calculate coordinates on resize to ensure correct kiss trajectory
             window.addEventListener('resize', getKissTargets);
         });
     </script>
