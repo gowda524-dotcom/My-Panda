@@ -14,7 +14,7 @@
             background: linear-gradient(135deg, #1a022e 0%, #0a011a 100%); /* Very dark background */
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Align content from top */
+            justify-content: flex-start; 
             align-items: center;
             min-height: 100vh;
             color: white;
@@ -41,7 +41,7 @@
             z-index: 10; 
             padding-top: 20px;
             padding-bottom: 20px;
-            max-width: 1080px; /* Constrain main content width */
+            max-width: 1080px; 
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -52,34 +52,35 @@
         .top-bold-text {
             font-size: 2.8em;
             font-weight: bold;
-            color: #FFD700; /* Gold */
+            color: #FFD700; 
             text-shadow: 0 0 15px #FFD700, 0 0 25px rgba(255, 255, 255, 0.7);
             margin-bottom: 30px;
-            padding: 0 10px; /* Add some padding on sides */
+            padding: 0 10px; 
         }
 
         /* --- Image Wrapper for Emojis (PORTRAIT & LARGER EMOJI FIX) --- */
         .image-wrapper {
             position: relative;
-            width: 80vw; /* Use vw for responsiveness */
-            max-width: 540px; /* **FIX: Half of 1080px to define width for portrait** */
-            /* The aspect ratio for the height (e.g., 4:3 portrait, if width is 540px, height will be 720px) */
-            padding-bottom: calc(100% * 4 / 3); /* **FIX: Aspect ratio 3:4 (width:height) for portrait. Change 4/3 to 16/9 for landscape** */
-            height: 0; /* Important for padding-bottom trick */
+            width: 80vw; 
+            max-width: 540px; 
+            /* Assuming a standard portrait ratio (3:4 or 4:5 is common) */
+            padding-bottom: calc(100% * 4 / 3); /* 3:4 aspect ratio (adjust 4/3 if your image is taller/shorter) */
+            height: 0; 
             margin: 20px auto;
             border: 10px solid white;
             border-radius: 15px;
             box-shadow: 0 0 35px rgba(255, 255, 255, 0.6);
             overflow: hidden; 
-            background-color: black; /* Background for when image doesn't fill */
+            background-color: black; 
         }
 
         .image-wrapper img {
-            position: absolute; /* Needed for padding-bottom trick */
+            position: absolute; 
             top: 0; left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* **FIX: Ensures full image is visible, no cropping** */
+            object-fit: contain; /* FIX: Ensures full image is visible, no cropping */
+            filter: none; /* FIX: Remove any dark filters */
             display: block;
         }
 
@@ -90,32 +91,31 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: grid; /* Use grid for emoji distribution */
-            /* **FIX: Double emoji size** */
+            display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Larger minmax for emojis */
             grid-template-rows: repeat(auto-fill, minmax(60px, 1fr));
             gap: 2px; 
             pointer-events: auto; 
-            background: rgba(0,0,0,0.8); /* Darker initial background for emojis */
+            background: rgba(0,0,0,0.8); 
         }
 
         .emoji-item {
-            font-size: 3.5em; /* **FIX: Larger emoji font size** */
+            font-size: 3.5em; /* Larger emoji font size */
             cursor: pointer;
             transition: opacity 0.2s ease-out;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(0,0,0,0.5); /* Semi-transparent background for emojis initially */
+            background: rgba(0,0,0,0.5); 
         }
         
         .emoji-item.clicked {
             opacity: 0 !important; 
             pointer-events: none; 
-            background: transparent; /* Make background transparent when clicked */
+            background: transparent; 
         }
 
-        /* --- Quiz Container --- */
+        /* --- Quiz Container (FIX: Ensure z-index is high to appear over the image wrapper) --- */
         #quizContainer {
             background: rgba(255, 255, 255, 0.95);
             padding: 20px;
@@ -124,7 +124,7 @@
             display: none; 
             flex-direction: column;
             align-items: center;
-            z-index: 20;
+            z-index: 20; /* High z-index */
             color: #333;
             max-width: 90%;
             opacity: 0;
@@ -165,7 +165,7 @@
             transition: background-color 0.3s;
         }
         
-        /* --- Grand Effects CSS (Floating Emojis/Confetti) --- */
+        /* --- Grand Effects CSS (unchanged) --- */
         .floating-emoji, .confetti-fall {
             position: fixed; 
             pointer-events: none;
@@ -192,11 +192,10 @@
             animation: confetti-fall-slow 15s linear infinite;
         }
         
-        /* Fireworks/Crackers (simulated) - can be more complex with images, but this adds a visual flair */
         .firework {
             position: absolute;
             width: 8px; height: 8px;
-            background-color: #ffd700; /* Gold */
+            background-color: #ffd700; 
             border-radius: 50%;
             box-shadow: 0 0 10px #ffd700, 0 0 20px #ff0;
             animation: fireworkBurst 1s forwards ease-out;
@@ -239,12 +238,13 @@
             const emojiOverlay = document.getElementById('emoji-overlay');
             const quizContainer = document.getElementById('quizContainer');
             const submitAnswer = document.getElementById('submitAnswer');
-            const imageWrapper = document.querySelector('.image-wrapper'); // Get the wrapper
+            const imageWrapper = document.querySelector('.image-wrapper'); 
 
             const emojis = ['😚', '🤗', '💙', '🫂', '🖤', '🐼', '❤️‍🩹', '😘', '🥰', '🙈', '😊', '🌎', '💎', '🫶'];
             let totalEmojis = 0;
             let clickedEmojis = 0;
             let musicStarted = false;
+            let quizRevealed = false; // NEW: Flag to prevent multiple reveals
 
             // --- 1. Music Autoplay and Start Logic ---
             const startContent = () => {
@@ -261,7 +261,6 @@
 
             musicTrigger.addEventListener('click', startContent, { once: true }); 
             
-            // Auto-attempt to start music silently
             music.volume = 0; 
             music.play().then(startContent).catch(e => {
                 console.log("Music blocked by browser. User must click anywhere to start.");
@@ -269,11 +268,10 @@
 
             // --- 2. Populate Emoji Overlay ---
             function populateEmojiOverlay() {
-                emojiOverlay.innerHTML = ''; // Clear existing emojis before re-populating
+                emojiOverlay.innerHTML = ''; 
 
-                // Get dynamic dimensions of the image wrapper
                 const wrapperRect = imageWrapper.getBoundingClientRect();
-                const emojiItemSize = 60; // Based on CSS minmax(60px, 1fr)
+                const emojiItemSize = 60; // Should match minmax in CSS
 
                 const cols = Math.ceil(wrapperRect.width / emojiItemSize);
                 const rows = Math.ceil(wrapperRect.height / emojiItemSize);
@@ -290,7 +288,7 @@
                         if (!emojiItem.classList.contains('clicked')) {
                             emojiItem.classList.add('clicked');
                             clickedEmojis++;
-                            if (clickedEmojis >= totalEmojis) {
+                            if (clickedEmojis >= totalEmojis && !quizRevealed) { // Check flag
                                 revealQuiz();
                             }
                         }
@@ -298,35 +296,42 @@
                 }
             }
 
-            // Ensure emojis are populated after layout is stable
+            // Re-populate on resize (with debounce)
             let resizeTimer;
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
-                    populateEmojiOverlay(); // Recalculate and re-populate on resize
-                }, 200); // Debounce to prevent excessive calls
+                    // Only re-populate if the quiz hasn't been revealed yet
+                    if (!quizRevealed) {
+                         populateEmojiOverlay(); 
+                    }
+                }, 200); 
             });
-            setTimeout(populateEmojiOverlay, 100); // Initial population
+            setTimeout(populateEmojiOverlay, 100); 
 
 
-            // --- 3. Quiz Reveal ---
+            // --- 3. Quiz Reveal (FIXED LOGIC) ---
             function revealQuiz() {
-                // Ensure the overlay is fully gone if not all were clicked for some reason
+                if (quizRevealed) return; // Prevent double-execution
+                quizRevealed = true; // Set flag
+
+                // Ensure the overlay is fully gone
                 emojiOverlay.style.pointerEvents = 'none';
                 Array.from(emojiOverlay.children).forEach(e => e.classList.add('clicked'));
 
                 quizContainer.style.display = 'flex';
-                setTimeout(() => quizContainer.classList.add('active'), 50); 
+                // Use a short delay to allow the last emoji to fade
+                setTimeout(() => quizContainer.classList.add('active'), 300); 
             }
             
             // --- 4. Navigation ---
             submitAnswer.addEventListener('click', () => {
                 if (music) music.pause();
-                window.location.href = 'page23.html'; // Move to Page 23
+                window.location.href = 'page23.html'; 
             });
 
 
-            // --- 5. Grand Effects (Emojis, Confetti, Fireworks) ---
+            // --- 5. Grand Effects (unchanged) ---
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
             
@@ -365,7 +370,6 @@
                 setTimeout(() => confetti.remove(), 25000); 
             }
 
-            // Firework/Cracker effect
             setInterval(createFirework, 1500); 
             function createFirework() {
                 const firework = document.createElement('div');
