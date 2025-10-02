@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif; 
-            background: url('Page21.jpg') no-repeat center center fixed; /* **CORRECTED BACKGROUND IMAGE** */
+            background: url('Page21.jpg') no-repeat center center fixed; /* CORRECTED BACKGROUND IMAGE */
             background-size: cover;
             display: flex;
             flex-direction: column;
@@ -88,24 +88,54 @@
             50% { opacity: 0; }
         }
 
-        /* --- Next Button --- */
-        #next-button {
-            margin-top: 40px;
-            padding: 15px 30px;
-            font-size: 1.3em;
-            background-color: #FF69B4; 
+        /* --- Quiz Container --- */
+        #quizContainer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.8);
+            display: none; 
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+            color: #333;
+            max-width: 90%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            margin-top: 20px;
+        }
+        
+        #quizContainer.active {
+            opacity: 1;
+        }
+
+        .quiz-question {
+            font-size: 1.6em;
+            color: #FF1493; 
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        #quizAnswer {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 3px solid #8A2BE2; 
+            border-radius: 10px;
+            font-size: 1.1em;
+            text-align: center;
+            outline: none;
+        }
+        
+        #submitAnswer {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-            display: none; 
-            z-index: 10;
-        }
-        #next-button:hover {
-            background-color: #FF1493;
-            transform: translateY(-2px);
+            transition: background-color 0.3s;
         }
 
         /* --- Grand Effects CSS (Floating Emojis/Confetti) --- */
@@ -138,14 +168,20 @@
     </style>
 </head>
 <body>
-    <audio id="bgMusic" src="Page21.mp3" loop preload="auto"></audio> <div id="music-trigger"></div>
+    <audio id="bgMusic" src="Page21.mp3" loop preload="auto"></audio>
 
-    <div class="content-container">
+    <div id="music-trigger"></div>
+
+    <div class="content-container" id="mainContent">
         <div id="handwriting-text"></div>
         <div id="cursor" class="typing-cursor"></div>
     </div>
     
-    <button id="next-button">Continue to Page 22 ➡️</button>
+    <div id="quizContainer">
+        <p class="quiz-question">Happy Birthday...</p>
+        <input type="text" id="quizAnswer" placeholder="Type anything you want..." autocomplete="off">
+        <button id="submitAnswer">Submit and Go to Page 22 ➡️</button>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -154,15 +190,19 @@
             const musicTrigger = document.getElementById('music-trigger');
             const textElement = document.getElementById('handwriting-text');
             const cursorElement = document.getElementById('cursor');
-            const nextButton = document.getElementById('next-button');
+            const quizContainer = document.getElementById('quizContainer');
+            const submitAnswer = document.getElementById('submitAnswer');
+            const mainContent = document.getElementById('mainContent');
 
+            const QUIZ_DELAY = 15000; // 15 seconds
             const fullMessage = "Happy Birthday Chelloww Friendeyyy 💙🤗...\nLov uuu 😚🫂"; 
             let index = 0;
             const typingSpeed = 120; 
-            
-            // --- 1. Music Autoplay Fix ---
             let musicStarted = false;
-            musicTrigger.addEventListener('click', () => {
+            let typingFinished = false;
+
+            // --- 1. Music Autoplay and Start Logic ---
+            const startContent = () => {
                 if (!musicStarted) {
                     music.volume = 0.6; 
                     music.play().then(() => {
@@ -170,23 +210,18 @@
                         musicTrigger.style.display = 'none'; 
                         textElement.classList.add('revealed');
                         setTimeout(typeMessage, 500); 
+                        setTimeout(revealQuiz, QUIZ_DELAY); // Start quiz timer
                     }).catch(e => {
-                        console.error("Music playback failed on user click:", e);
+                        console.error("Music playback failed:", e);
                     });
                 }
-            }, { once: true }); 
+            };
+
+            musicTrigger.addEventListener('click', startContent, { once: true }); 
             
-            // Auto-attempt to start the music silenced, as a backup
+            // Auto-attempt to start music silently
             music.volume = 0; 
-            music.play().then(() => {
-                if (!musicStarted) { 
-                    setTimeout(() => { music.volume = 0.6; }, 500); 
-                    musicStarted = true;
-                    musicTrigger.style.display = 'none';
-                    textElement.classList.add('revealed');
-                    setTimeout(typeMessage, 500); 
-                }
-            }).catch(e => {
+            music.play().then(startContent).catch(e => {
                 console.log("Music blocked by browser. User must click anywhere to start.");
             });
 
@@ -205,18 +240,37 @@
                     index++;
                     setTimeout(typeMessage, typingSpeed);
                 } else {
+                    typingFinished = true;
                     cursorElement.style.display = 'none'; 
-                    nextButton.style.display = 'block'; 
                 }
             }
+
+            // --- 3. Quiz Reveal Timer ---
+            function revealQuiz() {
+                // If the typing animation is still running, let it finish, then show the quiz.
+                if (!typingFinished) {
+                    // Stop typing animation and show full text immediately
+                    index = fullMessage.length; 
+                    textElement.innerHTML = fullMessage.replace('\n', '<br>');
+                    cursorElement.style.display = 'none';
+                    typingFinished = true;
+                }
+                
+                // Hide the main content slightly to bring focus to the quiz
+                mainContent.style.opacity = '0.7';
+
+                quizContainer.style.display = 'flex';
+                setTimeout(() => quizContainer.classList.add('active'), 50); 
+            }
             
-            // --- 3. Navigation ---
-            nextButton.addEventListener('click', () => {
+            // --- 4. Navigation ---
+            submitAnswer.addEventListener('click', () => {
                 if (music) music.pause();
                 window.location.href = 'page22.html'; 
             });
 
-            // --- 4. Grand Effects (Floating Emojis/Confetti) ---
+
+            // --- 5. Grand Effects (Floating Emojis/Confetti) ---
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const emojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
             
