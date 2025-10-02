@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 21: The Promise</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- General Setup & Theme --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #f0f0f5 0%, #e0e0e8 100%); /* Very light, clean background */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            text-align: center;
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        /* --- Music Autoplay Trigger (Invisible Layer) --- */
+        #music-trigger {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            cursor: pointer;
+            background: rgba(0,0,0,0); /* Invisible */
+        }
+
+        /* --- Main Message Container --- */
+        .message-container {
+            padding: 30px;
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- The "Handwriting" Text Area --- */
+        #handwriting-text {
+            font-family: 'Sacramento', cursive; /* The handwriting font */
+            font-size: 5em; /* Large and prominent */
+            color: #3f51b5; /* A deep, elegant blue */
+            min-height: 1.5em; /* Ensure space is reserved */
+            line-height: 1.2;
+            white-space: pre-wrap; /* Keeps spaces and line breaks */
+            opacity: 0; /* Starts hidden */
+            transform: scale(0.95);
+            transition: opacity 1s, transform 1s;
+        }
+        
+        #handwriting-text.revealed {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* --- Animated Cursor (Blinking Pen/Pencil) --- */
+        .typing-cursor {
+            display: inline-block;
+            width: 5px;
+            height: 1.2em;
+            background-color: #3f51b5;
+            margin-left: 5px;
+            animation: blink 0.7s step-end infinite;
+            vertical-align: top;
+        }
+
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* --- Next Button --- */
+        #next-button {
+            margin-top: 40px;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            background-color: #FF69B4; /* Hot Pink */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none; /* Hidden until message is complete */
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" src="page21_music.mp3" loop preload="auto"></audio>
+
+    <div id="music-trigger"></div>
+
+    <div class="message-container">
+        <div id="handwriting-text"></div>
+        <div id="cursor" class="typing-cursor"></div>
+    </div>
+    
+    <button id="next-button">Continue to Page 22 ➡️</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const music = document.getElementById('bgMusic');
+            const musicTrigger = document.getElementById('music-trigger');
+            const textElement = document.getElementById('handwriting-text');
+            const cursorElement = document.getElementById('cursor');
+            const nextButton = document.getElementById('next-button');
+
+            const fullMessage = "Happy Birthday Chelloww Friendeyyy 💙🤗...\nLov uuu 😚🫂"; // Use \n for line break
+            let index = 0;
+            const typingSpeed = 120; // Milliseconds per character
+            
+            // --- 1. Music Autoplay Fix ---
+            musicTrigger.addEventListener('click', () => {
+                if (music.paused) {
+                    music.volume = 0.6; // Soft background music
+                    music.play().catch(e => console.error("Music playback failed:", e));
+                }
+                musicTrigger.style.display = 'none'; 
+                // Start typing immediately after music starts
+                textElement.classList.add('revealed');
+                setTimeout(typeMessage, 100); 
+            }, { once: true }); 
+            
+            // Attempt silent autoplay as backup
+            music.volume = 0; 
+            music.play().then(() => {
+                setTimeout(() => { music.volume = 0.6; }, 500); 
+                musicTrigger.style.display = 'none';
+                // If music autoplay succeeds, start typing immediately
+                textElement.classList.add('revealed');
+                setTimeout(typeMessage, 500); 
+            }).catch(e => {
+                console.log("Music blocked. User must interact to start.");
+            });
+
+
+            // --- 2. The Typing/Handwriting Effect ---
+            function typeMessage() {
+                if (index < fullMessage.length) {
+                    let char = fullMessage.charAt(index);
+                    
+                    // Handle line breaks within the message
+                    if (char === '\n') {
+                        textElement.innerHTML += '<br>';
+                    } else {
+                        textElement.innerHTML += char;
+                    }
+
+                    index++;
+                    setTimeout(typeMessage, typingSpeed);
+                } else {
+                    // Message complete
+                    cursorElement.style.display = 'none'; // Hide cursor
+                    nextButton.style.display = 'block'; // Show next button
+                }
+            }
+            
+            // If the music didn't autoplay, the user click on the trigger will call typeMessage.
+            // If it did autoplay, the promise chain above will call typeMessage.
+
+            // --- 3. Navigation ---
+            nextButton.addEventListener('click', () => {
+                if (music) music.pause();
+                window.location.href = 'page22.html'; // Ready for Page 22
+            });
+        });
+    </script>
+</body>
+</html>
