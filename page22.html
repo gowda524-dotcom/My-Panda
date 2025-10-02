@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif; 
-            background: linear-gradient(135deg, #1a022e 0%, #0a011a 100%); /* Very dark background */
+            background: linear-gradient(135deg, #1a022e 0%, #0a011a 100%); 
             display: flex;
             flex-direction: column;
             justify-content: flex-start; 
@@ -32,7 +32,7 @@
             height: 100%;
             z-index: 9999;
             cursor: pointer;
-            background: rgba(0,0,0,0); /* Invisible */
+            background: rgba(0,0,0,0); 
         }
 
         /* --- Content Container --- */
@@ -58,13 +58,12 @@
             padding: 0 10px; 
         }
 
-        /* --- Image Wrapper for Emojis (PORTRAIT & LARGER EMOJI FIX) --- */
+        /* --- Image Wrapper (PORTRAIT & Autofit) --- */
         .image-wrapper {
             position: relative;
             width: 80vw; 
             max-width: 540px; 
-            /* Assuming a standard portrait ratio (3:4 or 4:5 is common) */
-            padding-bottom: calc(100% * 4 / 3); /* 3:4 aspect ratio (adjust 4/3 if your image is taller/shorter) */
+            padding-bottom: calc(100% * 4 / 3); /* 3:4 aspect ratio for portrait */
             height: 0; 
             margin: 20px auto;
             border: 10px solid white;
@@ -79,12 +78,12 @@
             top: 0; left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain; /* FIX: Ensures full image is visible, no cropping */
-            filter: none; /* FIX: Remove any dark filters */
+            object-fit: contain; /* Autofit/No Cropping */
+            filter: none; /* NO DARK FILTERS */
             display: block;
         }
 
-        /* --- Emoji Overlay --- */
+        /* --- Emoji Overlay (Simplified & Larger) --- */
         #emoji-overlay {
             position: absolute;
             top: 0;
@@ -92,17 +91,18 @@
             width: 100%;
             height: 100%;
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Larger minmax for emojis */
-            grid-template-rows: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 2px; 
+            grid-template-columns: repeat(10, 1fr); /* Fixed 10 columns */
+            grid-template-rows: repeat(auto-fill, minmax(6vh, 1fr)); 
+            gap: 0px; 
             pointer-events: auto; 
             background: rgba(0,0,0,0.8); 
+            transition: all 0.5s ease-out; /* Add transition for auto-fall */
         }
 
         .emoji-item {
-            font-size: 3.5em; /* Larger emoji font size */
+            font-size: 3.5em; 
             cursor: pointer;
-            transition: opacity 0.2s ease-out;
+            transition: opacity 0.2s ease-out, transform 0.5s ease-in; /* Added transform transition for fall effect */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -114,8 +114,14 @@
             pointer-events: none; 
             background: transparent; 
         }
+        
+        .emoji-item.falling {
+            opacity: 0 !important;
+            transform: translateY(100vh) rotate(90deg); /* Makes it appear to fall off-screen */
+            pointer-events: none; 
+        }
 
-        /* --- Quiz Container (FIX: Ensure z-index is high to appear over the image wrapper) --- */
+        /* --- Quiz Container --- */
         #quizContainer {
             background: rgba(255, 255, 255, 0.95);
             padding: 20px;
@@ -124,7 +130,7 @@
             display: none; 
             flex-direction: column;
             align-items: center;
-            z-index: 20; /* High z-index */
+            z-index: 20; 
             color: #333;
             max-width: 90%;
             opacity: 0;
@@ -240,11 +246,13 @@
             const submitAnswer = document.getElementById('submitAnswer');
             const imageWrapper = document.querySelector('.image-wrapper'); 
 
+            const AUTO_REVEAL_COUNT = 30; // The threshold for auto-reveal
+
             const emojis = ['😚', '🤗', '💙', '🫂', '🖤', '🐼', '❤️‍🩹', '😘', '🥰', '🙈', '😊', '🌎', '💎', '🫶'];
             let totalEmojis = 0;
             let clickedEmojis = 0;
             let musicStarted = false;
-            let quizRevealed = false; // NEW: Flag to prevent multiple reveals
+            let quizRevealed = false; 
 
             // --- 1. Music Autoplay and Start Logic ---
             const startContent = () => {
@@ -268,15 +276,18 @@
 
             // --- 2. Populate Emoji Overlay ---
             function populateEmojiOverlay() {
+                // Clear existing elements before recalculating
+                Array.from(emojiOverlay.children).forEach(child => {
+                    child.removeEventListener('click', emojiClickListener);
+                });
                 emojiOverlay.innerHTML = ''; 
+                clickedEmojis = 0; // Reset clicked count on repopulate
 
                 const wrapperRect = imageWrapper.getBoundingClientRect();
-                const emojiItemSize = 60; // Should match minmax in CSS
-
-                const cols = Math.ceil(wrapperRect.width / emojiItemSize);
-                const rows = Math.ceil(wrapperRect.height / emojiItemSize);
+                const estimatedEmojiSize = wrapperRect.width / 10;
+                const rows = Math.ceil(wrapperRect.height / estimatedEmojiSize);
                 
-                totalEmojis = cols * rows;
+                totalEmojis = 10 * rows;
 
                 for (let i = 0; i < totalEmojis; i++) {
                     const emojiItem = document.createElement('span');
@@ -284,54 +295,65 @@
                     emojiItem.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                     emojiOverlay.appendChild(emojiItem);
 
-                    emojiItem.addEventListener('click', () => {
-                        if (!emojiItem.classList.contains('clicked')) {
-                            emojiItem.classList.add('clicked');
-                            clickedEmojis++;
-                            if (clickedEmojis >= totalEmojis && !quizRevealed) { // Check flag
-                                revealQuiz();
-                            }
-                        }
-                    });
+                    // Add listener with a check for the auto-reveal threshold
+                    emojiItem.addEventListener('click', emojiClickListener);
+                }
+            }
+            
+            // Centralized listener function
+            function emojiClickListener(event) {
+                const emojiItem = event.target;
+                if (!emojiItem.classList.contains('clicked') && !quizRevealed) {
+                    emojiItem.classList.add('clicked');
+                    clickedEmojis++;
+                    
+                    if (clickedEmojis >= AUTO_REVEAL_COUNT) { 
+                        // Once 30 clicks are reached, trigger the auto-reveal
+                        autoFallReveal();
+                    }
                 }
             }
 
-            // Re-populate on resize (with debounce)
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    // Only re-populate if the quiz hasn't been revealed yet
-                    if (!quizRevealed) {
-                         populateEmojiOverlay(); 
-                    }
-                }, 200); 
-            });
-            setTimeout(populateEmojiOverlay, 100); 
+            // --- 3. Auto-Fall Reveal Logic ---
+            function autoFallReveal() {
+                if (quizRevealed) return; 
+                quizRevealed = true; 
 
-
-            // --- 3. Quiz Reveal (FIXED LOGIC) ---
-            function revealQuiz() {
-                if (quizRevealed) return; // Prevent double-execution
-                quizRevealed = true; // Set flag
-
-                // Ensure the overlay is fully gone
+                // 1. Make all remaining emojis 'fall' off-screen
+                const remainingEmojis = Array.from(emojiOverlay.children).filter(e => !e.classList.contains('clicked'));
+                remainingEmojis.forEach((emoji, index) => {
+                    // Apply a slight delay for a cascading fall effect
+                    setTimeout(() => {
+                        emoji.classList.add('falling');
+                    }, index * 10); 
+                });
+                
+                // 2. Disable pointer events immediately
                 emojiOverlay.style.pointerEvents = 'none';
-                Array.from(emojiOverlay.children).forEach(e => e.classList.add('clicked'));
 
+                // 3. Trigger the quiz after the fall animation finishes
+                setTimeout(revealQuiz, 500); // Wait 500ms for fall transition
+            }
+
+
+            // --- 4. Quiz Reveal (Guaranteed) ---
+            function revealQuiz() {
+                // Final check to ensure quiz appears
                 quizContainer.style.display = 'flex';
-                // Use a short delay to allow the last emoji to fade
-                setTimeout(() => quizContainer.classList.add('active'), 300); 
+                setTimeout(() => quizContainer.classList.add('active'), 50); 
             }
             
-            // --- 4. Navigation ---
+            // Initial population
+            setTimeout(populateEmojiOverlay, 100); 
+
+            // --- 5. Navigation ---
             submitAnswer.addEventListener('click', () => {
                 if (music) music.pause();
                 window.location.href = 'page23.html'; 
             });
 
 
-            // --- 5. Grand Effects (unchanged) ---
+            // --- 6. Grand Effects (unchanged) ---
             const confettiColors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#fff', '#ffd700', '#FF5722', '#4CAF50', '#8A2BE2', '#FF1493'];
             const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
             
