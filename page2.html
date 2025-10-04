@@ -22,7 +22,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1;
+      z-index: 1; /* Lowest layer */
     }
 
     #background-video {
@@ -45,35 +45,36 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 2;
-      background: rgba(0, 0, 0, 0.5); /* Slightly darker overlay for the button */
+      justify-content: center; /* Center vertically */
+      align-items: center; /* Center horizontally */
+      z-index: 2; /* Layer above the video */
+      /* Add the overlay here, though the background may need to be on a wrapper if you want the text to be clear */
+      /* For now, keep the overlay on the content layer */
+      background: rgba(0, 0, 0, 0.5); 
+      padding-top: 5vh; /* Added padding to prevent text from hitting the very top edge */
     }
 
     h1 {
       font-size: 3em;
       color: #ffcc00;
       text-shadow: 0 0 10px #000;
-      margin-bottom: 20px; /* Space above the button */
+      margin-bottom: 20px;
     }
 
-    /* --- New Start Button Style --- */
+    /* --- IMPORTANT Button Style Fix --- */
     #start-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      /* Removed absolute positioning to center it within the flex container */
       padding: 15px 30px;
       font-size: 1.5em;
       font-weight: bold;
-      background: rgba(255, 105, 180, 0.9); /* Hotpink */
+      background: rgba(255, 105, 180, 0.9);
       color: white;
       border: 3px solid white;
       border-radius: 10px;
       cursor: pointer;
-      z-index: 3;
+      z-index: 3; /* Ensure it is above everything else */
       transition: opacity 0.5s;
+      margin-top: 10vh; /* Push the button down a bit from the top text */
     }
 
     .quiz-area {
@@ -109,6 +110,7 @@
         color: white;
         text-shadow: 2px 2px 4px #000;
         margin-top: 20px;
+        display: none; /* starts hidden */
     }
   </style>
 </head>
@@ -129,10 +131,10 @@
     <h1>Happy Birthday Panda🐼</h1>
     
     <button id="start-button" onclick="startExperience()">
-        ▶️ Tap to Start 
+        ▶️ Tap to Start the Music & Surprise! 🎶
     </button>
     
-    <div id="loading-msg" class="loading-message" style="display:none;">
+    <div id="loading-msg" class="loading-message">
         Enjoy the video... The quiz will appear shortly.
     </div>
 
@@ -147,35 +149,38 @@
 
   <script>
     const video = document.getElementById('background-video');
-    const audio = document.getElementById('bg-audio'); // New audio element
+    const audio = document.getElementById('bg-audio');
     const quizArea = document.getElementById('quiz');
     const loadingMsg = document.getElementById('loading-msg');
     const startButton = document.getElementById('start-button');
-    const expectedDuration = 15; // 15 seconds
+    const expectedDuration = 15;
 
     // Function triggered by the user's first tap
     function startExperience() {
         // 1. Play the background song from the start
-        audio.play().catch(e => console.error("Audio playback failed:", e));
+        // Using play() in response to a user click is the key to getting audio to work.
+        audio.play().catch(e => {
+            console.error("Audio playback failed:", e);
+            alert("Could not start audio automatically. Please check your media settings.");
+        });
         
         // 2. Hide the start button and show the loading message
         startButton.style.display = 'none';
         loadingMsg.style.display = 'block';
 
-        // 3. Ensure the video is playing (redundant, but safe) and start the timer
+        // 3. Ensure the video is playing and start the timer
         video.play().catch(e => console.error("Video playback failed:", e));
         
         // Start the 15-second timer for the quiz appearance
         setTimeout(videoFinished, expectedDuration * 1000);
     }
 
-    // Function to run when the timer is finished (or video ends)
+    // Function to run when the timer is finished
     function videoFinished() {
         loadingMsg.style.display = 'none';
         quizArea.classList.add('show');
         video.pause();
         video.style.filter = 'grayscale(100%) brightness(50%)';
-        // Note: The audio will continue to play (looping) until the page changes.
     }
 
     // Quiz check: Any text submission moves to page3.html
@@ -191,8 +196,7 @@
       }
     }
     
-    // Fallback: If the video ends before the timer, trigger the finished state
-    // This is less important now that we rely on the timer, but is good practice.
+    // Fallback: If the video ends before the timer
     video.addEventListener('ended', videoFinished);
   </script>
 
