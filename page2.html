@@ -15,7 +15,6 @@
       background: black;
     }
 
-    /* Video Container - ensures video covers the full screen */
     .video-container {
       position: fixed;
       top: 0;
@@ -23,10 +22,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1; /* Below the content */
+      z-index: 1;
     }
 
-    /* Video Styling - ensures video covers, maintaining aspect ratio */
     #background-video {
       min-width: 100%;
       min-height: 100%;
@@ -36,10 +34,9 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      object-fit: cover; /* Ensures it covers the area */
+      object-fit: cover;
     }
 
-    /* Content Container - holds the text and quiz, appears on top */
     .content {
       position: absolute;
       top: 0;
@@ -51,27 +48,44 @@
       justify-content: center;
       align-items: center;
       z-index: 2;
-      background: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay for readability */
+      background: rgba(0, 0, 0, 0.4);
     }
 
     h1 {
       font-size: 3em;
-      color: #ffcc00; /* Yellow */
+      color: #ffcc00;
       text-shadow: 0 0 10px #000;
     }
 
-    /* Quiz Area - hidden by default, shown after video */
+    /* --- New Unmute Button Style --- */
+    #unmute-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 15px 30px;
+      font-size: 1.5em;
+      font-weight: bold;
+      background: rgba(255, 105, 180, 0.9); /* Hotpink */
+      color: white;
+      border: 3px solid white;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 3;
+      transition: opacity 0.3s;
+    }
+
     .quiz-area {
       margin-top: 20px;
       padding: 20px;
-      background: rgba(255, 105, 180, 0.8); /* Hotpink with transparency */
+      background: rgba(255, 105, 180, 0.8);
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
-      display: none; /* Starts hidden */
+      display: none;
     }
     
     .quiz-area.show {
-        display: block; /* Show after video ends */
+        display: block;
     }
 
     input, button {
@@ -83,7 +97,7 @@
     }
 
     button {
-      background: #8a2be2; /* BlueViolet */
+      background: #8a2be2;
       color: white;
       font-weight: bold;
       cursor: pointer;
@@ -100,11 +114,15 @@
 <body>
 
   <div class="video-container">
-    <video autoplay muted id="background-video">
+    <video autoplay muted playsinline id="background-video">
       <source src="Page2.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
+
+  <button id="unmute-button" onclick="unmuteVideo()">
+      🔊 Tap to Play Audio 🎶
+  </button>
 
   <div class="content">
     <h1>Happy Birthday Panda🐼</h1>
@@ -126,37 +144,44 @@
     const video = document.getElementById('background-video');
     const quizArea = document.getElementById('quiz');
     const loadingMsg = document.getElementById('loading-msg');
-    const expectedDuration = 15; // Assuming the video is exactly 15 seconds
+    const unmuteBtn = document.getElementById('unmute-button');
+    const expectedDuration = 15;
 
+    // --- New Unmute Function ---
+    function unmuteVideo() {
+        video.muted = false; // Unmute the video
+        unmuteBtn.style.opacity = 0; // Hide the button
+        setTimeout(() => { unmuteBtn.style.display = 'none'; }, 300); // Remove it after the fade transition
+        // Re-play the video from the beginning in case the user tapped late
+        video.currentTime = 0;
+        video.play();
+    }
+    
     // Function to run when the video is finished
     function videoFinished() {
-        console.log("Video finished or 15-second timer completed.");
-        loadingMsg.style.display = 'none'; // Hide the loading message
-        quizArea.classList.add('show'); // Show the quiz
-        video.pause(); // Pause the video (optional, but good practice)
-        video.style.filter = 'grayscale(100%) brightness(50%)'; // Dim/process the video for better readability
+        loadingMsg.style.display = 'none';
+        quizArea.classList.add('show');
+        video.pause();
+        video.style.filter = 'grayscale(100%) brightness(50%)';
+        unmuteBtn.style.display = 'none'; // Ensure button is hidden once quiz appears
     }
 
     // 1. Primary Method: Listen for the 'ended' event
-    // This is the most reliable way if the video is exactly 15s
     video.addEventListener('ended', videoFinished);
 
-    // 2. Fallback Method: Use a 15-second timer
-    // This is a safety measure in case the 'ended' event is missed or if the video is longer/shorter than 15s and you strictly want a 15s delay.
+    // 2. Fallback Method: Use a 15-second timer (Set to 15.5s just in case of event lag)
     setTimeout(() => {
-        // Only run videoFinished if the video hasn't already ended
         if (!video.ended) {
             videoFinished();
         }
-    }, expectedDuration * 1000); // Convert seconds to milliseconds
+    }, (expectedDuration + 0.5) * 1000); 
     
     // Quiz check: Any text submission moves to page3.html
     function checkAnswer() {
       const answer = document.getElementById("answer").value;
       
-      // Check if the answer field is not empty (contains at least one non-whitespace character)
       if (answer.trim().length > 0) {
-        window.location.href = "page3.html"; // Go to next page
+        window.location.href = "page3.html"; 
       } else {
         alert("Please type a message to proceed! 🐼");
       }
