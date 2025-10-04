@@ -22,7 +22,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1; /* Lowest layer */
+      z-index: 1; /* Video layer */
     }
 
     #background-video {
@@ -45,13 +45,11 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* Center vertically */
-      align-items: center; /* Center horizontally */
-      z-index: 2; /* Layer above the video */
-      /* Add the overlay here, though the background may need to be on a wrapper if you want the text to be clear */
-      /* For now, keep the overlay on the content layer */
+      justify-content: center;
+      align-items: center;
+      z-index: 2; /* Content layer above video */
       background: rgba(0, 0, 0, 0.5); 
-      padding-top: 5vh; /* Added padding to prevent text from hitting the very top edge */
+      padding-top: 5vh;
     }
 
     h1 {
@@ -61,20 +59,19 @@
       margin-bottom: 20px;
     }
 
-    /* --- IMPORTANT Button Style Fix --- */
+    /* Start Button Style */
     #start-button {
-      /* Removed absolute positioning to center it within the flex container */
       padding: 15px 30px;
       font-size: 1.5em;
       font-weight: bold;
-      background: rgba(255, 105, 180, 0.9);
+      background: rgba(255, 105, 180, 0.9); 
       color: white;
       border: 3px solid white;
       border-radius: 10px;
       cursor: pointer;
-      z-index: 3; /* Ensure it is above everything else */
+      z-index: 3; 
       transition: opacity 0.5s;
-      margin-top: 10vh; /* Push the button down a bit from the top text */
+      margin-top: 10vh; 
     }
 
     .quiz-area {
@@ -110,7 +107,7 @@
         color: white;
         text-shadow: 2px 2px 4px #000;
         margin-top: 20px;
-        display: none; /* starts hidden */
+        display: none; 
     }
   </style>
 </head>
@@ -123,15 +120,11 @@
     </video>
   </div>
   
-  <audio id="bg-audio" loop>
-      <source src="Page2_Song.mp3" type="audio/mpeg">
-  </audio>
-
   <div class="content">
     <h1>Happy Birthday Panda🐼</h1>
     
     <button id="start-button" onclick="startExperience()">
-        ▶️ Tap to Start the Music & Surprise! 🎶
+        ▶️ Tap to Start the Video & Audio! 🎶
     </button>
     
     <div id="loading-msg" class="loading-message">
@@ -149,38 +142,38 @@
 
   <script>
     const video = document.getElementById('background-video');
-    const audio = document.getElementById('bg-audio');
     const quizArea = document.getElementById('quiz');
     const loadingMsg = document.getElementById('loading-msg');
     const startButton = document.getElementById('start-button');
-    const expectedDuration = 15;
+    const expectedDuration = 15; // 15 seconds
 
     // Function triggered by the user's first tap
     function startExperience() {
-        // 1. Play the background song from the start
-        // Using play() in response to a user click is the key to getting audio to work.
-        audio.play().catch(e => {
-            console.error("Audio playback failed:", e);
-            alert("Could not start audio automatically. Please check your media settings.");
-        });
         
-        // 2. Hide the start button and show the loading message
-        startButton.style.display = 'none';
-        loadingMsg.style.display = 'block';
-
-        // 3. Ensure the video is playing and start the timer
+        // 1. UNMUTE THE VIDEO using the user's click action
+        if (video.muted) {
+            video.muted = false;
+        }
+        
+        // 2. Restart the video from the beginning for audio synchronization
+        video.currentTime = 0; 
         video.play().catch(e => console.error("Video playback failed:", e));
         
-        // Start the 15-second timer for the quiz appearance
+        // 3. Hide the start button and show the loading message
+        startButton.style.display = 'none';
+        loadingMsg.style.display = 'block';
+        
+        // 4. Start the 15-second timer for the quiz appearance
         setTimeout(videoFinished, expectedDuration * 1000);
     }
 
-    // Function to run when the timer is finished
+    // Function to run when the timer is finished (or video ends)
     function videoFinished() {
         loadingMsg.style.display = 'none';
         quizArea.classList.add('show');
         video.pause();
-        video.style.filter = 'grayscale(100%) brightness(50%)';
+        // Dim the video to highlight the quiz
+        video.style.filter = 'grayscale(100%) brightness(50%)'; 
     }
 
     // Quiz check: Any text submission moves to page3.html
@@ -188,15 +181,15 @@
       const answer = document.getElementById("answer").value;
       
       if (answer.trim().length > 0) {
-        // Stop the song before navigating
-        audio.pause();
+        // Stop the video before navigating
+        video.pause(); 
         window.location.href = "page3.html"; 
       } else {
         alert("Please type a message to proceed! 🐼");
       }
     }
     
-    // Fallback: If the video ends before the timer
+    // Fallback: If the video ends naturally before the timer, trigger the finished state
     video.addEventListener('ended', videoFinished);
   </script>
 
