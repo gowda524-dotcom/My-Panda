@@ -48,16 +48,33 @@
       justify-content: center;
       align-items: center;
       z-index: 2;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.5); /* Slightly darker overlay for the button */
     }
 
     h1 {
       font-size: 3em;
       color: #ffcc00;
       text-shadow: 0 0 10px #000;
+      margin-bottom: 20px; /* Space above the button */
     }
-    
-    /* NOTE: The separate #unmute-button styling is no longer needed */
+
+    /* --- New Start Button Style --- */
+    #start-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 15px 30px;
+      font-size: 1.5em;
+      font-weight: bold;
+      background: rgba(255, 105, 180, 0.9); /* Hotpink */
+      color: white;
+      border: 3px solid white;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 3;
+      transition: opacity 0.5s;
+    }
 
     .quiz-area {
       margin-top: 20px;
@@ -103,17 +120,25 @@
       Your browser does not support the video tag.
     </video>
   </div>
+  
+  <audio id="bg-audio" loop>
+      <source src="Page2_Song.mp3" type="audio/mpeg">
+  </audio>
 
   <div class="content">
     <h1>Happy Birthday Panda🐼</h1>
     
-    <div id="loading-msg" class="loading-message">
-        
+    <button id="start-button" onclick="startExperience()">
+        ▶️ Tap to Start 
+    </button>
+    
+    <div id="loading-msg" class="loading-message" style="display:none;">
+        Enjoy the video... The quiz will appear shortly.
     </div>
 
     <div id="quiz" class="quiz-area">
       <p style="font-size: 1.3em; font-weight: bold;">
-        Ready for the next step? Type anything 
+        Ready for the next step? Type anything below and hit Submit!
       </p>
       <input type="text" id="answer" placeholder="Type your message...">
       <button onclick="checkAnswer()">Submit</button>
@@ -122,49 +147,53 @@
 
   <script>
     const video = document.getElementById('background-video');
+    const audio = document.getElementById('bg-audio'); // New audio element
     const quizArea = document.getElementById('quiz');
     const loadingMsg = document.getElementById('loading-msg');
-    const expectedDuration = 15;
+    const startButton = document.getElementById('start-button');
+    const expectedDuration = 15; // 15 seconds
 
-    // Function to run when the video is finished
+    // Function triggered by the user's first tap
+    function startExperience() {
+        // 1. Play the background song from the start
+        audio.play().catch(e => console.error("Audio playback failed:", e));
+        
+        // 2. Hide the start button and show the loading message
+        startButton.style.display = 'none';
+        loadingMsg.style.display = 'block';
+
+        // 3. Ensure the video is playing (redundant, but safe) and start the timer
+        video.play().catch(e => console.error("Video playback failed:", e));
+        
+        // Start the 15-second timer for the quiz appearance
+        setTimeout(videoFinished, expectedDuration * 1000);
+    }
+
+    // Function to run when the timer is finished (or video ends)
     function videoFinished() {
         loadingMsg.style.display = 'none';
         quizArea.classList.add('show');
         video.pause();
         video.style.filter = 'grayscale(100%) brightness(50%)';
+        // Note: The audio will continue to play (looping) until the page changes.
     }
 
-    // 1. Primary Method: Listen for the 'ended' event
-    video.addEventListener('ended', videoFinished);
-
-    // 2. Fallback Method: Use a 15-second timer
-    setTimeout(() => {
-        if (!video.ended) {
-            videoFinished();
-        }
-    }, (expectedDuration + 0.5) * 1000); 
-    
     // Quiz check: Any text submission moves to page3.html
     function checkAnswer() {
       const answer = document.getElementById("answer").value;
       
       if (answer.trim().length > 0) {
-        
-        // --- THIS IS THE CRITICAL CHANGE ---
-        // Unmute the audio using the user's "Submit" click action
-        if (video.muted) {
-            video.muted = false;
-        }
-        
-        // Brief delay to allow audio to start before page transition
-        setTimeout(() => {
-            window.location.href = "page3.html"; 
-        }, 500); // 0.5 second delay
-        
+        // Stop the song before navigating
+        audio.pause();
+        window.location.href = "page3.html"; 
       } else {
         alert("Please type a message to proceed! 🐼");
       }
     }
+    
+    // Fallback: If the video ends before the timer, trigger the finished state
+    // This is less important now that we rely on the timer, but is good practice.
+    video.addEventListener('ended', videoFinished);
   </script>
 
 </body>
