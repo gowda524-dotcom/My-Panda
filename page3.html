@@ -80,6 +80,12 @@
       pointer-events: none;
       z-index: 5;
     }
+    /* Added style for the new hint message */
+    #delay-message {
+      color: yellow;
+      font-size: 18px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -95,10 +101,14 @@
 
   <div class="message">
     Un Amma ku... Love you Amma 🌎 <br>
-    Apram more than 10 kisses 😘 type pannu next page ku pogum 💕
+    Type a lovely message below and hit submit! The next surprise will load in a moment. 💕
   </div>
 
-  <input type="text" id="answer" placeholder="Type here...">
+  <div id="delay-message">
+    (Wait for **20 seconds** after page load before submitting to unlock the next page!)
+  </div>
+
+  <input type="text" id="answer" placeholder="Type your loving message...">
   <button onclick="checkAnswer()">Submit</button>
 
   <audio autoplay loop>
@@ -108,6 +118,15 @@
   <canvas id="confetti"></canvas>
 
   <script>
+    // Flag to track if the 20-second delay has passed
+    let isDelayOver = false;
+
+    // Set the 20-second timer on page load
+    setTimeout(() => {
+      isDelayOver = true;
+      document.getElementById('delay-message').innerText = "You can submit now! The next page is unlocked! 🎉";
+    }, 20000); // 20 seconds = 20000 milliseconds
+
     // Slideshow
     let slides = document.querySelectorAll(".image-container img");
     let index = 0;
@@ -144,6 +163,8 @@
     }
 
     function createConfetti() {
+      // Clear existing particles for a fresh burst
+      particles = [];
       for(let i=0;i<300;i++){
         particles.push({
           x: Math.random()*confetti.width,
@@ -171,14 +192,17 @@
     // Quiz check + auto move
     function checkAnswer() {
       let ans = document.getElementById("answer").value;
-      let kissCount = (ans.match(/😘/g) || []).length;
-      if (kissCount > 10) {
+      if (ans.trim().length > 0 && isDelayOver) { // Check for any non-empty text AND delay
         createConfetti();
+        // Updated message to reflect the change
+        document.querySelector(".message").innerHTML = "Amazing! Moving to your next surprise... 💕";
         setTimeout(() => {
           window.location.href = "page4.html"; // Auto move
         }, 2000);
+      } else if (!isDelayOver) {
+        alert("Hold on! The next page will unlock 20 seconds after the page loaded. Please wait a moment!");
       } else {
-        alert("Type more than 10 😘!");
+        alert("Please type a message before submitting!");
       }
     }
 
