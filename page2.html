@@ -56,24 +56,8 @@
       color: #ffcc00;
       text-shadow: 0 0 10px #000;
     }
-
-    /* --- New Unmute Button Style --- */
-    #unmute-button {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 15px 30px;
-      font-size: 1.5em;
-      font-weight: bold;
-      background: rgba(255, 105, 180, 0.9); /* Hotpink */
-      color: white;
-      border: 3px solid white;
-      border-radius: 10px;
-      cursor: pointer;
-      z-index: 3;
-      transition: opacity 0.3s;
-    }
+    
+    /* NOTE: The separate #unmute-button styling is no longer needed */
 
     .quiz-area {
       margin-top: 20px;
@@ -120,20 +104,16 @@
     </video>
   </div>
 
-  <button id="unmute-button" onclick="unmuteVideo()">
-      🔊 Tap to Play Audio 🎶
-  </button>
-
   <div class="content">
     <h1>Happy Birthday Panda🐼</h1>
     
     <div id="loading-msg" class="loading-message">
-        Loading your next task...
+        
     </div>
 
     <div id="quiz" class="quiz-area">
       <p style="font-size: 1.3em; font-weight: bold;">
-        Ready for the next step? Type anything below and hit Submit!
+        Ready for the next step? Type anything 
       </p>
       <input type="text" id="answer" placeholder="Type your message...">
       <button onclick="checkAnswer()">Submit</button>
@@ -144,32 +124,20 @@
     const video = document.getElementById('background-video');
     const quizArea = document.getElementById('quiz');
     const loadingMsg = document.getElementById('loading-msg');
-    const unmuteBtn = document.getElementById('unmute-button');
     const expectedDuration = 15;
 
-    // --- New Unmute Function ---
-    function unmuteVideo() {
-        video.muted = false; // Unmute the video
-        unmuteBtn.style.opacity = 0; // Hide the button
-        setTimeout(() => { unmuteBtn.style.display = 'none'; }, 300); // Remove it after the fade transition
-        // Re-play the video from the beginning in case the user tapped late
-        video.currentTime = 0;
-        video.play();
-    }
-    
     // Function to run when the video is finished
     function videoFinished() {
         loadingMsg.style.display = 'none';
         quizArea.classList.add('show');
         video.pause();
         video.style.filter = 'grayscale(100%) brightness(50%)';
-        unmuteBtn.style.display = 'none'; // Ensure button is hidden once quiz appears
     }
 
     // 1. Primary Method: Listen for the 'ended' event
     video.addEventListener('ended', videoFinished);
 
-    // 2. Fallback Method: Use a 15-second timer (Set to 15.5s just in case of event lag)
+    // 2. Fallback Method: Use a 15-second timer
     setTimeout(() => {
         if (!video.ended) {
             videoFinished();
@@ -181,7 +149,18 @@
       const answer = document.getElementById("answer").value;
       
       if (answer.trim().length > 0) {
-        window.location.href = "page3.html"; 
+        
+        // --- THIS IS THE CRITICAL CHANGE ---
+        // Unmute the audio using the user's "Submit" click action
+        if (video.muted) {
+            video.muted = false;
+        }
+        
+        // Brief delay to allow audio to start before page transition
+        setTimeout(() => {
+            window.location.href = "page3.html"; 
+        }, 500); // 0.5 second delay
+        
       } else {
         alert("Please type a message to proceed! 🐼");
       }
