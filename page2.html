@@ -6,138 +6,162 @@
   <style>
     body {
       margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
-      background: url('Bg.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
       text-align: center;
-      overflow: hidden;
-    }
-    .container {
-      position: relative;
-      z-index: 2;
-      padding: 20px;
-    }
-    h1 {
-      margin-top: 30px;
-      font-size: 36px;
-      color: #FFD700;
-      text-shadow: 2px 2px 4px #000;
-    }
-    .quiz-box {
-      margin-top: 40px;
-    }
-    input {
-      padding: 10px;
-      font-size: 18px;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 8px;
-      border: none;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 15px;
-      font-size: 18px;
-      background-color: #ff69b4;
       color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      background: black;
     }
-    button:hover {
-      background-color: #ff1493;
-    }
-    canvas {
+
+    /* Video Container - ensures video covers the full screen */
+    .video-container {
       position: fixed;
       top: 0;
       left: 0;
-      pointer-events: none;
-      z-index: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1; /* Below the content */
+    }
+
+    /* Video Styling - ensures video covers, maintaining aspect ratio */
+    #background-video {
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover; /* Ensures it covers the area */
+    }
+
+    /* Content Container - holds the text and quiz, appears on top */
+    .content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay for readability */
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #ffcc00; /* Yellow */
+      text-shadow: 0 0 10px #000;
+    }
+
+    /* Quiz Area - hidden by default, shown after video */
+    .quiz-area {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255, 105, 180, 0.8); /* Hotpink with transparency */
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
+      display: none; /* Starts hidden */
+    }
+    
+    .quiz-area.show {
+        display: block; /* Show after video ends */
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 10px 5px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+
+    button {
+      background: #8a2be2; /* BlueViolet */
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .loading-message {
+        font-size: 1.5em;
+        color: white;
+        text-shadow: 2px 2px 4px #000;
+        margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <canvas id="confetti"></canvas>
-  <div class="container">
-    <h1>🎂🎊😚🤗💙🌍💗❤️‍🩹</h1>
-    <div class="quiz-box">
-      <p>Ni unnoda World 🌎 ha pakanuma??</p>
-      <p>Pakkanum naa kila Answer box la (🌎) intha world emoji more than 10 times type pannu.</p>
-      <input type="text" id="answer" placeholder="Type answer here...">
-      <br>
+
+  <div class="video-container">
+    <video autoplay muted id="background-video">
+      <source src="Page2.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="content">
+    <h1>Happy Birthday Panda🐼</h1>
+    
+    <div id="loading-msg" class="loading-message">
+        Loading your next task...
+    </div>
+
+    <div id="quiz" class="quiz-area">
+      <p style="font-size: 1.3em; font-weight: bold;">
+        Ready for the next step? Type anything below and hit Submit!
+      </p>
+      <input type="text" id="answer" placeholder="Type your message...">
       <button onclick="checkAnswer()">Submit</button>
     </div>
   </div>
 
   <script>
-    function checkAnswer() {
-      const input = document.getElementById('answer').value.trim();
-      const count = (input.match(/🌎/g) || []).length;
-      if (count > 10) {
-        alert("Correct Answer! Moving to next page 🎉");
-        window.location.href = "https://gowda524-dotcom.github.io/My-Panda/page3.html";
-      } else {
-        alert("Try again! You need more 🌎 emojis.");
-      }
+    const video = document.getElementById('background-video');
+    const quizArea = document.getElementById('quiz');
+    const loadingMsg = document.getElementById('loading-msg');
+    const expectedDuration = 15; // Assuming the video is exactly 15 seconds
+
+    // Function to run when the video is finished
+    function videoFinished() {
+        console.log("Video finished or 15-second timer completed.");
+        loadingMsg.style.display = 'none'; // Hide the loading message
+        quizArea.classList.add('show'); // Show the quiz
+        video.pause(); // Pause the video (optional, but good practice)
+        video.style.filter = 'grayscale(100%) brightness(50%)'; // Dim/process the video for better readability
     }
 
-    // Confetti
-    const canvas = document.getElementById('confetti');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let W, H;
+    // 1. Primary Method: Listen for the 'ended' event
+    // This is the most reliable way if the video is exactly 15s
+    video.addEventListener('ended', videoFinished);
 
-    function resizeCanvas() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
-    function randomEmoji() {
-      return "🌎";
-    }
-
-    function createParticle() {
-      return {
-        x: Math.random() * W,
-        y: Math.random() * H - H,
-        r: 20,
-        d: Math.random() * 2 + 1,
-        emoji: randomEmoji(),
-      };
-    }
-
-    for (let i = 0; i < 40; i++) {
-      particles.push(createParticle());
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.font = "24px Arial";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-
-      for (let i = 0; i < particles.length; i++) {
-        let p = particles[i];
-        ctx.fillText(p.emoji, p.x, p.y);
-      }
-      update();
-    }
-
-    function update() {
-      for (let i = 0; i < particles.length; i++) {
-        let p = particles[i];
-        p.y += p.d;
-        if (p.y > H) {
-          particles[i] = createParticle();
-          particles[i].y = 0;
+    // 2. Fallback Method: Use a 15-second timer
+    // This is a safety measure in case the 'ended' event is missed or if the video is longer/shorter than 15s and you strictly want a 15s delay.
+    setTimeout(() => {
+        // Only run videoFinished if the video hasn't already ended
+        if (!video.ended) {
+            videoFinished();
         }
+    }, expectedDuration * 1000); // Convert seconds to milliseconds
+    
+    // Quiz check: Any text submission moves to page3.html
+    function checkAnswer() {
+      const answer = document.getElementById("answer").value;
+      
+      // Check if the answer field is not empty (contains at least one non-whitespace character)
+      if (answer.trim().length > 0) {
+        window.location.href = "page3.html"; // Go to next page
+      } else {
+        alert("Please type a message to proceed! 🐼");
       }
     }
-
-    setInterval(draw, 33);
   </script>
+
 </body>
 </html>
