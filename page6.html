@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -92,15 +92,13 @@
   </div>
 
   <div class="quiz">
-    Lov uuu My Friend ❤️‍🩹😚.... Sollu next pola....<br>
+    Lov uuu My Friend ❤️‍🩹😚.... **Send your reply** to move to the next surprise.<br>
     <input type="text" id="answer" placeholder="Type your answer...">
     <button onclick="checkAnswer()">Submit</button>
   </div>
 
-  <!-- Background Music -->
   <audio id="bgMusic" src="Page6.mp3" autoplay loop></audio>
 
-  <!-- Fireworks -->
   <canvas id="fireworks"></canvas>
 
   <script>
@@ -187,17 +185,15 @@
     setInterval(() => createFirework(Math.random()*canvas.width, Math.random()*canvas.height/2), 2000);
     animate();
 
-    // Quiz check
-    function normalize(text) {
-      return text.replace(/\s+/g, " ").trim().toLowerCase();
-    }
+    // Quiz check - MODIFIED TO ACCEPT ANY TEXT
     function checkAnswer() {
-      const answer = normalize(document.getElementById("answer").value);
-      const correct = normalize("Lov uuu My Friend ❤️‍🩹😚");
-      if(answer === correct) {
+      const answer = document.getElementById("answer").value;
+      
+      // Check if the answer field is not empty (contains at least one non-whitespace character)
+      if(answer.trim().length > 0) {
         window.location.href = "page7.html"; // Go to next page
       } else {
-        alert("Try again, Bomma! 😘");
+        alert("Please type a message to proceed! 💗");
       }
     }
   </script>
