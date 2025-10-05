@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 24</title>
+  <title>Birthday Surprise - Page 24 (FIXED)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -11,52 +11,31 @@
       font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
       color: white;
-      overflow: hidden;
+      overflow-y: auto; /* Allow scrolling if content overflows */
       position: relative;
       background: linear-gradient(to top right, #ff7e5f, #feb47b);
       background-size: cover;
     }
 
-    /* Fullscreen tap area for audio (invisible) */
-    #audio-tap-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 100;
-        background: transparent;
-        cursor: pointer;
-    }
-    #audio-tap-overlay.hidden {
-        display: none;
-    }
-
+    /* CRITICAL FIX: Ensure game instructions are visible at the top */
     .container {
-      position: absolute;
-      top: 0;
-      left: 0;
+      position: relative; /* Changed from absolute to flow content naturally */
       width: 100%;
-      height: 100%;
+      min-height: 100vh; /* Minimum full viewport height */
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       z-index: 10;
       background: rgba(0, 0, 0, 0.4);
-      padding: 20px;
+      padding: 20px 0; /* Vertical padding */
       box-sizing: border-box;
-    }
-
-    h1, h2, p {
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
-      margin: 10px 0;
     }
 
     h1 {
       font-size: 3.5em;
       color: #ffeb3b;
-      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+      margin-top: 20px;
     }
 
     h2 {
@@ -68,27 +47,42 @@
       background: rgba(255, 255, 255, 0.2);
       padding: 15px;
       border-radius: 10px;
-      margin-bottom: 20px;
+      margin: 10px auto 20px auto; /* Centered with margin */
       font-size: 1.1em;
-      max-width: 80%;
+      max-width: 90%;
+      text-shadow: none;
     }
 
-    /* Game Grid */
+    /* FIX: Game Grid Sizing */
     .game-grid {
       display: grid;
-      grid-template-columns: repeat(4, 80px);
-      grid-template-rows: repeat(4, 80px);
-      gap: 10px;
+      /* FIX: Use VW for responsive sizing. 4 cards + 3 gaps (10px each) */
+      grid-template-columns: repeat(4, 18vw); 
+      grid-template-rows: repeat(4, 18vw);
+      gap: 2vw; /* Use vw for gap spacing as well */
       perspective: 1000px;
-      margin-top: 20px;
+      margin-bottom: 30px;
       max-width: fit-content;
       transform-style: preserve-3d;
       z-index: 15;
     }
+    /* Ensure the cards are at least 70px wide for tablets/desktops */
+    @media (min-width: 600px) {
+        .game-grid {
+            grid-template-columns: repeat(4, 90px);
+            grid-template-rows: repeat(4, 90px);
+            gap: 10px;
+        }
+        .card {
+            width: 90px;
+            height: 90px;
+        }
+    }
+
 
     .card {
-      width: 80px;
-      height: 80px;
+      width: 100%; /* Take full grid cell size (18vw) */
+      height: 100%;
       position: relative;
       transform-style: preserve-3d;
       transition: transform 0.5s;
@@ -120,11 +114,10 @@
       border: 2px solid #ffcc00;
     }
 
-    /* --- CRITICAL CHANGE FOR FULL PHOTO DISPLAY --- */
     .card-back {
       background-color: white;
       transform: rotateY(180deg);
-      background-size: contain; /* Shows entire image, may leave whitespace */
+      background-size: contain; 
       background-repeat: no-repeat;
       background-position: center;
       border: 2px solid #4a00e0;
@@ -139,6 +132,7 @@
       font-size: 1.5em;
       text-shadow: 1px 1px 3px #000;
       margin-top: 30px;
+      margin-bottom: 30px;
       max-width: 90%;
       display: none;
       z-index: 20;
@@ -172,9 +166,9 @@
       box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
     }
 
-    /* Floating Emojis and Canvas styles remain the same */
+    /* Animation Styles remain the same */
     .emoji {
-      position: absolute;
+      position: fixed; /* Changed to fixed to stay put while content scrolls */
       font-size: 3rem;
       animation: float linear infinite;
       z-index: 4;
@@ -193,16 +187,14 @@
     }
   </style>
 </head>
-<body>
+<body onclick="forceAudioStart()">
 
   <audio id="bg-audio" loop>
       <source src="Page24.mp3" type="audio/mpeg">
   </audio>
 
-  <div id="audio-tap-overlay"></div>
-
   <div class="container">
-    <h1>Un Chelloww va intro kudu🤭</h1>
+    <h1>Happy Birthday 💙😚</h1>
     <h2>Memory Match Game Instructions:</h2>
     <p class="instructions">
       Click on two cards to flip them. If the images match, they will stay open. If they don't, they'll flip back over. Find all 8 pairs to complete the game! Good luck!
@@ -222,44 +214,29 @@
 
   <script>
     const audio = document.getElementById('bg-audio');
-    const audioTapOverlay = document.getElementById('audio-tap-overlay');
-    let audioStarted = false;
+    let audioAttempted = false;
 
-    // --- Audio Autoplay Workaround (Best effort) ---
-    document.addEventListener('DOMContentLoaded', () => {
-        let playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(() => {
-                // Autoplay failed, listen for tap on overlay
-                audioTapOverlay.addEventListener('click', startAudioAfterTap, { once: true });
-                audioTapOverlay.addEventListener('touchstart', startAudioAfterTap, { once: true });
+    // --- Audio Autoplay Workaround (Single Tap on Body) ---
+    function forceAudioStart() {
+        if (!audioAttempted) {
+            audio.play().catch(e => {
+                console.warn("Audio autoplay blocked. User must tap.", e);
             });
-            playPromise.then(() => {
-                // Autoplay succeeded, hide overlay immediately
-                audioTapOverlay.classList.add('hidden');
-                audioStarted = true;
-            });
-        }
-    });
-
-    function startAudioAfterTap() {
-        if (!audioStarted) {
-            audio.play().catch(e => console.error("Audio playback failed after tap:", e));
-            audioTapOverlay.classList.add('hidden');
-            audioStarted = true;
+            audioAttempted = true;
+            document.body.onclick = null; // Remove handler after first successful tap
+            document.body.ontouchstart = null;
         }
     }
-
+    // Add touch handler for mobile devices as well
+    document.body.ontouchstart = forceAudioStart;
 
     // --- Memory Game Logic ---
     const gameGrid = document.getElementById('game-grid');
     const quizArea = document.getElementById('quiz-area');
-    // --- UPDATED IMAGE FILENAMES ---
     const images = [
       'Pair1.jpg', 'Pair2.jpg', 'Pair3.jpg', 'Pair4.jpg',
       'Pair5.jpg', 'Pair6.jpg', 'Pair7.jpg', 'Pair8.jpg'
     ];
-    let cards = [];
     let flippedCards = [];
     let matchedPairs = 0;
     let lockBoard = false;
@@ -277,8 +254,7 @@
       shuffle(gameImages);
 
       gameGrid.innerHTML = '';
-      cards = [];
-
+      
       gameImages.forEach((imgSrc, index) => {
         const cardElement = document.createElement('div');
         cardElement.classList.add('card');
@@ -291,7 +267,6 @@
         `;
         cardElement.addEventListener('click', flipCard);
         gameGrid.appendChild(cardElement);
-        cards.push(cardElement);
       });
     }
 
