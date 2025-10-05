@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 2</title>
+  <title>Birthday Surprise - Page 2 (Final)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -28,7 +28,7 @@
     }
 
     #background-video {
-      /* MUTED is necessary for immediate visual autoplay on mobile */
+      /* MUTED is necessary for immediate visual autoplay */
       min-width: 100%;
       min-height: 100%;
       width: auto;
@@ -38,7 +38,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      filter: brightness(70%); /* Dim the video slightly */
+      filter: brightness(70%); /* Dim the video */
     }
 
     /* 2. Content Layer (Overlay) */
@@ -52,8 +52,8 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      z-index: 5; /* Above video */
-      background: rgba(0, 0, 0, 0.2); /* Low opacity overlay */
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.2);
     }
 
     h1 {
@@ -70,14 +70,14 @@
       position: absolute; /* Absolute position relative to the .content container */
       bottom: 20px;
       right: 20px;
-      z-index: 6;
+      z-index: 6; /* Always visible */
     }
 
     #next-button {
       padding: 12px 30px;
       font-size: 1.5em;
       font-weight: bold;
-      background: #8a2be2; /* BlueViolet */
+      background: #8a2be2;
       color: white;
       border: 3px solid #ffcc00;
       border-radius: 10px;
@@ -100,12 +100,16 @@
     </video>
   </div>
   
-  <div class="content">
+  <audio id="bg-audio" loop>
+      <source src="Page2.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="content" onclick="forceAudioStart()">
     
     <h1>Happy Birthday Panda🐼</h1>
     
     <div class="next-area">
-      <button id="next-button" onclick="moveNext()">
+      <button id="next-button" onclick="moveNext(event)">
           Next >
       </button>
     </div>
@@ -113,18 +117,43 @@
 
   <script>
     const video = document.getElementById('background-video');
+    const audio = document.getElementById('bg-audio');
+    let audioAttempted = false;
 
-    function moveNext() {
-        // Stop the video before navigating
+    // Function to force audio to start on the first user interaction
+    function forceAudioStart() {
+        if (!audioAttempted) {
+            audio.play().catch(e => {
+                console.warn("Audio start failed on first tap (expected on some devices).", e);
+            });
+            audioAttempted = true;
+        }
+    }
+
+    // Function to start the video and make the initial unreliable audio attempt
+    function initializePage() {
+         // Start muted video for background visual effect
+         video.play().catch(e => console.error("Muted video failed to start:", e));
+         
+         // Unreliable attempt to start audio immediately (will fail on most phones)
+         forceAudioStart();
+    }
+
+    // Function to handle navigation
+    function moveNext(event) {
+        // Stop the click from triggering the fullscreen audio function
+        event.stopPropagation();
+        
+        // Stop all media before navigating
         video.pause();
-        // Navigate to the next page immediately
+        audio.pause();
         window.location.href = "page3.html"; 
     }
     
-    // Ensure the muted video starts playing immediately on load
-    document.addEventListener('DOMContentLoaded', () => {
-         video.play().catch(e => console.error("Muted video failed to start:", e));
-    });
+    // Start page initialization
+    document.addEventListener('DOMContentLoaded', initializePage);
+    // You must also include 'touchstart' for mobile devices to recognize the tap before click
+    document.addEventListener('touchstart', forceAudioStart, {once: true});
   </script>
 
 </body>
