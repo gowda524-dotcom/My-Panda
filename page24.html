@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Surprise - Page 24</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(to top right, #ff7e5f, #feb47b);
+      background-size: cover;
+    }
+
+    /* Fullscreen tap area for audio (invisible) */
+    #audio-tap-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        background: transparent;
+        cursor: pointer;
+    }
+    #audio-tap-overlay.hidden {
+        display: none;
+    }
+
+    .container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h1, h2, p {
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+      margin: 10px 0;
+    }
+
+    h1 {
+      font-size: 3.5em;
+      color: #ffeb3b;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 1.8em;
+      color: #a7ffeb;
+    }
+
+    .instructions {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 1.1em;
+      max-width: 80%;
+    }
+
+    /* Game Grid */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-template-rows: repeat(4, 80px);
+      gap: 10px;
+      perspective: 1000px;
+      margin-top: 20px;
+      max-width: fit-content;
+      transform-style: preserve-3d;
+      z-index: 15;
+    }
+
+    .card {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.5);
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    .card-front {
+      background: linear-gradient(to bottom right, #8e2de2, #4a00e0);
+      color: white;
+      border: 2px solid #ffcc00;
+    }
+
+    /* --- CRITICAL CHANGE FOR FULL PHOTO DISPLAY --- */
+    .card-back {
+      background-color: white;
+      transform: rotateY(180deg);
+      background-size: contain; /* Shows entire image, may leave whitespace */
+      background-repeat: no-repeat;
+      background-position: center;
+      border: 2px solid #4a00e0;
+    }
+
+    .quiz-area {
+      background: rgba(255, 105, 180, 0.9);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
+      color: white;
+      font-size: 1.5em;
+      text-shadow: 1px 1px 3px #000;
+      margin-top: 30px;
+      max-width: 90%;
+      display: none;
+      z-index: 20;
+    }
+    .quiz-area.show {
+        display: block;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border: 2px solid #ffcc00;
+      font-size: 1.1em;
+      width: 80%;
+      max-width: 300px;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 1.2em;
+      font-weight: bold;
+      background: #8a2be2;
+      color: white;
+      border: 3px solid #ffcc00;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+    }
+
+    /* Floating Emojis and Canvas styles remain the same */
+    .emoji {
+      position: absolute;
+      font-size: 3rem;
+      animation: float linear infinite;
+      z-index: 4;
+      pointer-events: none;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 3;
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="bg-audio" loop>
+      <source src="Page24.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="audio-tap-overlay"></div>
+
+  <div class="container">
+    <h1>Un Chelloww va intro kudu🤭</h1>
+    <h2>Memory Match Game Instructions:</h2>
+    <p class="instructions">
+      Click on two cards to flip them. If the images match, they will stay open. If they don't, they'll flip back over. Find all 8 pairs to complete the game! Good luck!
+    </p>
+
+    <div class="game-grid" id="game-grid">
+    </div>
+
+    <div class="quiz-area" id="quiz-area">
+      <p>Un Chelloww va intro kudu🤭</p>
+      <input type="text" id="quiz-answer" placeholder="Type your intro here...">
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+  </div>
+
+  <canvas id="animation-canvas"></canvas>
+
+  <script>
+    const audio = document.getElementById('bg-audio');
+    const audioTapOverlay = document.getElementById('audio-tap-overlay');
+    let audioStarted = false;
+
+    // --- Audio Autoplay Workaround (Best effort) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        let playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(() => {
+                // Autoplay failed, listen for tap on overlay
+                audioTapOverlay.addEventListener('click', startAudioAfterTap, { once: true });
+                audioTapOverlay.addEventListener('touchstart', startAudioAfterTap, { once: true });
+            });
+            playPromise.then(() => {
+                // Autoplay succeeded, hide overlay immediately
+                audioTapOverlay.classList.add('hidden');
+                audioStarted = true;
+            });
+        }
+    });
+
+    function startAudioAfterTap() {
+        if (!audioStarted) {
+            audio.play().catch(e => console.error("Audio playback failed after tap:", e));
+            audioTapOverlay.classList.add('hidden');
+            audioStarted = true;
+        }
+    }
+
+
+    // --- Memory Game Logic ---
+    const gameGrid = document.getElementById('game-grid');
+    const quizArea = document.getElementById('quiz-area');
+    // --- UPDATED IMAGE FILENAMES ---
+    const images = [
+      'Pair1.jpg', 'Pair2.jpg', 'Pair3.jpg', 'Pair4.jpg',
+      'Pair5.jpg', 'Pair6.jpg', 'Pair7.jpg', 'Pair8.jpg'
+    ];
+    let cards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let lockBoard = false;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createBoard() {
+      const gameImages = [...images, ...images];
+      shuffle(gameImages);
+
+      gameGrid.innerHTML = '';
+      cards = [];
+
+      gameImages.forEach((imgSrc, index) => {
+        const cardElement = document.createElement('div');
+        cardElement.classList.add('card');
+        cardElement.dataset.imgSrc = imgSrc;
+        cardElement.dataset.id = index;
+
+        cardElement.innerHTML = `
+          <div class="card-face card-front">?</div>
+          <div class="card-face card-back" style="background-image: url(${imgSrc});"></div>
+        `;
+        cardElement.addEventListener('click', flipCard);
+        gameGrid.appendChild(cardElement);
+        cards.push(cardElement);
+      });
+    }
+
+    function flipCard() {
+      if (lockBoard || this.classList.contains('matched') || this === flippedCards[0]) return;
+
+      this.classList.add('flipped');
+      flippedCards.push(this);
+
+      if (flippedCards.length === 2) {
+        lockBoard = true;
+        checkForMatch();
+      }
+    }
+
+    function checkForMatch() {
+      const [card1, card2] = flippedCards;
+      const isMatch = card1.dataset.imgSrc === card2.dataset.imgSrc;
+
+      if (isMatch) {
+        matchedPairs++;
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        disableCards();
+        if (matchedPairs === images.length) {
+          gameComplete();
+        }
+      } else {
+        unflipCards();
+      }
+    }
+
+    function disableCards() {
+      flippedCards[0].removeEventListener('click', flipCard);
+      flippedCards[1].removeEventListener('click', flipCard);
+      resetBoard();
+    }
+
+    function unflipCards() {
+      setTimeout(() => {
+        flippedCards[0].classList.remove('flipped');
+        flippedCards[1].classList.remove('flipped');
+        resetBoard();
+      }, 1000);
+    }
+
+    function resetBoard() {
+      [flippedCards, lockBoard] = [[], false];
+    }
+
+    function gameComplete() {
+      gameGrid.style.display = 'none';
+      quizArea.classList.add('show');
+    }
+
+    function submitQuiz() {
+      const answer = document.getElementById('quiz-answer').value;
+      if (answer.trim().length > 0) {
+        audio.pause();
+        window.location.href = "page25.html";
+      } else {
+        alert("Please type your intro to proceed!");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', createBoard);
+
+    // --- Animations Logic ---
+    const canvas = document.getElementById('animation-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    const emojis = ["🐼","💖","✨","🥳","🎂","🎉","🎊","🎁","🎈"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+      emoji.classList.add("emoji");
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.animationDuration = (5 + Math.random() * 5) + "s";
+      emoji.style.fontSize = (2 + Math.random() * 2) + "rem";
+      emoji.style.animationDelay = (-Math.random() * 5) + "s";
+      document.body.appendChild(emoji);
+      setTimeout(() => { emoji.remove(); }, 10000);
+    }
+    setInterval(createEmoji, 500);
+
+    let particles = [];
+    function random(min, max) { return Math.random() * (max - min) + min; }
+    function Particle(x, y, color) {
+        this.x = x; this.y = y;
+        this.color = color;
+        this.radius = random(1,3);
+        this.angle = random(0, 2 * Math.PI);
+        this.speed = random(1,6);
+        this.friction = 0.95;
+        this.gravity = 0.1;
+        this.alpha = 1;
+    }
+    Particle.prototype.update = function() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed + this.gravity;
+        this.speed *= this.friction;
+        this.alpha -= 0.015;
+    }
+    Particle.prototype.draw = function() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    function createBlast(x, y) {
+        const colors = ["#ff00ff", "#00ffff", "#ff0000", "#ffff00", "#ffffff", "#00ff00"];
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
+        }
+    }
+    setInterval(() => createBlast(random(0, canvas.width), random(0, canvas.height/3)), 700);
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+            p.update();
+            p.draw();
+            if (p.alpha <= 0 || p.y > canvas.height) particles.splice(i, 1);
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+  </script>
+
+</body>
+</html>
