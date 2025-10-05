@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 27 (Timed Quiz)</title>
+  <title>Birthday Surprise - Page 27 (Final)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -11,26 +11,23 @@
       font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
       color: white;
-      overflow: hidden; /* Prevent body scroll, use container for internal scroll if needed */
+      overflow: hidden; /* Prevent body scroll for fixed elements */
       position: relative;
     }
 
-    /* 1. Background Image Container */
+    /* 1. Background Image Fix: Changed to Page27.png and ensured full cover */
     .background-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .background-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Ensures the image covers the screen without distortion */
-      filter: brightness(60%); /* Dim the background to make text readable */
+      z-index: 1; /* Ensure it's the lowest layer */
+      background-image: url('Page27.png'); /* Use the specified background image */
+      background-size: cover; /* Cover the entire container */
+      background-position: center; /* Center the image */
+      background-repeat: no-repeat; /* Do not repeat the image */
+      filter: brightness(60%); /* Dim the background for text readability */
     }
 
     /* 2. Content Layer */
@@ -42,29 +39,15 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-end; /* Pushes content to the bottom */
       align-items: center;
       z-index: 10; 
       background: rgba(0, 0, 0, 0.4); /* Dark overlay */
+      padding-bottom: 50px; /* Space from the very bottom */
+      box-sizing: border-box;
     }
 
-    /* 3. Timer/Quiz Area Styling */
-    #timer-area {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 25px;
-      background: rgba(138, 43, 226, 0.9); /* Purple background for timer */
-      border: 4px solid #ffcc00;
-      border-radius: 15px;
-      font-size: 2em;
-      font-weight: bold;
-      box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
-      text-shadow: 2px 2px 4px #000;
-      z-index: 15;
-    }
-
+    /* 3. Quiz Area Styling (Moved down, hidden initially) */
     .quiz-area {
       padding: 30px;
       background: rgba(255, 105, 180, 0.9); /* Hotpink background for quiz */
@@ -78,7 +61,8 @@
       /* Initially hidden */
       display: none; 
       opacity: 0;
-      transition: opacity 1s;
+      transition: opacity 1s ease-in-out; /* Smooth fade-in */
+      margin-top: auto; /* Pushes quiz to the bottom when other elements are flexed */
     }
     .quiz-area.show {
         display: block;
@@ -110,7 +94,7 @@
       box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
     }
     
-    /* Animation Styles */
+    /* Animation Styles (remain the same) */
     .emoji {
       position: fixed;
       font-size: 3rem;
@@ -138,15 +122,9 @@
   </audio>
 
   <div class="background-container">
-    <img src="Page27.jpg" alt="Page 27 Background">
-  </div>
-
-  <div class="container">
-
-    <div id="timer-area">
-        Quiz starting in <span id="timer-display">15</span> seconds...
     </div>
 
+  <div class="container">
     <div class="quiz-area" id="quiz-area">
       <p>Happy Birthday En Kolanthaa😚🤗</p>
       <input type="text" id="quiz-answer" placeholder="Type your sweet reply here...">
@@ -159,11 +137,8 @@
   <script>
     const audio = document.getElementById('bg-audio');
     const quizArea = document.getElementById('quiz-area');
-    const timerArea = document.getElementById('timer-area');
-    const timerDisplay = document.getElementById('timer-display');
     const delayDuration = 15000; // 15 seconds
     let audioAttempted = false;
-    let timeLeft = 15;
 
     // --- Audio Autoplay Workaround (Single Tap on Body) ---
     function forceAudioStart() {
@@ -176,29 +151,19 @@
             document.body.ontouchstart = null;
         }
     }
-    // Add touch handler for mobile devices
     document.body.ontouchstart = forceAudioStart;
 
-    // --- Timer Logic ---
-    function startTimer() {
-        const interval = setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = timeLeft;
-
-            if (timeLeft <= 0) {
-                clearInterval(interval);
-                // Hide timer and show quiz
-                timerArea.style.display = 'none';
-                quizArea.classList.add('show');
-            }
-        }, 1000);
+    // --- Quiz Appearance Logic (Direct after 15 seconds) ---
+    function showQuizAfterDelay() {
+        setTimeout(() => {
+            quizArea.classList.add('show');
+        }, delayDuration);
     }
     
     // --- Navigation Logic ---
     function submitQuiz() {
       const answer = document.getElementById('quiz-answer').value;
       if (answer.trim().length > 0) {
-        // Stop audio and move immediately to the next page
         audio.pause();
         window.location.href = "page28.html"; 
       } else {
@@ -207,7 +172,7 @@
     }
 
     // --- Initialization ---
-    document.addEventListener('DOMContentLoaded', startTimer);
+    document.addEventListener('DOMContentLoaded', showQuizAfterDelay);
 
 
     // --- Animations Logic (Confetti, Fireworks, Emojis) ---
