@@ -25,6 +25,7 @@
       z-index: 1; /* Video layer */
     }
 
+    /* Video MUST be muted for autoplay, but will still play as background */
     #background-video {
       min-width: 100%;
       min-height: 100%;
@@ -45,152 +46,102 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-end; /* Push content to the bottom */
       align-items: center;
       z-index: 2; /* Content layer above video */
-      background: rgba(0, 0, 0, 0.5); 
-      padding-top: 5vh;
+      background: rgba(0, 0, 0, 0.4); /* Light overlay */
+      padding-bottom: 50px; /* Space for the button at the bottom */
     }
 
     h1 {
+      position: absolute; /* Position the title at the top */
+      top: 20px;
+      width: 100%;
       font-size: 3em;
       color: #ffcc00;
       text-shadow: 0 0 10px #000;
-      margin-bottom: 20px;
+      z-index: 3;
     }
 
-    /* Start Button Style */
-    #start-button {
-      padding: 15px 30px;
-      font-size: 1.5em;
+    /* --- Next Button Area --- */
+    .next-area {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: auto; /* Pushes content to the bottom */
+    }
+
+    #audio-hint {
+        color: #ffcc00;
+        font-size: 1.1em;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 3px #000;
+    }
+
+    #next-button {
+      padding: 15px 40px;
+      font-size: 1.8em;
       font-weight: bold;
-      background: rgba(255, 105, 180, 0.9); 
+      background: #8a2be2; /* BlueViolet */
       color: white;
-      border: 3px solid white;
+      border: 3px solid #ffcc00;
       border-radius: 10px;
       cursor: pointer;
-      z-index: 3; 
-      transition: opacity 0.5s;
-      margin-top: 10vh; 
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.8);
+      transition: background 0.3s;
     }
 
-    .quiz-area {
-      margin-top: 20px;
-      padding: 20px;
-      background: rgba(255, 105, 180, 0.8);
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
-      display: none;
-    }
-    
-    .quiz-area.show {
-        display: block;
-    }
-
-    input, button {
-      padding: 10px;
-      margin: 10px 5px;
-      border-radius: 8px;
-      border: none;
-      font-size: 1em;
-    }
-
-    button {
-      background: #8a2be2;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    
-    .loading-message {
-        font-size: 1.5em;
-        color: white;
-        text-shadow: 2px 2px 4px #000;
-        margin-top: 20px;
-        display: none; 
+    #next-button:hover {
+      background: #6a0dad;
     }
   </style>
 </head>
 <body>
 
   <div class="video-container">
-    <video autoplay muted playsinline id="background-video">
+    <video autoplay muted loop playsinline id="background-video">
       <source src="Page2.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
   
   <div class="content">
+    
     <h1>Happy Birthday Panda🐼</h1>
     
-    <button id="start-button" onclick="startExperience()">
-        ▶️ Tap to Start the Video & Audio! 🎶
-    </button>
-    
-    <div id="loading-msg" class="loading-message">
-        Enjoy the video... The quiz will appear shortly.
-    </div>
-
-    <div id="quiz" class="quiz-area">
-      <p style="font-size: 1.3em; font-weight: bold;">
-        Ready for the next step? Type anything below and hit Submit!
-      </p>
-      <input type="text" id="answer" placeholder="Type your message...">
-      <button onclick="checkAnswer()">Submit</button>
+    <div class="next-area">
+      <div id="audio-hint">
+        Tap "Next" to enable the video audio & move on! 🎶
+      </div>
+      <button id="next-button" onclick="moveNext()">
+          Next Surprise! ❤️
+      </button>
     </div>
   </div>
 
   <script>
     const video = document.getElementById('background-video');
-    const quizArea = document.getElementById('quiz');
-    const loadingMsg = document.getElementById('loading-msg');
-    const startButton = document.getElementById('start-button');
-    const expectedDuration = 15; // 15 seconds
 
-    // Function triggered by the user's first tap
-    function startExperience() {
-        
-        // 1. UNMUTE THE VIDEO using the user's click action
-        if (video.muted) {
-            video.muted = false;
-        }
-        
-        // 2. Restart the video from the beginning for audio synchronization
-        video.currentTime = 0; 
-        video.play().catch(e => console.error("Video playback failed:", e));
-        
-        // 3. Hide the start button and show the loading message
-        startButton.style.display = 'none';
-        loadingMsg.style.display = 'block';
-        
-        // 4. Start the 15-second timer for the quiz appearance
-        setTimeout(videoFinished, expectedDuration * 1000);
-    }
-
-    // Function to run when the timer is finished (or video ends)
-    function videoFinished() {
-        loadingMsg.style.display = 'none';
-        quizArea.classList.add('show');
-        video.pause();
-        // Dim the video to highlight the quiz
-        video.style.filter = 'grayscale(100%) brightness(50%)'; 
-    }
-
-    // Quiz check: Any text submission moves to page3.html
-    function checkAnswer() {
-      const answer = document.getElementById("answer").value;
-      
-      if (answer.trim().length > 0) {
-        // Stop the video before navigating
-        video.pause(); 
-        window.location.href = "page3.html"; 
-      } else {
-        alert("Please type a message to proceed! 🐼");
+    // Function to handle audio unmute and navigation
+    function moveNext() {
+      // 1. Attempt to unmute the video audio using the user's click action
+      // This is the only reliable way to get sound after autoplay
+      if (video.muted) {
+          video.muted = false;
+          // Note: If you want the audio to stop on the next page, 
+          // you may need to add a small delay here if the transition is too fast.
       }
+      
+      // 2. Navigate to the next page immediately
+      window.location.href = "page3.html"; 
     }
     
-    // Fallback: If the video ends naturally before the timer, trigger the finished state
-    video.addEventListener('ended', videoFinished);
+    // Optional: Start video from the beginning again if it failed to loop or start
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     video.play().catch(e => console.error("Video failed to start:", e));
+    // });
   </script>
 
 </body>
