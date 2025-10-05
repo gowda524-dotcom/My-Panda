@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 2 (Final Timed)</title>
+  <title>Birthday Surprise - Page 2</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -24,10 +24,11 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1;
+      z-index: 1; /* Lowest layer */
     }
 
     #background-video {
+      /* MUTED is necessary for immediate visual autoplay on mobile */
       min-width: 100%;
       min-height: 100%;
       width: auto;
@@ -37,7 +38,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      filter: brightness(70%);
+      filter: brightness(70%); /* Dim the video slightly */
     }
 
     /* 2. Content Layer (Overlay) */
@@ -51,8 +52,8 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      z-index: 5;
-      background: rgba(0, 0, 0, 0.2);
+      z-index: 5; /* Above video */
+      background: rgba(0, 0, 0, 0.2); /* Low opacity overlay */
     }
 
     h1 {
@@ -63,42 +64,30 @@
       z-index: 6;
       font-weight: bold;
     }
-
-    /* 3. Timer/Loading Message (Mid-Screen) */
-    #loading-timer {
-      font-size: 1.5em;
-      color: white;
-      text-shadow: 2px 2px 4px #000;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 8px;
-      z-index: 6;
-      margin-top: 20vh; /* Positioned mid-screen */
-    }
     
-    /* 4. Next Button Positioning (Bottom-Right) */
+    /* 3. Next Button Positioning (Bottom-Right) */
     .next-area {
-      position: absolute;
+      position: absolute; /* Absolute position relative to the .content container */
       bottom: 20px;
       right: 20px;
       z-index: 6;
-      opacity: 0; /* Hidden initially */
-      transition: opacity 1s; /* Smooth transition when shown */
-    }
-
-    .next-area.show {
-        opacity: 1;
     }
 
     #next-button {
       padding: 12px 30px;
       font-size: 1.5em;
       font-weight: bold;
-      background: #8a2be2;
+      background: #8a2be2; /* BlueViolet */
       color: white;
       border: 3px solid #ffcc00;
       border-radius: 10px;
       cursor: pointer;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+      transition: background 0.3s;
+    }
+
+    #next-button:hover {
+      background: #6a0dad;
     }
   </style>
 </head>
@@ -111,19 +100,11 @@
     </video>
   </div>
   
-  <audio id="bg-audio" loop>
-      <source src="Page2.mp3" type="audio/mpeg">
-  </audio>
-
   <div class="content">
     
     <h1>Happy Birthday Panda🐼</h1>
-
-    <div id="loading-timer">
-        Loading next step in <span id="timer-display">15</span>...
-    </div>
     
-    <div class="next-area" id="next-container">
+    <div class="next-area">
       <button id="next-button" onclick="moveNext()">
           Next >
       </button>
@@ -132,56 +113,18 @@
 
   <script>
     const video = document.getElementById('background-video');
-    const audio = document.getElementById('bg-audio');
-    const nextContainer = document.getElementById('next-container');
-    const loadingTimer = document.getElementById('loading-timer');
-    const timerDisplay = document.getElementById('timer-display');
 
-    let timeLeft = 15;
-    const delayDuration = 15000; // 15 seconds
-
-    // --- Audio Autoplay Attempt (Best effort) ---
-    document.addEventListener('DOMContentLoaded', () => {
-        // 1. Start muted video
-        video.play().catch(e => console.error("Muted video failed to start:", e));
-
-        // 2. Attempt to start audio (unreliable)
-        audio.play().catch(() => {
-            // Fallback: If autoplay fails, listen for the first tap to start audio
-            const resumeAudio = () => {
-                audio.play();
-                document.removeEventListener("click", resumeAudio);
-                document.removeEventListener("touchstart", resumeAudio);
-                // Optionally hide the timer earlier if audio is the main attraction
-            };
-            document.addEventListener("click", resumeAudio);
-            document.addEventListener("touchstart", resumeAudio);
-        });
-    });
-
-    // --- 15-Second Timer Logic ---
-    const interval = setInterval(() => {
-        timeLeft--;
-        if (timerDisplay) {
-            timerDisplay.textContent = timeLeft;
-        }
-
-        if (timeLeft <= 0) {
-            clearInterval(interval);
-            // Hide the timer message
-            loadingTimer.style.display = 'none';
-            // Show the next button
-            nextContainer.classList.add('show');
-        }
-    }, 1000);
-
-    // Function to handle navigation
     function moveNext() {
-        // Stop all media before navigating
+        // Stop the video before navigating
         video.pause();
-        audio.pause();
+        // Navigate to the next page immediately
         window.location.href = "page3.html"; 
     }
+    
+    // Ensure the muted video starts playing immediately on load
+    document.addEventListener('DOMContentLoaded', () => {
+         video.play().catch(e => console.error("Muted video failed to start:", e));
+    });
   </script>
 
 </body>
