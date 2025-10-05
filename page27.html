@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 26: Love You, Hate You</title>
+    
+    <style>
+        /* --- General Setup & Theme --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #0d0124 0%, #3a0050 100%); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        /* --- Music Autoplay Trigger --- */
+        #music-trigger {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            cursor: pointer;
+            background: rgba(0,0,0,0); 
+        }
+
+        /* --- Main Center Text --- */
+        #center-message {
+            position: relative;
+            z-index: 20; 
+            font-size: 3.5em; /* Large size */
+            font-weight: bold;
+            color: #FF69B4; /* Hot Pink */
+            text-shadow: 0 0 20px #FFD700, 0 0 40px #FF69B4;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- Quiz Area --- */
+        #quiz-section {
+            position: absolute; /* Position over the top of the main message */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30; /* Ensure it's on top of everything */
+            background: rgba(0, 0, 0, 0.85);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            display: none; /* Starts hidden */
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            animation: popIn 0.5s forwards;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        #quiz-label {
+            font-size: 2.2em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #FFD700;
+        }
+
+        #text-input {
+            padding: 15px;
+            width: 80%;
+            border-radius: 10px;
+            border: 3px solid #FFC0CB;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            text-align: center;
+            background: #220044;
+            color: white;
+        }
+
+        #submit-button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background-color: #4CAF50; 
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px #4CAF50, 0 0 40px rgba(76, 175, 80, 0.6);
+            transition: background-color 0.3s;
+        }
+
+        /* --- Grand Effects CSS --- */
+        .floating-text, .confetti-fall {
+            position: fixed; 
+            pointer-events: none;
+            z-index: 1; 
+        }
+        
+        /* Animation for Floating Text and Emojis */
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; } 
+            25% { opacity: 1; }
+            50% { transform: translateY(50vh) translateX(20vw) rotate(15deg); }
+            75% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(-20vw) rotate(-15deg); opacity: 0; }
+        }
+        
+        .floating-text {
+            font-size: 2em; 
+            font-weight: bold;
+            color: #FFC0CB;
+            animation: float 12s linear infinite; 
+            text-shadow: 0 0 5px white;
+        }
+        
+        /* Confetti (high density) */
+        @keyframes confetti-fall-slow {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti-fall {
+            animation: confetti-fall-slow 15s linear infinite;
+        }
+        
+        /* Firework (high density) */
+        .firework {
+            position: absolute;
+            width: 8px; height: 8px;
+            background-color: #FFD700; 
+            border-radius: 50%;
+            box-shadow: 0 0 10px #FFD700, 0 0 20px #ff0;
+            animation: fireworkBurst 1s forwards ease-out;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        @keyframes fireworkBurst {
+            0% { transform: scale(0); opacity: 1; }
+            20% { opacity: 1; }
+            100% { transform: scale(1.5) translateY(-50px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" src="Page26.mp3" loop preload="auto"></audio>
+
+    <div id="music-trigger"></div>
+
+    <p id="center-message">Lov uuu my Bestest Friend Forever 💙🫂❤️‍🩹</p>
+    
+    <div id="quiz-section">
+        <p id="quiz-label">Happy Birthday My Gem 🌍💎</p>
+        <form id="quiz-form">
+            <input type="text" id="text-input" placeholder="Type any text here to continue..." required>
+            <button type="submit" id="submit-button">Submit & Continue to Page 27 ➡️</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const music = document.getElementById('bgMusic');
+            const musicTrigger = document.getElementById('music-trigger');
+            const quizSection = document.getElementById('quiz-section');
+            const quizForm = document.getElementById('quiz-form');
+            
+            let musicStarted = false;
+            
+            // --- 1. Music Autoplay and Start Logic ---
+            const startContent = () => {
+                if (!musicStarted) {
+                    music.volume = 0.7; 
+                    music.play().then(() => {
+                        musicStarted = true;
+                        musicTrigger.style.display = 'none'; 
+                    }).catch(e => {
+                        console.error("Music playback failed:", e);
+                    });
+                }
+                // Start the quiz countdown after music starts
+                setTimeout(() => {
+                    quizSection.style.display = 'flex';
+                }, 15000); // 15 seconds delay as requested
+            };
+
+            musicTrigger.addEventListener('click', startContent, { once: true }); 
+            
+            music.volume = 0; 
+            music.play().then(startContent).catch(e => {
+                console.log("Music blocked by browser. User must click anywhere to start.");
+            });
+
+            // --- 2. Quiz Navigation ---
+            quizForm.addEventListener('submit', (e) => {
+                e.preventDefault(); 
+                if (music) music.pause();
+                // Submitting any text moves to the next page (page27.html)
+                window.location.href = 'page27.html'; 
+            });
+
+
+            // --- 3. Grand Effects (Floating Text, Confetti, Fireworks) ---
+            const confettiColors = ['#FF69B4', '#FFD700', '#FFFFFF', '#FF00FF', '#4CAF50', '#8A2BE2', '#FF1493'];
+            // Mixing the required text with a few emojis for visual flair
+            const floatingItems = ['Hate uuu😚', 'Hate uuu😚', 'Hate uuu😚', '💖', '✨', '🎉', 'Hate uuu😚', '❤️', '🎈', 'Hate uuu😚']; 
+            
+            // High Density Floating Items
+            setInterval(createFloatingItem, 200); 
+            function createFloatingItem() {
+                const item = document.createElement('span');
+                item.classList.add('floating-text');
+                const content = floatingItems[Math.floor(Math.random() * floatingItems.length)];
+                item.textContent = content;
+                
+                // If it's an emoji, make it slightly bigger
+                if (content.length <= 2) {
+                    item.style.fontSize = `${Math.random() * 1.5 + 2.5}em`;
+                    item.style.color = 'white'; 
+                    item.style.textShadow = 'none';
+                } else {
+                    item.style.fontSize = `${Math.random() * 0.8 + 1.8}em`;
+                }
+
+                body.appendChild(item);
+                item.style.left = `${Math.random() * 100}vw`;
+                item.style.animationDuration = `${Math.random() * 8 + 10}s`;
+                item.style.animationDelay = `${Math.random() * 5}s`;
+                item.style.opacity = Math.random() * 0.5 + 0.5; 
+                setTimeout(() => item.remove(), 20000);
+            }
+
+            // Confetti (high density)
+            setInterval(createConfettiPiece, 100); 
+            function createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`; 
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 10 + 15}s`; 
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                confetti.style.opacity = Math.random() * 0.7 + 0.3; 
+                
+                setTimeout(() => confetti.remove(), 25000); 
+            }
+
+            // Fireworks (high density)
+            setInterval(createFirework, 1000); 
+            function createFirework() {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                body.appendChild(firework);
+
+                firework.style.left = `${Math.random() * 100}vw`;
+                firework.style.bottom = `-10px`; 
+
+                const particleCount = Math.floor(Math.random() * 10) + 15; 
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('firework-particle');
+                    particle.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                    particle.style.width = `${Math.random() * 5 + 2}px`;
+                    particle.style.height = particle.style.width;
+                    particle.style.borderRadius = '50%';
+                    particle.style.position = 'absolute';
+                    particle.style.opacity = 0; 
+
+                    const angle = Math.random() * 2 * Math.PI;
+                    const distance = Math.random() * 80 + 50; 
+                    const delay = Math.random() * 0.2; 
+
+                    firework.appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.style.transition = `transform 1s ease-out, opacity 1s ease-out`;
+                        particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`;
+                        particle.style.opacity = 0;
+                    }, 500 + (delay * 1000)); 
+                    
+                    setTimeout(() => particle.remove(), 1600 + (delay * 1000));
+                }
+                
+                const endHeight = Math.random() * 60 + 20; 
+                firework.style.transition = `transform ${Math.random() * 0.8 + 0.7}s ease-in, opacity 0.5s ease-out 0.8s`;
+                firework.style.transform = `translateY(-${endHeight}vh)`;
+                firework.style.opacity = 1;
+
+                setTimeout(() => {
+                    firework.style.opacity = 0; 
+                    setTimeout(() => firework.remove(), 500); 
+                }, (Math.random() * 0.8 + 0.7) * 1000); 
+            }
+        });
+    </script>
+</body>
+</html>
