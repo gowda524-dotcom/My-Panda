@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Surprise - Page 27 (Timed Quiz)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      color: white;
+      overflow: hidden; /* Prevent body scroll, use container for internal scroll if needed */
+      position: relative;
+    }
+
+    /* 1. Background Image Container */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .background-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures the image covers the screen without distortion */
+      filter: brightness(60%); /* Dim the background to make text readable */
+    }
+
+    /* 2. Content Layer */
+    .container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10; 
+      background: rgba(0, 0, 0, 0.4); /* Dark overlay */
+    }
+
+    /* 3. Timer/Quiz Area Styling */
+    #timer-area {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 25px;
+      background: rgba(138, 43, 226, 0.9); /* Purple background for timer */
+      border: 4px solid #ffcc00;
+      border-radius: 15px;
+      font-size: 2em;
+      font-weight: bold;
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+      text-shadow: 2px 2px 4px #000;
+      z-index: 15;
+    }
+
+    .quiz-area {
+      padding: 30px;
+      background: rgba(255, 105, 180, 0.9); /* Hotpink background for quiz */
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
+      color: white;
+      font-size: 1.5em;
+      text-shadow: 1px 1px 3px #000;
+      max-width: 90%;
+      z-index: 15;
+      /* Initially hidden */
+      display: none; 
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    .quiz-area.show {
+        display: block;
+        opacity: 1;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border: 2px solid #ffcc00;
+      font-size: 1.1em;
+      width: 80%;
+      max-width: 300px;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.8);
+      color: #333;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 1.2em;
+      font-weight: bold;
+      background: #8a2be2;
+      color: white;
+      border: 3px solid #ffcc00;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+    }
+    
+    /* Animation Styles */
+    .emoji {
+      position: fixed;
+      font-size: 3rem;
+      animation: float linear infinite;
+      z-index: 4;
+      pointer-events: none;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 3;
+    }
+  </style>
+</head>
+<body onclick="forceAudioStart()">
+
+  <audio id="bg-audio" loop>
+      <source src="Page27.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="background-container">
+    <img src="Page27.jpg" alt="Page 27 Background">
+  </div>
+
+  <div class="container">
+
+    <div id="timer-area">
+        Quiz starting in <span id="timer-display">15</span> seconds...
+    </div>
+
+    <div class="quiz-area" id="quiz-area">
+      <p>Happy Birthday En Kolanthaa😚🤗</p>
+      <input type="text" id="quiz-answer" placeholder="Type your sweet reply here...">
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+  </div>
+
+  <canvas id="animation-canvas"></canvas>
+
+  <script>
+    const audio = document.getElementById('bg-audio');
+    const quizArea = document.getElementById('quiz-area');
+    const timerArea = document.getElementById('timer-area');
+    const timerDisplay = document.getElementById('timer-display');
+    const delayDuration = 15000; // 15 seconds
+    let audioAttempted = false;
+    let timeLeft = 15;
+
+    // --- Audio Autoplay Workaround (Single Tap on Body) ---
+    function forceAudioStart() {
+        if (!audioAttempted) {
+            audio.play().catch(e => {
+                console.warn("Audio autoplay blocked. User must tap.", e);
+            });
+            audioAttempted = true;
+            document.body.onclick = null;
+            document.body.ontouchstart = null;
+        }
+    }
+    // Add touch handler for mobile devices
+    document.body.ontouchstart = forceAudioStart;
+
+    // --- Timer Logic ---
+    function startTimer() {
+        const interval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                // Hide timer and show quiz
+                timerArea.style.display = 'none';
+                quizArea.classList.add('show');
+            }
+        }, 1000);
+    }
+    
+    // --- Navigation Logic ---
+    function submitQuiz() {
+      const answer = document.getElementById('quiz-answer').value;
+      if (answer.trim().length > 0) {
+        // Stop audio and move immediately to the next page
+        audio.pause();
+        window.location.href = "page28.html"; 
+      } else {
+        alert("Please write a small reply to proceed!");
+      }
+    }
+
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', startTimer);
+
+
+    // --- Animations Logic (Confetti, Fireworks, Emojis) ---
+    const canvas = document.getElementById('animation-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    const emojis = ["😚","🤗","💖","✨","🥳","🎂","🎉","🎊","🎁","🎈"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+      emoji.classList.add("emoji");
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.animationDuration = (5 + Math.random() * 5) + "s";
+      emoji.style.fontSize = (2 + Math.random() * 2) + "rem";
+      emoji.style.animationDelay = (-Math.random() * 5) + "s";
+      document.body.appendChild(emoji);
+      setTimeout(() => { emoji.remove(); }, 10000);
+    }
+    setInterval(createEmoji, 500);
+
+    let particles = [];
+    function random(min, max) { return Math.random() * (max - min) + min; }
+    function Particle(x, y, color) {
+        this.x = x; this.y = y;
+        this.color = color;
+        this.radius = random(1,3);
+        this.angle = random(0, 2 * Math.PI);
+        this.speed = random(1,6);
+        this.friction = 0.95;
+        this.gravity = 0.1;
+        this.alpha = 1;
+    }
+    Particle.prototype.update = function() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed + this.gravity;
+        this.speed *= this.friction;
+        this.alpha -= 0.015;
+    }
+    Particle.prototype.draw = function() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+    function createBlast(x, y) {
+        const colors = ["#ff00ff", "#00ffff", "#ff0000", "#ffff00", "#ffffff", "#00ff00"];
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
+        }
+    }
+    setInterval(() => createBlast(random(0, canvas.width), random(0, canvas.height/3)), 700);
+    
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+            p.update();
+            p.draw();
+            if (p.alpha <= 0 || p.y > canvas.height) particles.splice(i, 1);
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+  </script>
+
+</body>
+</html>
