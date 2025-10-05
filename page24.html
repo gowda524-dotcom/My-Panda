@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 24 (FIXED)</title>
+  <title>Birthday Surprise - Page 24 (Final Card Fix)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -11,23 +11,22 @@
       font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
       color: white;
-      overflow-y: auto; /* Allow scrolling if content overflows */
+      overflow-y: auto;
       position: relative;
       background: linear-gradient(to top right, #ff7e5f, #feb47b);
       background-size: cover;
     }
 
-    /* CRITICAL FIX: Ensure game instructions are visible at the top */
     .container {
-      position: relative; /* Changed from absolute to flow content naturally */
+      position: relative;
       width: 100%;
-      min-height: 100vh; /* Minimum full viewport height */
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 10;
       background: rgba(0, 0, 0, 0.4);
-      padding: 20px 0; /* Vertical padding */
+      padding: 20px 0;
       box-sizing: border-box;
     }
 
@@ -47,41 +46,41 @@
       background: rgba(255, 255, 255, 0.2);
       padding: 15px;
       border-radius: 10px;
-      margin: 10px auto 20px auto; /* Centered with margin */
+      margin: 10px auto 20px auto;
       font-size: 1.1em;
       max-width: 90%;
       text-shadow: none;
     }
 
-    /* FIX: Game Grid Sizing */
+    /* --- FIX: INCREASED CARD SIZE --- */
     .game-grid {
       display: grid;
-      /* FIX: Use VW for responsive sizing. 4 cards + 3 gaps (10px each) */
-      grid-template-columns: repeat(4, 18vw); 
-      grid-template-rows: repeat(4, 18vw);
-      gap: 2vw; /* Use vw for gap spacing as well */
+      grid-template-columns: repeat(4, 22vw); /* INCREASED from 18vw to 22vw */
+      grid-template-rows: repeat(4, 22vw);    /* INCREASED from 18vw to 22vw */
+      gap: 2vw;
       perspective: 1000px;
       margin-bottom: 30px;
       max-width: fit-content;
       transform-style: preserve-3d;
       z-index: 15;
     }
-    /* Ensure the cards are at least 70px wide for tablets/desktops */
+    
+    /* Media query to maintain reasonable size on larger screens */
     @media (min-width: 600px) {
         .game-grid {
-            grid-template-columns: repeat(4, 90px);
-            grid-template-rows: repeat(4, 90px);
-            gap: 10px;
+            grid-template-columns: repeat(4, 120px); /* Adjust static size for clarity */
+            grid-template-rows: repeat(4, 120px);
+            gap: 15px;
         }
         .card {
-            width: 90px;
-            height: 90px;
+            width: 120px;
+            height: 120px;
         }
     }
 
 
     .card {
-      width: 100%; /* Take full grid cell size (18vw) */
+      width: 100%;
       height: 100%;
       position: relative;
       transform-style: preserve-3d;
@@ -104,14 +103,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 2em;
+      /* Adjust font size for the new, larger card */
+      font-size: 1.2em; 
       font-weight: bold;
+      padding: 5px; /* Add padding to prevent text overflow */
+      line-height: 1.2;
     }
 
+    /* --- FIX: Changed text content in JavaScript instead of CSS --- */
     .card-front {
       background: linear-gradient(to bottom right, #8e2de2, #4a00e0);
       color: white;
       border: 2px solid #ffcc00;
+      /* Text content is now set in JavaScript */
     }
 
     .card-back {
@@ -158,7 +162,7 @@
       padding: 12px 25px;
       font-size: 1.2em;
       font-weight: bold;
-      background: #8a2be2;
+      background: #8a2de2;
       color: white;
       border: 3px solid #ffcc00;
       border-radius: 10px;
@@ -166,9 +170,8 @@
       box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
     }
 
-    /* Animation Styles remain the same */
     .emoji {
-      position: fixed; /* Changed to fixed to stay put while content scrolls */
+      position: fixed;
       font-size: 3rem;
       animation: float linear infinite;
       z-index: 4;
@@ -223,16 +226,16 @@
                 console.warn("Audio autoplay blocked. User must tap.", e);
             });
             audioAttempted = true;
-            document.body.onclick = null; // Remove handler after first successful tap
+            document.body.onclick = null;
             document.body.ontouchstart = null;
         }
     }
-    // Add touch handler for mobile devices as well
     document.body.ontouchstart = forceAudioStart;
 
     // --- Memory Game Logic ---
     const gameGrid = document.getElementById('game-grid');
     const quizArea = document.getElementById('quiz-area');
+    const CARD_TEXT = "Best Friend ❤️‍🩹"; // --- NEW CARD TEXT CONSTANT ---
     const images = [
       'Pair1.jpg', 'Pair2.jpg', 'Pair3.jpg', 'Pair4.jpg',
       'Pair5.jpg', 'Pair6.jpg', 'Pair7.jpg', 'Pair8.jpg'
@@ -261,8 +264,9 @@
         cardElement.dataset.imgSrc = imgSrc;
         cardElement.dataset.id = index;
 
+        // --- FIX: Insert "Best Friend ❤️‍🩹" into the card front ---
         cardElement.innerHTML = `
-          <div class="card-face card-front">?</div>
+          <div class="card-face card-front">${CARD_TEXT}</div>
           <div class="card-face card-back" style="background-image: url(${imgSrc});"></div>
         `;
         cardElement.addEventListener('click', flipCard);
@@ -334,7 +338,7 @@
 
     document.addEventListener('DOMContentLoaded', createBoard);
 
-    // --- Animations Logic ---
+    // --- Animations Logic (same as before) ---
     const canvas = document.getElementById('animation-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
