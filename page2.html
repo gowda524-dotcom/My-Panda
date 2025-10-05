@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 2 (Grand)</title>
+  <title>Birthday Surprise - Page 2 (Minimal)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -16,7 +16,7 @@
       background: black;
     }
 
-    /* Video Container - Muted for background effect */
+    /* 1. Video Container (Background) */
     .video-container {
       position: fixed;
       top: 0;
@@ -24,10 +24,11 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1; 
+      z-index: 1; /* Lowest layer */
     }
 
     #background-video {
+      /* CRITICAL: Ensure video covers the screen */
       min-width: 100%;
       min-height: 100%;
       width: auto;
@@ -37,9 +38,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      filter: brightness(70%); /* Slightly dim the video */
+      filter: brightness(80%); /* Brighten slightly to ensure visibility */
     }
 
+    /* 2. Content Layer (Overlay) */
     .content {
       position: absolute;
       top: 0;
@@ -48,67 +50,45 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: space-between; 
+      justify-content: space-between;
       align-items: center;
-      z-index: 5; /* Ensure content is above animations */
-      background: rgba(0, 0, 0, 0.2); /* Very light overlay */
-      padding-bottom: 30px;
+      z-index: 5; /* Above video */
+      /* CRITICAL FIX: Ensure opacity is low so video is visible */
+      background: rgba(0, 0, 0, 0.2); 
     }
 
     h1 {
       margin-top: 20px;
       font-size: 3.5em;
       color: #ffcc00;
-      text-shadow: 0 0 15px hotpink, 0 0 5px black;
+      text-shadow: 0 0 10px black;
       z-index: 6;
       font-weight: bold;
     }
     
-    /* --- Next Button Area --- */
+    /* 3. Next Button Positioning (Bottom-Right) */
     .next-area {
-      position: relative;
+      position: absolute; /* Absolute position relative to the .content container */
+      bottom: 20px;
+      right: 20px;
       z-index: 6;
-      /* Hide initially */
-      opacity: 0; 
-      transition: opacity 1s;
-    }
-
-    .next-area.show {
-        opacity: 1;
     }
 
     #next-button {
-      padding: 18px 45px;
-      font-size: 2em;
+      padding: 12px 30px;
+      font-size: 1.5em;
       font-weight: bold;
-      background: #8a2be2; /* BlueViolet */
+      background: #8a2be2;
       color: white;
-      border: 4px solid #ffcc00;
-      border-radius: 15px;
+      border: 3px solid #ffcc00;
+      border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 0 20px #ffcc00;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+      transition: background 0.3s;
     }
 
-    /* Floating Emojis */
-    .emoji {
-      position: absolute;
-      font-size: 3rem;
-      animation: float linear infinite;
-      z-index: 4;
-      pointer-events: none;
-    }
-    @keyframes float {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-    }
-
-    /* Canvas for Confetti/Fireworks */
-    canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        z-index: 3;
+    #next-button:hover {
+      background: #6a0dad;
     }
   </style>
 </head>
@@ -121,134 +101,31 @@
     </video>
   </div>
   
-  <audio id="bg-audio" autoplay loop>
-      <source src="Page2.mp3" type="audio/mpeg">
-  </audio>
-
   <div class="content">
     
     <h1>Happy Birthday Panda🐼</h1>
     
-    <div class="next-area" id="next-container">
+    <div class="next-area">
       <button id="next-button" onclick="moveNext()">
-          Next Surprise! ❤️
+          Next >
       </button>
     </div>
   </div>
 
-  <canvas id="animation-canvas"></canvas>
-
   <script>
     const video = document.getElementById('background-video');
-    const audio = document.getElementById('bg-audio');
-    const nextContainer = document.getElementById('next-container');
-    const canvas = document.getElementById('animation-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const delayDuration = 15000; // 15 seconds
 
-    // --- 1. Audio Autoplay Workaround ---
-    // This is the best effort to start audio immediately
-    document.addEventListener('DOMContentLoaded', () => {
-        let playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(() => {
-                // If autoplay fails, prompt the user on their first tap (anywhere)
-                const resumeAudio = () => {
-                    audio.play();
-                    document.removeEventListener("click", resumeAudio);
-                    document.removeEventListener("touchstart", resumeAudio);
-                };
-                // Show a brief hint (optional, but helpful)
-                document.body.insertAdjacentHTML('beforeend', '<div id="audio-hint" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); padding: 10px; border-radius: 10px; z-index: 10; color: white;">Tap screen for sound!</div>');
-                
-                document.addEventListener("click", resumeAudio);
-                document.addEventListener("touchstart", resumeAudio);
-                setTimeout(() => {
-                    const hint = document.getElementById('audio-hint');
-                    if(hint) hint.remove();
-                }, 3000); // Remove hint after 3 seconds
-            });
-        }
-    });
-
-    // --- 2. 15-Second Next Button Reveal ---
-    setTimeout(() => {
-        nextContainer.classList.add('show');
-    }, delayDuration);
-
-    // --- 3. Floating Emojis ---
-    const emojis = ["🐼","💖","✨","🥳","🎂"];
-    function createEmoji() {
-      const emoji = document.createElement("div");
-      emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-      emoji.classList.add("emoji");
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (5 + Math.random() * 5) + "s";
-      document.body.appendChild(emoji);
-      setTimeout(() => { emoji.remove(); }, 10000);
-    }
-    setInterval(createEmoji, 300);
-
-    // --- 4. Confetti/Fireworks Animation ---
-    let particles = [];
-    function random(min, max) { return Math.random() * (max - min) + min; }
-    function Particle(x, y, color) {
-        this.x = x; this.y = y;
-        this.color = color;
-        this.radius = random(1,3);
-        this.angle = random(0, 2 * Math.PI);
-        this.speed = random(1,6);
-        this.friction = 0.95;
-        this.gravity = 0.1;
-        this.alpha = 1;
-    }
-    Particle.prototype.update = function() {
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed + this.gravity;
-        this.speed *= this.friction;
-        this.alpha -= 0.015;
-    }
-    Particle.prototype.draw = function() {
-        ctx.save();
-        ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }
-    function createBlast(x, y) {
-        const colors = ["#ff00ff", "#00ffff", "#ff0000", "#ffff00", "#ffffff"];
-        for (let i = 0; i < 50; i++) {
-            particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
-        }
-    }
-    function animate() {
-        // Clear canvas with slight trail effect
-        ctx.fillStyle = "rgba(0,0,0,0.1)"; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        particles.forEach((p, i) => {
-            p.update();
-            p.draw();
-            if (p.alpha <= 0 || p.y > canvas.height) particles.splice(i, 1);
-        });
-        requestAnimationFrame(animate);
-    }
-    // Continuous blasts near the top
-    setInterval(() => createBlast(random(0, canvas.width), random(0, canvas.height/4)), 1000); 
-    animate();
-
-    // --- 5. Navigation Function ---
     function moveNext() {
-        // Stop all media before navigating
+        // Stop the video before navigating
         video.pause();
-        audio.pause();
+        // Navigate to the next page immediately
         window.location.href = "page3.html"; 
     }
+    
+    // Fallback play to ensure the video starts immediately
+    document.addEventListener('DOMContentLoaded', () => {
+         video.play().catch(e => console.error("Video failed to start:", e));
+    });
   </script>
 
 </body>
