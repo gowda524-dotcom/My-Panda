@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Birthday Surprise - Page 2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -22,10 +23,9 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1; /* Video layer */
+      z-index: 1; 
     }
 
-    /* Video MUST be muted for autoplay, but will still play as background */
     #background-video {
       min-width: 100%;
       min-height: 100%;
@@ -46,23 +46,33 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end; /* Push content to the bottom */
+      justify-content: space-between; /* Space out top title and bottom button */
       align-items: center;
-      z-index: 2; /* Content layer above video */
-      background: rgba(0, 0, 0, 0.4); /* Light overlay */
-      padding-bottom: 50px; /* Space for the button at the bottom */
+      z-index: 2; 
+      background: rgba(0, 0, 0, 0.4); 
     }
 
     h1 {
-      position: absolute; /* Position the title at the top */
-      top: 20px;
-      width: 100%;
+      margin-top: 20px;
       font-size: 3em;
       color: #ffcc00;
       text-shadow: 0 0 10px #000;
       z-index: 3;
     }
 
+    /* --- Unmute Message --- */
+    #audio-hint {
+        color: #fff;
+        font-size: 1.2em;
+        padding: 10px;
+        background: rgba(255, 105, 180, 0.7); /* Hotpink background */
+        border-radius: 8px;
+        text-shadow: 1px 1px 3px #000;
+        margin-top: 20vh; /* Positioned mid-screen */
+        transition: opacity 1s;
+        z-index: 4;
+    }
+    
     /* --- Next Button Area --- */
     .next-area {
       position: relative;
@@ -70,21 +80,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: auto; /* Pushes content to the bottom */
-    }
-
-    #audio-hint {
-        color: #ffcc00;
-        font-size: 1.1em;
-        margin-bottom: 10px;
-        text-shadow: 1px 1px 3px #000;
+      margin-bottom: 30px; /* Space from the bottom edge */
     }
 
     #next-button {
       padding: 15px 40px;
       font-size: 1.8em;
       font-weight: bold;
-      background: #8a2be2; /* BlueViolet */
+      background: #8a2be2;
       color: white;
       border: 3px solid #ffcc00;
       border-radius: 10px;
@@ -107,15 +110,16 @@
     </video>
   </div>
   
-  <div class="content">
+  <div class="content" onclick="unmuteOnFirstTap()">
     
     <h1>Happy Birthday Panda🐼</h1>
     
+    <div id="audio-hint">
+        Tap anywhere on the screen to play the music! 🎶
+    </div>
+
     <div class="next-area">
-      <div id="audio-hint">
-        Tap "Next" to enable the video audio & move on! 🎶
-      </div>
-      <button id="next-button" onclick="moveNext()">
+      <button id="next-button" onclick="moveNext(event)">
           Next Surprise! ❤️
       </button>
     </div>
@@ -123,25 +127,42 @@
 
   <script>
     const video = document.getElementById('background-video');
+    const audioHint = document.getElementById('audio-hint');
+    let firstTap = true; // Tracks if this is the user's first interaction
 
-    // Function to handle audio unmute and navigation
-    function moveNext() {
-      // 1. Attempt to unmute the video audio using the user's click action
-      // This is the only reliable way to get sound after autoplay
-      if (video.muted) {
-          video.muted = false;
-          // Note: If you want the audio to stop on the next page, 
-          // you may need to add a small delay here if the transition is too fast.
-      }
+    // Function to handle the first tap on the screen (unmuting)
+    function unmuteOnFirstTap() {
+        if (firstTap) {
+            // Attempt to unmute the video
+            video.muted = false;
+            
+            // Restart the video so the audio starts from the beginning
+            video.currentTime = 0;
+            video.play().catch(e => console.error("Video play failed after unmute:", e));
+            
+            // Hide the hint message
+            audioHint.style.opacity = '0';
+            setTimeout(() => { audioHint.style.display = 'none'; }, 1000);
+            
+            firstTap = false;
+        }
+    }
+
+    // Function to handle navigation (called only by the Next button)
+    function moveNext(event) {
+      // Prevents the click from propagating to the 'content' div's handler
+      event.stopPropagation(); 
       
-      // 2. Navigate to the next page immediately
+      // Stop the video before navigating
+      video.pause(); 
       window.location.href = "page3.html"; 
     }
-    
-    // Optional: Start video from the beginning again if it failed to loop or start
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     video.play().catch(e => console.error("Video failed to start:", e));
-    // });
+
+    // Optional: Start video from the beginning again if it fails to loop or start
+    document.addEventListener('DOMContentLoaded', () => {
+         // Attempt to start muted video immediately (necessary for some browsers)
+         video.play().catch(e => console.error("Muted video failed to start:", e));
+    });
   </script>
 
 </body>
