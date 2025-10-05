@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 2 (Final)</title>
+  <title>Birthday Surprise - Page 2 (Final Button Fix)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -24,11 +24,10 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      z-index: 1; /* Lowest layer */
+      z-index: 1; 
     }
 
     #background-video {
-      /* MUTED is necessary for immediate visual autoplay */
       min-width: 100%;
       min-height: 100%;
       width: auto;
@@ -38,7 +37,7 @@
       left: 50%;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      filter: brightness(70%); /* Dim the video */
+      filter: brightness(70%); 
     }
 
     /* 2. Content Layer (Overlay) */
@@ -48,16 +47,15 @@
       left: 0;
       width: 100%;
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
       z-index: 5;
       background: rgba(0, 0, 0, 0.2);
+      /* Removed Flexbox properties as we rely on fixed positioning for elements */
     }
 
     h1 {
-      margin-top: 20px;
+      position: absolute; /* Set title to absolute for fixed placement */
+      top: 20px;
+      width: 100%;
       font-size: 3.5em;
       color: #ffcc00;
       text-shadow: 0 0 10px black;
@@ -65,12 +63,12 @@
       font-weight: bold;
     }
     
-    /* 3. Next Button Positioning (Bottom-Right) */
+    /* 3. NEXT BUTTON FIX: Use fixed positioning relative to the viewport */
     .next-area {
-      position: absolute; /* Absolute position relative to the .content container */
+      position: fixed; /* Ensures it stays visible even with scrolling/mobile keyboards */
       bottom: 20px;
       right: 20px;
-      z-index: 6; /* Always visible */
+      z-index: 10; /* Highest z-index to guarantee visibility */
     }
 
     #next-button {
@@ -83,11 +81,16 @@
       border-radius: 10px;
       cursor: pointer;
       box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
-      transition: background 0.3s;
     }
 
-    #next-button:hover {
-      background: #6a0dad;
+    /* Invisible Full-Screen Tap Area for Audio Start */
+    #tap-area {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 7; /* Below content, above video */
     }
   </style>
 </head>
@@ -104,15 +107,17 @@
       <source src="Page2.mp3" type="audio/mpeg">
   </audio>
 
-  <div class="content" onclick="forceAudioStart()">
+  <div id="tap-area" onclick="forceAudioStart()"></div>
+
+  <div class="content">
     
-    <h1>Happy Birthday Panda🐼</h1>
+    <h1>Happy Birthday Panda🐼😚</h1>
+  </div>
     
-    <div class="next-area">
-      <button id="next-button" onclick="moveNext(event)">
-          Next >
-      </button>
-    </div>
+  <div class="next-area">
+    <button id="next-button" onclick="moveNext(event)">
+        Next >
+    </button>
   </div>
 
   <script>
@@ -127,21 +132,23 @@
                 console.warn("Audio start failed on first tap (expected on some devices).", e);
             });
             audioAttempted = true;
+            // Remove the tap listener after the first attempt to prevent interference
+            document.getElementById('tap-area').onclick = null;
         }
     }
 
-    // Function to start the video and make the initial unreliable audio attempt
+    // Function to start the page initialization
     function initializePage() {
          // Start muted video for background visual effect
          video.play().catch(e => console.error("Muted video failed to start:", e));
          
-         // Unreliable attempt to start audio immediately (will fail on most phones)
+         // Unreliable attempt to start audio immediately
          forceAudioStart();
     }
 
     // Function to handle navigation
     function moveNext(event) {
-        // Stop the click from triggering the fullscreen audio function
+        // Stop the click from triggering the full-screen audio function
         event.stopPropagation();
         
         // Stop all media before navigating
@@ -152,8 +159,6 @@
     
     // Start page initialization
     document.addEventListener('DOMContentLoaded', initializePage);
-    // You must also include 'touchstart' for mobile devices to recognize the tap before click
-    document.addEventListener('touchstart', forceAudioStart, {once: true});
   </script>
 
 </body>
