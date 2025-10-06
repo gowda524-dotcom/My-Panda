@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Birthday Surprise - Page 31 (Rotating Cheeks Gallery)</title>
+    <title>Birthday Surprise - Page 31 (Scrolling Cheeks Gallery)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         body {
@@ -13,7 +13,7 @@
             color: white;
             overflow: hidden;
             position: relative;
-            background: #4B0082;
+            background: #4B0082; /* Deep Violet */
         }
 
         /* Full page container for main content */
@@ -32,14 +32,14 @@
 
         h1 {
             font-size: 2.8em;
-            color: #FFD700;
+            color: #FFD700; /* Gold */
             text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
-            margin-bottom: 5px;
+            margin-bottom: 5px; 
             animation: pulse 2s infinite;
         }
         h2 {
             font-size: 1.8em;
-            color: #FF69B4;
+            color: #FF69B4; /* Hot Pink */
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             margin-top: 0;
             margin-bottom: 30px;
@@ -51,37 +51,40 @@
             100% { transform: scale(1); }
         }
 
-        /* Rotating Image Gallery Styles */
+        /* --- Scrolling Image Gallery Styles --- */
         #gallery-container {
             width: 90vw;
-            max-width: 450px;
-            height: 60vh; 
-            max-height: 450px;
-            overflow: hidden;
+            max-width: 800px; /* Wider container for better scrolling effect */
+            height: 50vh; /* Set a fixed height */
+            overflow: hidden; /* Hide the parts of the image strip that are off-screen */
             position: relative;
             border-radius: 15px;
             box-shadow: 0 0 40px rgba(255, 105, 180, 0.8);
             z-index: 12;
             margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.6); 
-            display: flex; 
-            align-items: center;
-            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        #image-strip {
+            /* 10 images, each filling the 90vw width */
+            width: calc(100% * 10); /* Total width of 10 images */
+            height: 100%;
+            display: flex;
+            position: absolute;
+            animation: scroll-gallery 30s linear infinite; /* Adjust time for speed */
         }
 
         .gallery-image {
-            position: absolute; 
-            width: 100%;
+            width: 10%; /* Each image takes 1/10th of the total strip width */
             height: 100%;
-            object-fit: contain; /* Ensures original image is shown, no cropping */
-            border-radius: 15px;
-            opacity: 0;
-            transition: opacity 1s ease-in-out; 
-            top: 0; 
-            left: 0;
+            object-fit: contain; /* IMPORTANT: Ensures original image is shown, no cropping */
+            padding: 5px; /* Small padding between images */
+            box-sizing: border-box; /* Include padding in the width calculation */
         }
-        .gallery-image.active {
-            opacity: 1;
+        
+        @keyframes scroll-gallery {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-90%); } /* Scrolls 9 out of 10 images off-screen for a continuous loop */
         }
 
         /* Dark Overlay for Quiz Pop-up */
@@ -91,23 +94,23 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7); 
+            background: rgba(0, 0, 0, 0.7);
             z-index: 14;
-            display: none; 
+            display: none;
             transition: opacity 0.5s;
         }
 
         /* Centered Quiz styles (Popup box) */
         #quiz-container {
-            position: fixed; 
+            position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); 
+            transform: translate(-50%, -50%);
             
             padding: 25px;
-            background: rgba(255, 105, 180, 1.0); 
+            background: rgba(255, 105, 180, 1.0);
             border-radius: 15px;
-            visibility: hidden; 
+            visibility: hidden;
             opacity: 0;
             transition: opacity 1s ease-in-out;
             display: flex;
@@ -115,7 +118,7 @@
             gap: 15px;
             max-width: 300px;
             box-shadow: 0 0 40px rgba(255, 105, 180, 1);
-            z-index: 15; 
+            z-index: 15;
         }
 
         #quiz-question {
@@ -190,7 +193,9 @@
         <h2>Cheeks Part-5</h2>
 
         <div id="gallery-container">
-            </div>
+            <div id="image-strip">
+                </div>
+        </div>
     </div>
 
     <div id="overlay"></div>
@@ -206,9 +211,8 @@
         const quizInput = document.getElementById('quiz-input');
         const overlay = document.getElementById('overlay');
         const quizContainer = document.getElementById('quiz-container');
-        const galleryContainer = document.getElementById('gallery-container');
+        const imageStrip = document.getElementById('image-strip');
         let audioAttempted = false;
-        let galleryInterval;
 
         // --- Audio Autoplay Workaround ---
         function forceAudioStart() {
@@ -223,64 +227,66 @@
         }
         document.body.ontouchstart = forceAudioStart;
 
-        // --- Image Gallery Logic ---
+        // --- Image Gallery Logic (New Scrolling Version) ---
         const imageFiles = [
-            './Cheek41.jpg', './Cheek42.jpg', './Cheek43.jpg', './Cheek44.jpg', './Cheek45.jpg',
-            './Cheek46.jpg', './Cheek47.jpg', './Cheek48.jpg', './Cheek49.jpg', './Cheek50.jpg'
+            'Cheek41.jpg', 'Cheek42.jpg', 'Cheek43.jpg', 'Cheek44.jpg', 'Cheek45.jpg',
+            'Cheek46.jpg', 'Cheek47.jpg', 'Cheek48.jpg', 'Cheek49.jpg', 'Cheek50.jpg'
         ];
-        let currentImageIndex = 0;
 
         function loadImages() {
-            console.log("Attempting to load images...");
-            imageFiles.forEach((file, index) => {
-                const img = new Image(); // Use Image constructor for better error handling
-                
-                // Set the file path using the explicit relative path
+            imageFiles.forEach((file) => {
+                const img = document.createElement('img');
+                // Use a direct filename. If problems persist, try './' + file 
                 img.src = file; 
-                img.alt = `Cheek image ${index + 1}`;
                 img.classList.add('gallery-image');
-
-                img.onload = () => {
-                    console.log(`Image loaded successfully: ${file}`);
-                    if (index === 0) {
-                        img.classList.add('active'); // First image active initially
-                    }
-                    galleryContainer.appendChild(img);
-                };
+                imageStrip.appendChild(img);
 
                 img.onerror = () => {
                     console.error(`ERROR: Failed to load image: ${file}. Check file name and path.`);
-                    // Fallback visual indicator if an image fails to load
-                    const errorDiv = document.createElement('div');
-                    errorDiv.classList.add('gallery-image');
-                    errorDiv.style.background = 'red';
-                    errorDiv.style.opacity = index === 0 ? '1' : '0';
-                    errorDiv.innerText = `Error loading ${file}`;
-                    galleryContainer.appendChild(errorDiv);
+                    // You'll see a broken image icon if loading fails.
                 };
             });
-            // Start rotation interval regardless of load success (it will check if images exist)
-            galleryInterval = setInterval(rotateImages, 3000); 
         }
 
-        function rotateImages() {
-            const images = document.querySelectorAll('.gallery-image');
-            if (images.length === 0) return;
+        // --- Grand Animation Logic (Placeholder Functions) ---
+        const effects = ["💖", "✨", "❤️", "🥳", "🎁", "🎉", "⭐"];
+        const colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff69b4'];
 
-            // Ensure the container has children before trying to access them
-            if (images[currentImageIndex]) {
-                 images[currentImageIndex].classList.remove('active'); // Hide current
-            }
+        function createEffect() {
+          const effect = document.createElement("div");
+          effect.innerText = effects[Math.floor(Math.random() * effects.length)];
+          effect.classList.add("effect");
+          effect.style.left = Math.random() * 100 + "vw";
+          effect.style.animationDuration = (8 + Math.random() * 8) + "s";
+          effect.style.fontSize = (1.5 + Math.random() * 1.5) + "rem"; 
+          effect.style.animationDelay = (-Math.random() * 8) + "s";
+          document.body.appendChild(effect);
+          setTimeout(() => { effect.remove(); }, 16000);
+        }
+        setInterval(createEffect, 300); 
 
-            currentImageIndex = (currentImageIndex + 1) % images.length;
-            
-            if (images[currentImageIndex]) {
-                images[currentImageIndex].classList.add('active'); // Show next
+        function createFirework(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.left = `${x}px`;
+                firework.style.top = `${y}px`;
+                firework.style.setProperty('--x', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.setProperty('--y', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.animationDuration = `${1 + Math.random()}s`;
+                firework.style.animationDelay = `${Math.random() * 0.5}s`;
+                document.body.appendChild(firework);
+                setTimeout(() => firework.remove(), 2000);
             }
         }
 
-        // --- Grand Animation Logic (Omitted for brevity, assumed unchanged) ---
-        // (The animation functions like createEffect, createFirework, etc., remain the same)
+        function launchFirework() {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createFirework(x, y);
+        }
+        setInterval(launchFirework, 1500); 
 
         // --- Quiz Timing Logic (20 seconds delay) ---
         const QUIZ_DELAY_MS = 20000; 
@@ -288,33 +294,16 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadImages(); // Load images and start the rotation
 
-            // Initial check to start animations (omitted functions below for brevity)
-            // launchFirework is called repeatedly via setInterval below
-            // createEffect is called repeatedly via setInterval below
-
             setTimeout(() => {
-                if (galleryInterval) {
-                    clearInterval(galleryInterval); // Stop rotating images when quiz appears
-                }
+                // Pause the CSS animation by setting play state to 'paused'
+                imageStrip.style.animationPlayState = 'paused'; 
+                
                 overlay.style.display = 'block';
                 quizContainer.style.visibility = 'visible';
                 quizContainer.style.opacity = 1;
                 quizInput.focus();
             }, QUIZ_DELAY_MS);
         });
-
-        // Placeholder animation functions to prevent errors
-        const effects = ["💖", "✨", "❤️", "🥳", "🎁", "🎉", "⭐"];
-        const colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff69b4'];
-        function createEffect() { /* ... implementation ... */ }
-        function createFirework(x, y) { /* ... implementation ... */ }
-        function launchFirework() { /* ... implementation ... */ 
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-            createFirework(x, y);
-        }
-        setInterval(createEffect, 300); 
-        setInterval(launchFirework, 1500); 
 
         // --- Quiz Submission ---
         function submitQuiz() {
