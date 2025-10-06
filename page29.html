@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Birthday Surprise - Page 29 (Love Compass)</title>
+    <title>Birthday Surprise - Page 29 (Three-Stage Compass)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -56,8 +56,8 @@
         #game-area {
             position: relative;
             width: 80vw;
-            max-width: 400px; /* Max size for the photo */
-            aspect-ratio: 1 / 1; /* Keep it square for the compass */
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
             box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
             border-radius: 10px;
             z-index: 12;
@@ -67,10 +67,25 @@
         #target-photo {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Crucial: show original image uncropped */
             border-radius: 10px;
+            background: #000;
+            transition: opacity 0.5s;
         }
 
+        #stage-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #ffcc00;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 20;
+        }
+
+        /* --- Compass and Controls --- */
         #compass {
             position: absolute;
             top: 50%;
@@ -78,7 +93,6 @@
             transform: translate(-50%, -50%);
             width: 100%;
             height: 100%;
-            /* CSS Animation for constant spinning */
             animation: spin 5s linear infinite; 
             transform-origin: 50% 50%;
         }
@@ -88,14 +102,13 @@
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* The arrow image/icon inside the compass div */
         #arrow {
             position: absolute;
-            top: -10px; /* Position above the center */
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 4rem;
-            color: #ff00ff; /* Pink arrow color */
+            color: #ff00ff;
             text-shadow: 0 0 10px #ffcc00;
         }
         
@@ -103,7 +116,7 @@
             padding: 15px 35px;
             font-size: 1.4em;
             font-weight: bold;
-            background: #8a2de2; /* Purple */
+            background: #8a2de2;
             color: white;
             border: 3px solid #ffcc00;
             border-radius: 10px;
@@ -118,6 +131,7 @@
             font-weight: bold;
             color: #ffeb3b;
             visibility: hidden;
+            text-shadow: 1px 1px 2px #000;
         }
 
         /* Animation Styles */
@@ -143,17 +157,19 @@
     <div class="background-container"></div>
 
     <div class="container">
-        <h1>The Direction of Our Love 🧭</h1>
+        <h1>unkita Ennaku Romba Pudcha Place la Star ha stop Pannu🧭</h1>
 
         <div id="game-area">
-            <img id="target-photo" src="TargetPhoto.jpg" alt="Cherished Memory">
+            <img id="target-photo" src="Target_A.jpg" alt="Puzzle Image">
+            <div id="stage-indicator">Stage 1 of 3</div>
             
             <div id="compass">
-                <span id="arrow">⭐</span> </div>
+                <span id="arrow">⭐</span>
+            </div>
         </div>
 
         <button id="stop-button" onclick="stopCompass()">Stop Compass</button>
-        <div id="result-message"></div>
+        <div id="result-message">Align the ⭐ with the most special spot in the photo!</div>
     </div>
 
     <script>
@@ -173,28 +189,37 @@
         }
         document.body.ontouchstart = forceAudioStart;
 
-        // --- Game Logic ---
-        const compass = document.getElementById('compass');
-        const stopButton = document.getElementById('stop-button');
-        const resultMessage = document.getElementById('result-message');
+        // --- Game Setup (CRITICAL: REPLACE PLACEHOLDER VALUES) ---
+        const stages = [
+            { id: 1, src: "Target_A.jpg", targetAngle: 300, hint: "Look for the first place we said 'I love you.'" }, // **REPLACE 300**
+            { id: 2, src: "Target_B.jpg", targetAngle: 120, hint: "Where did we take our favorite selfie?" }, // **REPLACE 120**
+            { id: 3, src: "Target_C.jpg", targetAngle: 45, hint: "Point at the gift that means the most." } // **REPLACE 45**
+        ];
         
-        // **IMPORTANT: Set your target angle here.**
-        // 0/360 = Up, 90 = Right, 180 = Down, 270 = Left
-        // Use a value based on where the key romantic detail is in your photo.
-        const TARGET_ANGLE = 300; // Placeholder: Top-left quadrant
-        const ANGLE_TOLERANCE = 15; // Allows for +/- 15 degrees accuracy
-
+        const ANGLE_TOLERANCE = 15; // +/- 15 degrees accuracy
+        
+        let currentStageIndex = 0;
         let isStopped = false;
 
+        // --- DOM Elements ---
+        const compass = document.getElementById('compass');
+        const targetPhoto = document.getElementById('target-photo');
+        const stopButton = document.getElementById('stop-button');
+        const stageIndicator = document.getElementById('stage-indicator');
+        const resultMessage = document.getElementById('result-message');
+
+
+        // --- Game Logic ---
         function stopCompass() {
             if (isStopped) return;
             isStopped = true;
             
-            // 1. Pause the CSS animation
+            const currentStage = stages[currentStageIndex];
+            
+            // 1. Pause the CSS animation and find the current angle
             const computedStyle = window.getComputedStyle(compass);
             const transformValue = computedStyle.getPropertyValue('transform');
             
-            // Extract the current rotation angle from the transform matrix
             let matrix = transformValue.match(/^matrix\((.+)\)$/);
             let angle = 0;
             if (matrix) {
@@ -203,34 +228,52 @@
                 const sin = parseFloat(matrix[1]);
                 angle = Math.round(Math.atan2(sin, cos) * (180/Math.PI));
             }
-            // Normalize angle to 0-360 degrees
             let currentAngle = (angle < 0) ? angle + 360 : angle;
             
-            // Apply the current rotation as a static style to stop the animation
+            // Apply static rotation
             compass.style.animation = 'none';
             compass.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
             
             // 2. Check the angle
-            const lowerBound = TARGET_ANGLE - ANGLE_TOLERANCE;
-            const upperBound = TARGET_ANGLE + ANGLE_TOLERANCE;
+            const target = currentStage.targetAngle;
+            const lowerBound = target - ANGLE_TOLERANCE;
+            const upperBound = target + ANGLE_TOLERANCE;
             
-            let isCorrect = (currentAngle >= lowerBound && currentAngle <= upperBound);
-            
+            let isCorrect = false;
+            // Robust check for angle wrap-around
+            if (lowerBound < 0) {
+                isCorrect = (currentAngle >= lowerBound + 360 || currentAngle <= upperBound);
+            } else if (upperBound > 360) {
+                isCorrect = (currentAngle >= lowerBound || currentAngle <= upperBound - 360);
+            } else {
+                isCorrect = (currentAngle >= lowerBound && currentAngle <= upperBound);
+            }
+
+
             if (isCorrect) {
-                stopButton.disabled = true;
-                stopButton.innerText = "Target Found!";
+                stopButton.innerText = "Target FOUND! Moving to next spot...";
                 resultMessage.style.visibility = 'visible';
-                resultMessage.innerText = "You've found the true north! Our love's direction is clear.";
+                resultMessage.innerText = `Direction found for Stage ${currentStage.id}!`;
                 
-                // Success: Redirect after a short delay
+                // Advance to the next stage or finish
                 setTimeout(() => {
-                    audio.pause();
-                    window.location.href = "page30.html";
-                }, 3000);
+                    currentStageIndex++;
+                    if (currentStageIndex < stages.length) {
+                        loadNextStage();
+                    } else {
+                        // All stages complete!
+                        stopButton.disabled = true;
+                        stopButton.innerText = "All Targets Complete!";
+                        resultMessage.innerText = "Our love's path is complete. Moving to the final page...";
+                        
+                        audio.pause();
+                        window.location.href = "page30.html";
+                    }
+                }, 2000);
             } else {
                 resultMessage.style.visibility = 'visible';
                 resultMessage.style.color = 'red';
-                resultMessage.innerText = `Direction is ${currentAngle}°. Try again! Think about what's most important in this photo.`;
+                resultMessage.innerText = `Angle ${currentAngle.toFixed(0)}°. Incorrect. Hint: ${currentStage.hint}`;
                 
                 // Allow user to try again after a brief pause
                 setTimeout(() => {
@@ -238,10 +281,38 @@
                     compass.style.animation = 'spin 5s linear infinite';
                     resultMessage.style.visibility = 'hidden';
                     resultMessage.style.color = '#ffeb3b';
+                    stopButton.innerText = "Stop Compass";
                 }, 2500);
             }
         }
+        
+        function loadNextStage() {
+            const nextStage = stages[currentStageIndex];
+            
+            // 1. Reset state
+            isStopped = false;
+            stopButton.disabled = false;
+            stopButton.innerText = "Stop Compass";
+            compass.style.animation = 'spin 5s linear infinite';
+            resultMessage.style.visibility = 'hidden';
+            stageIndicator.innerText = `Stage ${nextStage.id} of 3`;
+            
+            // 2. Change Image (with a fade effect)
+            targetPhoto.style.opacity = 0.3;
+            setTimeout(() => {
+                targetPhoto.src = nextStage.src;
+                targetPhoto.alt = `Puzzle Image Stage ${nextStage.id}`;
+                targetPhoto.style.opacity = 1;
+            }, 500);
+        }
 
+        // Initialize the first stage on load
+        document.addEventListener('DOMContentLoaded', () => {
+             // Set the initial source (it's already set to Target_A.jpg in HTML but this ensures consistency)
+            targetPhoto.src = stages[0].src;
+            // The initial message is shown from the HTML
+            resultMessage.style.visibility = 'visible'; 
+        });
 
         // --- Animations Logic (Heart/Star Emojis Only) ---
         const emojis = ["💖", "✨", "❤️"];
