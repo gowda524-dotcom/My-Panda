@@ -57,7 +57,7 @@
             position: relative;
             width: 80vw;
             max-width: 400px; /* Max size for the photo */
-            aspect-ratio: 1 / 1; /* Keep it square for the compass */
+            aspect-ratio: 1 / 1; 
             box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
             border-radius: 10px;
             z-index: 12;
@@ -78,7 +78,6 @@
             transform: translate(-50%, -50%);
             width: 100%;
             height: 100%;
-            /* CSS Animation for constant spinning */
             animation: spin 5s linear infinite; 
             transform-origin: 50% 50%;
         }
@@ -88,14 +87,14 @@
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
-        /* The arrow image/icon inside the compass div */
+        /* The star icon */
         #arrow {
             position: absolute;
-            top: -10px; /* Position above the center */
+            top: -10px; 
             left: 50%;
             transform: translateX(-50%);
             font-size: 4rem;
-            color: #ff00ff; /* Pink arrow color */
+            color: #ff00ff; 
             text-shadow: 0 0 10px #ffcc00;
         }
         
@@ -103,7 +102,7 @@
             padding: 15px 35px;
             font-size: 1.4em;
             font-weight: bold;
-            background: #8a2de2; /* Purple */
+            background: #8a2de2; 
             color: white;
             border: 3px solid #ffcc00;
             border-radius: 10px;
@@ -112,6 +111,37 @@
             z-index: 13;
         }
         
+        /* Quiz styles */
+        #quiz-container {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 300px;
+        }
+
+        #quiz-input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #ffcc00;
+            font-size: 1em;
+            color: #20002c;
+        }
+
+        #quiz-submit {
+            padding: 10px 20px;
+            background: #ff00ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         #result-message {
             margin-top: 20px;
             font-size: 1.2em;
@@ -143,7 +173,7 @@
     <div class="background-container"></div>
 
     <div class="container">
-        <h1>The Direction of Our Love 🧭</h1>
+        <h1>Challenge- Antha Star ha Exact Un kutty thopa mela Stop Pannu🤭🤭🧭</h1>
 
         <div id="game-area">
             <img id="target-photo" src="TargetPhoto.jpg" alt="Cherished Memory">
@@ -154,6 +184,12 @@
 
         <button id="stop-button" onclick="stopCompass()">Stop Compass</button>
         <div id="result-message"></div>
+
+        <div id="quiz-container">
+            <div id="quiz-question">Happy Birthday Kutty Thoppa🤭🤭</div>
+            <input type="text" id="quiz-input" placeholder="Type your special reply here...">
+            <button id="quiz-submit" onclick="submitQuiz()">Submit & Continue</button>
+        </div>
     </div>
 
     <script>
@@ -177,12 +213,11 @@
         const compass = document.getElementById('compass');
         const stopButton = document.getElementById('stop-button');
         const resultMessage = document.getElementById('result-message');
+        const quizContainer = document.getElementById('quiz-container');
         
-        // **IMPORTANT: Set your target angle here.**
-        // 0/360 = Up, 90 = Right, 180 = Down, 270 = Left
-        // Use a value based on where the key romantic detail is in your photo.
-        const TARGET_ANGLE = 300; // Placeholder: Top-left quadrant
-        const ANGLE_TOLERANCE = 15; // Allows for +/- 15 degrees accuracy
+        // **UPDATED TARGET ANGLE RANGE**
+        const TARGET_MIN_ANGLE = 160; 
+        const TARGET_MAX_ANGLE = 175;
 
         let isStopped = false;
 
@@ -190,11 +225,10 @@
             if (isStopped) return;
             isStopped = true;
             
-            // 1. Pause the CSS animation
+            // 1. Pause the CSS animation and extract angle
             const computedStyle = window.getComputedStyle(compass);
             const transformValue = computedStyle.getPropertyValue('transform');
             
-            // Extract the current rotation angle from the transform matrix
             let matrix = transformValue.match(/^matrix\((.+)\)$/);
             let angle = 0;
             if (matrix) {
@@ -203,34 +237,30 @@
                 const sin = parseFloat(matrix[1]);
                 angle = Math.round(Math.atan2(sin, cos) * (180/Math.PI));
             }
-            // Normalize angle to 0-360 degrees
             let currentAngle = (angle < 0) ? angle + 360 : angle;
             
             // Apply the current rotation as a static style to stop the animation
             compass.style.animation = 'none';
             compass.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
             
-            // 2. Check the angle
-            const lowerBound = TARGET_ANGLE - ANGLE_TOLERANCE;
-            const upperBound = TARGET_ANGLE + ANGLE_TOLERANCE;
-            
-            let isCorrect = (currentAngle >= lowerBound && currentAngle <= upperBound);
+            // 2. Check the angle against the new range
+            const isCorrect = (currentAngle >= TARGET_MIN_ANGLE && currentAngle <= TARGET_MAX_ANGLE);
             
             if (isCorrect) {
                 stopButton.disabled = true;
                 stopButton.innerText = "Target Found!";
                 resultMessage.style.visibility = 'visible';
-                resultMessage.innerText = "You've found the true north! Our love's direction is clear.";
+                resultMessage.innerText = "Target Found! Answer this special message for the next page!";
                 
-                // Success: Redirect after a short delay
+                // Show Quiz after a short delay
                 setTimeout(() => {
-                    audio.pause();
-                    window.location.href = "page30.html";
-                }, 3000);
+                    quizContainer.style.visibility = 'visible';
+                }, 1000);
+
             } else {
                 resultMessage.style.visibility = 'visible';
                 resultMessage.style.color = 'red';
-                resultMessage.innerText = `Direction is ${currentAngle}°. Try again! Think about what's most important in this photo.`;
+                resultMessage.innerText = `Direction is ${currentAngle.toFixed(0)}°. Try again! The spot is slightly below the center.`;
                 
                 // Allow user to try again after a brief pause
                 setTimeout(() => {
@@ -240,6 +270,12 @@
                     resultMessage.style.color = '#ffeb3b';
                 }, 2500);
             }
+        }
+
+        function submitQuiz() {
+            // No validation required, any text input is accepted as the final step
+            audio.pause();
+            window.location.href = "page30.html";
         }
 
 
