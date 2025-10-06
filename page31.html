@@ -2,319 +2,401 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Birthday Surprise - Page 31 (Scrolling Cheeks Gallery)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 31: Cheeks Part 5 - Rotating Gallery</title>
+    
     <style>
+        /* --- General Setup & Theme --- */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            text-align: center;
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #0a011a 0%, #30034a 100%); 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Start from top for headers */
+            align-items: center;
+            min-height: 100vh;
             color: white;
-            overflow: hidden;
-            position: relative;
-            background: #4B0082; /* Deep Violet */
+            text-align: center;
+            position: relative; 
+            overflow-x: hidden; 
+            overflow-y: auto; /* Allow scrolling for content if needed */
         }
 
-        /* Full page container for main content */
-        .container {
-            position: absolute;
+        /* --- Music Autoplay Trigger --- */
+        #music-trigger {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 9999;
+            cursor: pointer;
+            background: rgba(0,0,0,0); 
+        }
+
+        /* --- Text Headers --- */
+        .header-text {
+            position: relative;
+            z-index: 20; 
+            padding-top: 30px;
+            margin-bottom: 30px; /* Space between text and gallery */
+        }
+
+        #main-header {
+            font-size: 3.5em;
+            font-weight: 900;
+            color: #FFD700; /* Gold */
+            text-shadow: 0 0 15px #FFD700, 0 0 30px rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+        }
+
+        #sub-header {
+            font-size: 2em;
+            color: #FFC0CB; /* Pink */
+            margin-bottom: 20px;
+        }
+
+        /* --- Rotating Photo Gallery --- */
+        #gallery-container {
+            position: relative;
+            z-index: 10;
+            width: 90vw;
+            max-width: 800px;
+            height: 300px; /* Fixed height for the gallery viewport */
+            margin: 20px 0 50px 0;
+            overflow: hidden; /* Crucial for hiding photos outside the view */
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+        }
+
+        #photo-carousel {
             display: flex;
+            height: 100%; /* Photos take up full height of container */
+            transition: transform 0.5s ease-in-out; /* Smooth scrolling transition */
+            will-change: transform; /* Optimize for animation */
+        }
+
+        .gallery-item {
+            flex: 0 0 auto; /* Do not grow, do not shrink, use auto width */
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px; /* Spacing between photos */
+            background: rgba(0,0,0,0.3); /* Placeholder background */
+            border-radius: 10px;
+            overflow: hidden; /* Ensure image fits */
+        }
+
+        .gallery-item img {
+            height: 100%; /* Fill the height */
+            width: auto; /* Maintain aspect ratio */
+            object-fit: contain; /* Ensure entire image is visible, no cropping */
+            display: block;
+        }
+
+        /* --- Quiz Area --- */
+        #quiz-section {
+            position: relative;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            margin-bottom: 50px;
+            width: 90%;
+            max-width: 500px;
+            display: none; /* Starts hidden */
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            z-index: 10;
         }
 
-        h1 {
-            font-size: 2.8em;
-            color: #FFD700; /* Gold */
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
-            margin-bottom: 5px; 
-            animation: pulse 2s infinite;
-        }
-        h2 {
-            font-size: 1.8em;
-            color: #FF69B4; /* Hot Pink */
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            margin-top: 0;
-            margin-bottom: 30px;
+        #quiz-label {
+            font-size: 2em;
+            color: #FFD700;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #FFD700;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        #text-input {
+            padding: 15px;
+            width: 80%;
+            border-radius: 10px;
+            border: 3px solid #FFC0CB;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            text-align: center;
+            background: #220044;
+            color: white;
         }
 
-        /* --- Scrolling Image Gallery Styles --- */
-        #gallery-container {
-            width: 90vw;
-            max-width: 800px; /* Wider container for better scrolling effect */
-            height: 50vh; /* Set a fixed height */
-            overflow: hidden; /* Hide the parts of the image strip that are off-screen */
-            position: relative;
-            border-radius: 15px;
-            box-shadow: 0 0 40px rgba(255, 105, 180, 0.8);
-            z-index: 12;
-            margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.6);
-        }
-
-        #image-strip {
-            /* 10 images, each filling the 90vw width */
-            width: calc(100% * 10); /* Total width of 10 images */
-            height: 100%;
-            display: flex;
-            position: absolute;
-            animation: scroll-gallery 30s linear infinite; /* Adjust time for speed */
-        }
-
-        .gallery-image {
-            width: 10%; /* Each image takes 1/10th of the total strip width */
-            height: 100%;
-            object-fit: contain; /* IMPORTANT: Ensures original image is shown, no cropping */
-            padding: 5px; /* Small padding between images */
-            box-sizing: border-box; /* Include padding in the width calculation */
-        }
-        
-        @keyframes scroll-gallery {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-90%); } /* Scrolls 9 out of 10 images off-screen for a continuous loop */
-        }
-
-        /* Dark Overlay for Quiz Pop-up */
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 14;
-            display: none;
-            transition: opacity 0.5s;
-        }
-
-        /* Centered Quiz styles (Popup box) */
-        #quiz-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            
-            padding: 25px;
-            background: rgba(255, 105, 180, 1.0);
-            border-radius: 15px;
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 300px;
-            box-shadow: 0 0 40px rgba(255, 105, 180, 1);
-            z-index: 15;
-        }
-
-        #quiz-question {
+        #submit-button {
+            padding: 15px 30px;
             font-size: 1.5em;
             font-weight: bold;
-            color: #ffffff;
-            text-shadow: 1px 1px 2px #000;
-        }
-
-        #quiz-input {
-            padding: 12px;
-            border-radius: 8px;
-            border: 3px solid #8a2de2;
-            font-size: 1em;
-            color: #20002c;
-            width: 90%;
-            margin: 0 auto;
-        }
-
-        #quiz-submit {
-            padding: 12px 25px;
-            background: #8a2de2;
+            background-color: #4CAF50; 
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1em;
-            transition: background 0.3s;
-        }
-        #quiz-submit:hover {
-            background: #6a1ac7;
+            box-shadow: 0 0 25px #4CAF50, 0 0 40px rgba(76, 175, 80, 0.6);
+            transition: background-color 0.3s;
         }
 
-        /* --- Animations --- */
-        .effect {
-            position: fixed;
-            font-size: 2rem;
-            animation: float linear infinite;
-            z-index: 20;
+        /* --- Grand Effects CSS --- */
+        .floating-emoji, .confetti-fall {
+            position: fixed; 
             pointer-events: none;
+            z-index: 1; 
         }
+        
         @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(100vh); opacity: 0; } 
+            50% { transform: translateY(50vh) rotate(15deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(-15deg); opacity: 0; }
+        }
+        
+        .floating-emoji {
+            font-size: 2.5em; 
+            animation: float 10s linear infinite; 
+        }
+        
+        @keyframes confetti-fall-slow {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
         }
 
+        .confetti-fall {
+            animation: confetti-fall-slow 15s linear infinite;
+        }
+        
         .firework {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 8px; height: 8px;
+            background-color: #FFD700; 
             border-radius: 50%;
+            box-shadow: 0 0 10px #FFD700, 0 0 20px #ff0;
+            animation: fireworkBurst 1s forwards ease-out;
             opacity: 0;
             z-index: 5;
-            animation: firework 2s ease-out infinite;
         }
 
-        @keyframes firework {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        @keyframes fireworkBurst {
+            0% { transform: scale(0); opacity: 1; }
+            20% { opacity: 1; }
+            100% { transform: scale(1.5) translateY(-50px); opacity: 0; }
         }
     </style>
 </head>
-<body onclick="forceAudioStart()">
+<body>
+    <audio id="bgMusic" src="Page31.mp3" loop preload="auto"></audio>
 
-    <audio id="bg-audio" loop>
-        <source src="Page31.mp3" type="audio/mpeg">
-    </audio>
+    <div id="music-trigger"></div>
 
-    <div class="container">
-        <h1>Happy Birthday En Thangoo🤗😚</h1>
-        <h2>Cheeks Part-5</h2>
-
-        <div id="gallery-container">
-            <div id="image-strip">
-                </div>
-        </div>
+    <div class="header-text">
+        <p id="main-header">Happy Birthday En Thangoo🤗😚</p>
+        <p id="sub-header">Cheeks Part-5</p>
+    </div>
+    
+    <div id="gallery-container">
+        <div id="photo-carousel">
+            </div>
     </div>
 
-    <div id="overlay"></div>
-
-    <div id="quiz-container">
-        <div id="quiz-question">Sweet Bun 🤭</div>
-        <input type="text" id="quiz-input" placeholder="What's your sweet reply?" required>
-        <button id="quiz-submit" onclick="submitQuiz()">Submit & Go to Page 32 →</button>
+    <div id="quiz-section">
+        <p id="quiz-label">Sweet Bun 🤭</p>
+        <form id="quiz-form">
+            <input type="text" id="text-input" placeholder="Type any text here to continue..." required>
+            <button type="submit" id="submit-button">Submit & Continue ➡️</button>
+        </form>
     </div>
 
     <script>
-        const audio = document.getElementById('bg-audio');
-        const quizInput = document.getElementById('quiz-input');
-        const overlay = document.getElementById('overlay');
-        const quizContainer = document.getElementById('quiz-container');
-        const imageStrip = document.getElementById('image-strip');
-        let audioAttempted = false;
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const music = document.getElementById('bgMusic');
+            const musicTrigger = document.getElementById('music-trigger');
+            const photoCarousel = document.getElementById('photo-carousel');
+            const quizSection = document.getElementById('quiz-section');
+            const quizForm = document.getElementById('quiz-form');
+            
+            let musicStarted = false;
+            let currentPhotoIndex = 0;
+            let photoFiles = [];
 
-        // --- Audio Autoplay Workaround ---
-        function forceAudioStart() {
-            if (!audioAttempted) {
-                audio.play().catch(e => {
-                    console.warn("Audio autoplay blocked. User must tap.", e);
-                });
-                audioAttempted = true;
-                document.body.onclick = null;
-                document.body.ontouchstart = null;
-            }
-        }
-        document.body.ontouchstart = forceAudioStart;
+            // --- 1. Music Autoplay and Start Logic ---
+            const startContent = () => {
+                if (!musicStarted) {
+                    music.volume = 0.6; 
+                    music.play().then(() => {
+                        musicStarted = true;
+                        musicTrigger.style.display = 'none'; 
+                    }).catch(e => {
+                        console.error("Music playback failed:", e);
+                    });
+                }
+                startPhotoRotation(); // Start rotation after music/user interaction
+            };
 
-        // --- Image Gallery Logic (New Scrolling Version) ---
-        const imageFiles = [
-            'Cheek41.jpg', 'Cheek42.jpg', 'Cheek43.jpg', 'Cheek44.jpg', 'Cheek45.jpg',
-            'Cheek46.jpg', 'Cheek47.jpg', 'Cheek48.jpg', 'Cheek49.jpg', 'Cheek50.jpg'
-        ];
-
-        function loadImages() {
-            imageFiles.forEach((file) => {
-                const img = document.createElement('img');
-                // Use a direct filename. If problems persist, try './' + file 
-                img.src = file; 
-                img.classList.add('gallery-image');
-                imageStrip.appendChild(img);
-
-                img.onerror = () => {
-                    console.error(`ERROR: Failed to load image: ${file}. Check file name and path.`);
-                    // You'll see a broken image icon if loading fails.
-                };
+            musicTrigger.addEventListener('click', startContent, { once: true }); 
+            
+            music.volume = 0; 
+            music.play().then(startContent).catch(e => {
+                console.log("Music blocked by browser. User must click anywhere to start.");
             });
-        }
 
-        // --- Grand Animation Logic (Placeholder Functions) ---
-        const effects = ["💖", "✨", "❤️", "🥳", "🎁", "🎉", "⭐"];
-        const colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff69b4'];
+            // --- 2. Photo Gallery Setup ---
+            // Generate file names for the 10 photos (Cheek41.jpg to Cheek50.jpg)
+            for (let i = 41; i <= 50; i++) {
+                // ASSUMPTION: Files are named Cheek41.jpg to Cheek50.jpg
+                // CHANGE '.jpg' if your files have a different extension (e.g., .png or .jpeg)
+                photoFiles.push(`Cheek${i}.jpg`);
+            }
 
-        function createEffect() {
-          const effect = document.createElement("div");
-          effect.innerText = effects[Math.floor(Math.random() * effects.length)];
-          effect.classList.add("effect");
-          effect.style.left = Math.random() * 100 + "vw";
-          effect.style.animationDuration = (8 + Math.random() * 8) + "s";
-          effect.style.fontSize = (1.5 + Math.random() * 1.5) + "rem"; 
-          effect.style.animationDelay = (-Math.random() * 8) + "s";
-          document.body.appendChild(effect);
-          setTimeout(() => { effect.remove(); }, 16000);
-        }
-        setInterval(createEffect, 300); 
+            // Populate the carousel with images
+            photoFiles.forEach(fileName => {
+                const galleryItem = document.createElement('div');
+                galleryItem.classList.add('gallery-item');
+                galleryItem.innerHTML = `<img src="${fileName}" alt="Cheeks Part 5 Photo">`;
+                photoCarousel.appendChild(galleryItem);
+            });
 
-        function createFirework(x, y) {
-            for (let i = 0; i < 20; i++) {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const PHOTO_TRANSITION_INTERVAL = 3000; // 3 seconds per photo
+            let rotationInterval;
+
+            // --- 3. Horizontal Photo Rotation Logic ---
+            function startPhotoRotation() {
+                // Dynamically set the width of the carousel to hold all photos for smooth scrolling
+                // This is a bit tricky with object-fit: contain; as image width varies.
+                // We'll approximate or use individual image widths if they were loaded.
+                // For simplicity, let's assume average photo width + margin.
+                const itemWidth = galleryItems[0].offsetWidth || 300; // Fallback width
+                const totalWidth = (itemWidth + 20) * photoFiles.length; // itemWidth + margin
+                photoCarousel.style.width = `${totalWidth}px`;
+
+
+                rotationInterval = setInterval(() => {
+                    currentPhotoIndex = (currentPhotoIndex + 1) % photoFiles.length;
+                    
+                    // Calculate the scroll position based on currentPhotoIndex
+                    // We need to scroll to the center of the current photo in the viewport
+                    const scrollOffset = galleryItems[currentPhotoIndex].offsetLeft - 
+                                         (galleryItems[currentPhotoIndex].parentNode.offsetWidth / 2) + 
+                                         (galleryItems[currentPhotoIndex].offsetWidth / 2);
+
+                    photoCarousel.parentNode.scrollTo({
+                        left: scrollOffset,
+                        behavior: 'smooth'
+                    });
+
+                    // If we've cycled through all photos once, show the quiz
+                    if (currentPhotoIndex === 0 && rotationInterval) {
+                        clearInterval(rotationInterval); // Stop rotation
+                        rotationInterval = null; // Clear the interval ID
+                        setTimeout(() => {
+                            quizSection.style.display = 'flex';
+                            quizSection.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                        }, 1000); // Small delay before showing quiz
+                    }
+                }, PHOTO_TRANSITION_INTERVAL);
+            }
+
+            // --- 4. Quiz Navigation ---
+            quizForm.addEventListener('submit', (e) => {
+                e.preventDefault(); 
+                if (music) music.pause();
+                window.location.href = 'page32.html'; 
+            });
+
+
+            // --- 5. Grand Effects (Floating Emojis, Confetti, Fireworks) ---
+            const confettiColors = ['#FF69B4', '#FFD700', '#FFFFFF', '#FF00FF', '#4CAF50', '#8A2BE2', '#FF1493'];
+            const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
+            
+            setInterval(createFloatingEmoji, 300); 
+            function createFloatingEmoji() {
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = floatingEmojis[Math.floor(Math.random() * floatingEmojis.length)];
+                body.appendChild(emoji);
+                const size = Math.random() * 1.5 + 1.5;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.animationDuration = `${Math.random() * 8 + 10}s`;
+                emoji.style.animationDelay = `${Math.random() * 5}s`;
+                emoji.style.opacity = Math.random() * 0.5 + 0.5; 
+                setTimeout(() => emoji.remove(), 20000);
+            }
+
+            setInterval(createConfettiPiece, 200); 
+            function createConfettiPiece() {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`; 
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 10 + 15}s`; 
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                confetti.style.opacity = Math.random() * 0.7 + 0.3; 
+                
+                setTimeout(() => confetti.remove(), 25000); 
+            }
+
+            setInterval(createFirework, 1500); 
+            function createFirework() {
                 const firework = document.createElement('div');
                 firework.classList.add('firework');
-                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
-                firework.style.left = `${x}px`;
-                firework.style.top = `${y}px`;
-                firework.style.setProperty('--x', `${(Math.random() - 0.5) * 400}px`);
-                firework.style.setProperty('--y', `${(Math.random() - 0.5) * 400}px`);
-                firework.style.animationDuration = `${1 + Math.random()}s`;
-                firework.style.animationDelay = `${Math.random() * 0.5}s`;
-                document.body.appendChild(firework);
-                setTimeout(() => firework.remove(), 2000);
-            }
-        }
+                body.appendChild(firework);
 
-        function launchFirework() {
-            const x = Math.random() * window.innerWidth;
-            const y = Math.random() * window.innerHeight;
-            createFirework(x, y);
-        }
-        setInterval(launchFirework, 1500); 
+                firework.style.left = `${Math.random() * 100}vw`;
+                firework.style.bottom = `-10px`; 
 
-        // --- Quiz Timing Logic (20 seconds delay) ---
-        const QUIZ_DELAY_MS = 20000; 
+                const particleCount = Math.floor(Math.random() * 10) + 10; 
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('firework-particle');
+                    particle.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                    particle.style.width = `${Math.random() * 5 + 2}px`;
+                    particle.style.height = particle.style.width;
+                    particle.style.borderRadius = '50%';
+                    particle.style.position = 'absolute';
+                    particle.style.opacity = 0; 
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadImages(); // Load images and start the rotation
+                    const angle = Math.random() * 2 * Math.PI;
+                    const distance = Math.random() * 80 + 50; 
+                    const delay = Math.random() * 0.2; 
 
-            setTimeout(() => {
-                // Pause the CSS animation by setting play state to 'paused'
-                imageStrip.style.animationPlayState = 'paused'; 
+                    firework.appendChild(particle);
+
+                    setTimeout(() => {
+                        particle.style.transition = `transform 1s ease-out, opacity 1s ease-out`;
+                        particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0)`;
+                        particle.style.opacity = 0;
+                    }, 500 + (delay * 1000)); 
+                    
+                    setTimeout(() => particle.remove(), 1600 + (delay * 1000));
+                }
                 
-                overlay.style.display = 'block';
-                quizContainer.style.visibility = 'visible';
-                quizContainer.style.opacity = 1;
-                quizInput.focus();
-            }, QUIZ_DELAY_MS);
-        });
+                const endHeight = Math.random() * 60 + 20; 
+                firework.style.transition = `transform ${Math.random() * 0.8 + 0.7}s ease-in, opacity 0.5s ease-out 0.8s`;
+                firework.style.transform = `translateY(-${endHeight}vh)`;
+                firework.style.opacity = 1;
 
-        // --- Quiz Submission ---
-        function submitQuiz() {
-            if (quizInput.value.trim() === "") {
-                alert("Please type your sweet reply first!");
-                return; 
+                setTimeout(() => {
+                    firework.style.opacity = 0; 
+                    setTimeout(() => firework.remove(), 500); 
+                }, (Math.random() * 0.8 + 0.7) * 1000); 
             }
-            audio.pause();
-            window.location.href = "page32.html";
-        }
+        });
     </script>
-
 </body>
 </html>
