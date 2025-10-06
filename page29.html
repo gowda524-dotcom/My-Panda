@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Birthday Surprise - Page 29 (Love Compass)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
+            background: #20002c;
+        }
+
+        /* 1. Background and Content Container */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-image: url('Page29.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(60%);
+        }
+
+        .container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* Header Text */
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffcc00;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 11;
+        }
+
+        /* --- Compass Game Area --- */
+        #game-area {
+            position: relative;
+            width: 80vw;
+            max-width: 400px; /* Max size for the photo */
+            aspect-ratio: 1 / 1; /* Keep it square for the compass */
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
+            border-radius: 10px;
+            z-index: 12;
+            margin-bottom: 30px;
+        }
+
+        #target-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        #compass {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            /* CSS Animation for constant spinning */
+            animation: spin 5s linear infinite; 
+            transform-origin: 50% 50%;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* The arrow image/icon inside the compass div */
+        #arrow {
+            position: absolute;
+            top: -10px; /* Position above the center */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            color: #ff00ff; /* Pink arrow color */
+            text-shadow: 0 0 10px #ffcc00;
+        }
+        
+        #stop-button {
+            padding: 15px 35px;
+            font-size: 1.4em;
+            font-weight: bold;
+            background: #8a2de2; /* Purple */
+            color: white;
+            border: 3px solid #ffcc00;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.9);
+            z-index: 13;
+        }
+        
+        #result-message {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffeb3b;
+            visibility: hidden;
+        }
+
+        /* Animation Styles */
+        .emoji {
+            position: fixed;
+            font-size: 2rem;
+            animation: float linear infinite;
+            z-index: 4;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="forceAudioStart()">
+
+    <audio id="bg-audio" loop>
+        <source src="Page29.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="background-container"></div>
+
+    <div class="container">
+        <h1>The Direction of Our Love 🧭</h1>
+
+        <div id="game-area">
+            <img id="target-photo" src="TargetPhoto.jpg" alt="Cherished Memory">
+            
+            <div id="compass">
+                <span id="arrow">⭐</span> </div>
+        </div>
+
+        <button id="stop-button" onclick="stopCompass()">Stop Compass</button>
+        <div id="result-message"></div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        let audioAttempted = false;
+
+        // --- Audio Autoplay Workaround ---
+        function forceAudioStart() {
+            if (!audioAttempted) {
+                audio.play().catch(e => {
+                    console.warn("Audio autoplay blocked. User must tap.", e);
+                });
+                audioAttempted = true;
+                document.body.onclick = null;
+                document.body.ontouchstart = null;
+            }
+        }
+        document.body.ontouchstart = forceAudioStart;
+
+        // --- Game Logic ---
+        const compass = document.getElementById('compass');
+        const stopButton = document.getElementById('stop-button');
+        const resultMessage = document.getElementById('result-message');
+        
+        // **IMPORTANT: Set your target angle here.**
+        // 0/360 = Up, 90 = Right, 180 = Down, 270 = Left
+        // Use a value based on where the key romantic detail is in your photo.
+        const TARGET_ANGLE = 300; // Placeholder: Top-left quadrant
+        const ANGLE_TOLERANCE = 15; // Allows for +/- 15 degrees accuracy
+
+        let isStopped = false;
+
+        function stopCompass() {
+            if (isStopped) return;
+            isStopped = true;
+            
+            // 1. Pause the CSS animation
+            const computedStyle = window.getComputedStyle(compass);
+            const transformValue = computedStyle.getPropertyValue('transform');
+            
+            // Extract the current rotation angle from the transform matrix
+            let matrix = transformValue.match(/^matrix\((.+)\)$/);
+            let angle = 0;
+            if (matrix) {
+                matrix = matrix[1].split(', ');
+                const cos = parseFloat(matrix[0]);
+                const sin = parseFloat(matrix[1]);
+                angle = Math.round(Math.atan2(sin, cos) * (180/Math.PI));
+            }
+            // Normalize angle to 0-360 degrees
+            let currentAngle = (angle < 0) ? angle + 360 : angle;
+            
+            // Apply the current rotation as a static style to stop the animation
+            compass.style.animation = 'none';
+            compass.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
+            
+            // 2. Check the angle
+            const lowerBound = TARGET_ANGLE - ANGLE_TOLERANCE;
+            const upperBound = TARGET_ANGLE + ANGLE_TOLERANCE;
+            
+            let isCorrect = (currentAngle >= lowerBound && currentAngle <= upperBound);
+            
+            if (isCorrect) {
+                stopButton.disabled = true;
+                stopButton.innerText = "Target Found!";
+                resultMessage.style.visibility = 'visible';
+                resultMessage.innerText = "You've found the true north! Our love's direction is clear.";
+                
+                // Success: Redirect after a short delay
+                setTimeout(() => {
+                    audio.pause();
+                    window.location.href = "page30.html";
+                }, 3000);
+            } else {
+                resultMessage.style.visibility = 'visible';
+                resultMessage.style.color = 'red';
+                resultMessage.innerText = `Direction is ${currentAngle}°. Try again! Think about what's most important in this photo.`;
+                
+                // Allow user to try again after a brief pause
+                setTimeout(() => {
+                    isStopped = false;
+                    compass.style.animation = 'spin 5s linear infinite';
+                    resultMessage.style.visibility = 'hidden';
+                    resultMessage.style.color = '#ffeb3b';
+                }, 2500);
+            }
+        }
+
+
+        // --- Animations Logic (Heart/Star Emojis Only) ---
+        const emojis = ["💖", "✨", "❤️"];
+        function createEmoji() {
+          const emoji = document.createElement("div");
+          emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+          emoji.classList.add("emoji");
+          emoji.style.left = Math.random() * 100 + "vw";
+          emoji.style.animationDuration = (8 + Math.random() * 8) + "s";
+          emoji.style.fontSize = (1.5 + Math.random() * 1.5) + "rem"; 
+          emoji.style.animationDelay = (-Math.random() * 8) + "s";
+          document.body.appendChild(emoji);
+          setTimeout(() => { emoji.remove(); }, 16000);
+        }
+        setInterval(createEmoji, 1000);
+        
+    </script>
+
+</body>
+</html>
