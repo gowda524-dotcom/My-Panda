@@ -23,26 +23,6 @@
             overflow: hidden; 
         }
 
-        /* FIX: Class to pause all animations when quiz is active */
-        .pause-animations .floating-emoji,
-        .pause-animations .confetti-fall,
-        .pause-animations .firework {
-            animation-play-state: paused !important;
-        }
-
-        /* --- Full-Screen Click Shield (THE CRITICAL FIX) --- */
-        #click-shield {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.2); 
-            z-index: 999; 
-            display: none; 
-            pointer-events: auto; 
-        }
-        
         /* --- Music Autoplay Trigger --- */
         #music-trigger {
             position: fixed;
@@ -115,65 +95,7 @@
             object-fit: contain; 
         }
 
-        /* --- Quiz Area (The Central Modal) --- */
-        #quiz-section {
-            position: fixed; 
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000; 
-            background: rgba(255, 192, 203, 0.95); 
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            display: none; 
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 0 40px #FFC0CB, 0 0 20px white;
-            animation: popIn 0.5s forwards;
-            pointer-events: auto; 
-        }
-
-        @keyframes popIn {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        #quiz-label {
-            font-size: 2.5em;
-            color: #8A2BE2; 
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px white;
-        }
-
-        #text-input {
-            padding: 12px;
-            width: 90%;
-            border-radius: 10px;
-            border: 2px solid #FF69B4;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-            text-align: center;
-            background: #FFFFFF;
-            color: #333;
-        }
-
-        #submit-button {
-            padding: 12px 25px;
-            font-size: 1.3em;
-            font-weight: bold;
-            background-color: #FF69B4; 
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: background-color 0.3s;
-        }
-
-        /* --- Grand Effects CSS (Ensure lower Z-index) --- */
+        /* --- Grand Effects CSS (Still running in background) --- */
         .floating-emoji, .confetti-fall, .firework, .firework-particle {
             position: fixed; 
             z-index: 1; 
@@ -222,8 +144,6 @@
     <audio id="bgMusic" src="Page31.mp3" loop preload="auto"></audio>
 
     <div id="music-trigger"></div>
-    
-    <div id="click-shield"></div>
 
     <div class="header-text">
         <p id="main-header">Happy Birthday En Thangoo🤗😚</p>
@@ -233,23 +153,12 @@
     <div id="gallery-container">
         </div>
 
-    <div id="quiz-section">
-        <p id="quiz-label">Sweet Bun 🤭</p>
-        <form id="quiz-form">
-            <input type="text" id="text-input" placeholder="Type any text here to continue..." required>
-            <button type="submit" id="submit-button">Submit & Continue ➡️</button>
-        </form>
-    </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const body = document.body;
             const music = document.getElementById('bgMusic');
             const musicTrigger = document.getElementById('music-trigger');
             const galleryContainer = document.getElementById('gallery-container');
-            const quizSection = document.getElementById('quiz-section');
-            const clickShield = document.getElementById('click-shield'); 
-            const quizForm = document.getElementById('quiz-form');
             
             let musicStarted = false;
             let currentPhotoIndex = 0;
@@ -275,7 +184,7 @@
             music.volume = 0; 
             music.play().then(startContent).catch(e => {});
 
-            // --- 2. Photo Slideshow & Quiz Reveal ---
+            // --- 2. Photo Slideshow & Auto-Advance ---
             const PHOTO_TRANSITION_INTERVAL = 3000; 
             const photoFiles = [];
             for (let i = 41; i <= 50; i++) {
@@ -296,13 +205,6 @@
                 galleryItems[index].classList.add('active');
             }
 
-            function stopGrandEffects() {
-                effectIntervals.forEach(clearInterval); 
-                body.classList.add('pause-animations');
-                // *** AGGRESSIVE FIX: Immediately remove all decorative elements from the DOM ***
-                document.querySelectorAll('.floating-emoji, .confetti-fall, .firework').forEach(el => el.remove());
-            }
-
             function startPhotoSlideshow() {
                 showSlide(currentPhotoIndex);
                 
@@ -314,29 +216,16 @@
                     } else {
                         clearInterval(slideshowInterval);
                         
+                        // *** FINAL FIX: Automatic Redirection ***
                         setTimeout(() => {
-                            // 1. Stop and remove all background elements immediately
-                            stopGrandEffects(); 
-                            
-                            // 2. Activate the click shield
-                            clickShield.style.display = 'block'; 
-                            
-                            // 3. Show the quiz
-                            quizSection.style.display = 'flex'; 
-                        }, 1000); 
+                            if (music) music.pause();
+                            window.location.href = 'page32.html'; 
+                        }, 1000); // Wait 1 second after the last image is displayed
                     }
                 }, PHOTO_TRANSITION_INTERVAL);
             }
             
-            // --- 3. Quiz Navigation ---
-            quizForm.addEventListener('submit', (e) => {
-                e.preventDefault(); 
-                if (music) music.pause();
-                window.location.href = 'page32.html'; 
-            });
-
-
-            // --- 4. Grand Effects Initialization ---
+            // --- 3. Grand Effects Initialization (Unchanged) ---
             const confettiColors = ['#FF69B4', '#FFD700', '#FFFFFF', '#FF00FF', '#4CAF50', '#8A2BE2', '#FF1493'];
             const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
             
