@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Surprise - Page 2 (Final Button Fix)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+      position: relative;
+      background: black;
+    }
+
+    /* 1. Video Container (Background) */
+    .video-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1; 
+    }
+
+    #background-video {
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      filter: brightness(70%); 
+    }
+
+    /* 2. Content Layer (Overlay) */
+    .content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+      background: rgba(0, 0, 0, 0.2);
+      /* Removed Flexbox properties as we rely on fixed positioning for elements */
+    }
+
+    h1 {
+      position: absolute; /* Set title to absolute for fixed placement */
+      top: 20px;
+      width: 100%;
+      font-size: 3.5em;
+      color: #ffcc00;
+      text-shadow: 0 0 10px black;
+      z-index: 6;
+      font-weight: bold;
+    }
+    
+    /* 3. NEXT BUTTON FIX: Use fixed positioning relative to the viewport */
+    .next-area {
+      position: fixed; /* Ensures it stays visible even with scrolling/mobile keyboards */
+      bottom: 20px;
+      right: 20px;
+      z-index: 10; /* Highest z-index to guarantee visibility */
+    }
+
+    #next-button {
+      padding: 12px 30px;
+      font-size: 1.5em;
+      font-weight: bold;
+      background: #8a2be2;
+      color: white;
+      border: 3px solid #ffcc00;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+    }
+
+    /* Invisible Full-Screen Tap Area for Audio Start */
+    #tap-area {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 7; /* Below content, above video */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-container">
+    <video autoplay muted loop playsinline id="background-video">
+      <source src="H.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  
+  <audio id="bg-audio" loop>
+      <source src="H.mp3" type="audio/mpeg">
+  </audio>
+
+  <div id="tap-area" onclick="forceAudioStart()"></div>
+
+  <div class="content">
+    
+    <h1>Happy Birthday di En Best Friendeyyy 💙😚🫂</h1>
+  </div>
+    
+  <div class="next-area">
+    <button id="next-button" onclick="moveNext(event)">
+        Next >
+    </button>
+  </div>
+
+  <script>
+    const video = document.getElementById('background-video');
+    const audio = document.getElementById('bg-audio');
+    let audioAttempted = false;
+
+    // Function to force audio to start on the first user interaction
+    function forceAudioStart() {
+        if (!audioAttempted) {
+            audio.play().catch(e => {
+                console.warn("Audio start failed on first tap (expected on some devices).", e);
+            });
+            audioAttempted = true;
+            // Remove the tap listener after the first attempt to prevent interference
+            document.getElementById('tap-area').onclick = null;
+        }
+    }
+
+    // Function to start the page initialization
+    function initializePage() {
+         // Start muted video for background visual effect
+         video.play().catch(e => console.error("Muted video failed to start:", e));
+         
+         // Unreliable attempt to start audio immediately
+         forceAudioStart();
+    }
+
+    // Function to handle navigation
+    function moveNext(event) {
+        // Stop the click from triggering the full-screen audio function
+        event.stopPropagation();
+        
+        // Stop all media before navigating
+        video.pause();
+        audio.pause();
+        window.location.href = "home1.html"; 
+    }
+    
+    // Start page initialization
+    document.addEventListener('DOMContentLoaded', initializePage);
+  </script>
+
+</body>
+</html>
