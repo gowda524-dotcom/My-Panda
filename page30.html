@@ -62,7 +62,7 @@
             padding: 25px;
             background: rgba(255, 105, 180, 0.9); /* Pink semi-transparent box */
             border-radius: 15px;
-            visibility: hidden;
+            visibility: hidden; /* Start hidden */
             opacity: 0;
             transition: opacity 1s ease-in-out;
             display: flex;
@@ -71,6 +71,7 @@
             max-width: 300px;
             color: black;
             box-shadow: 0 0 40px rgba(255, 105, 180, 1);
+            z-index: 15; /* Ensure it floats over other content */
         }
 
         #quiz-question {
@@ -106,7 +107,7 @@
         }
 
 
-        /* --- Emojis, Confetti, and Fireworks Animations --- */
+        /* --- Emojis, Confetti, and Fireworks Animations (Visual Effects) --- */
         .effect {
             position: fixed;
             font-size: 2rem;
@@ -159,6 +160,7 @@
 
     <script>
         const audio = document.getElementById('bg-audio');
+        const quizInput = document.getElementById('quiz-input');
         let audioAttempted = false;
 
         // --- Audio Autoplay Workaround ---
@@ -174,7 +176,7 @@
         }
         document.body.ontouchstart = forceAudioStart;
 
-        // --- Grand Animation Logic ---
+        // --- Grand Animation Logic (Unchanged) ---
         const effects = ["💖", "✨", "❤️", "🥳", "🎁", "🎉", "⭐"];
         const colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff69b4'];
 
@@ -189,7 +191,7 @@
           document.body.appendChild(effect);
           setTimeout(() => { effect.remove(); }, 16000);
         }
-        setInterval(createEffect, 300); // Higher frequency for grand effect
+        setInterval(createEffect, 300); 
 
         function createFirework(x, y) {
             for (let i = 0; i < 20; i++) {
@@ -213,20 +215,25 @@
             const y = Math.random() * window.innerHeight;
             createFirework(x, y);
         }
-        setInterval(launchFirework, 1500); // Launch a new firework every 1.5 seconds
+        setInterval(launchFirework, 1500); 
 
-        // --- Quiz Timing Logic ---
-        const QUIZ_DELAY_MS = 20000; // 20 seconds delay
+        // --- Quiz Timing Logic (18 seconds delay) ---
+        const QUIZ_DELAY_MS = 18000; // 18 seconds delay
 
         setTimeout(() => {
             const quizContainer = document.getElementById('quiz-container');
             quizContainer.style.visibility = 'visible';
             quizContainer.style.opacity = 1;
+            quizInput.focus(); // Auto-focus on the input for ease of use
         }, QUIZ_DELAY_MS);
 
         // --- Quiz Submission ---
         function submitQuiz() {
-            // Any text input is accepted as the final step
+            // Require text input before proceeding
+            if (quizInput.value.trim() === "") {
+                alert("Please type a sweet reply for your Pink Bomma first!");
+                return; 
+            }
             audio.pause();
             window.location.href = "page31.html";
         }
