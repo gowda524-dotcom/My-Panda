@@ -1,36 +1,7 @@
-            pointer-events: none;
-        }
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-        }
-
-        .firework {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            opacity: 0;
-            z-index: 5;
-            animation: firework 2s ease-out infinite;
-        }
-
-        @keyframes firework {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
-        }
-
-    </style>
-</head>
-<body onclick="forceAudioStart()">
-
-    <video autoplay loop muted playsinline id="video-background">
-        <source src="Page32.mp4" type="video/mp4">
-        Your browser does not support the video tag.
     </video>
 
     <audio id="bg-audio" loop>
-        <source src="Page32.mp3" type="audio/mpeg">
+        <source src="Page30.mp3" type="audio/mpeg">
     </audio>
 
     <div class="container">
@@ -40,9 +11,9 @@
     <div id="overlay"></div>
 
     <div id="quiz-container">
-        <div id="quiz-question">Antha Siripu 🙈</div>
+        <div id="quiz-question">Azhagu Pink 🩷 Bomma🙈</div>
         <input type="text" id="quiz-input" placeholder="Type your sweet reply here..." required>
-        <button id="quiz-submit" onclick="submitQuiz()">Submit→</button>
+        <button id="quiz-submit" onclick="submitQuiz()">Submit & Go to Page 31 →</button>
     </div>
 
     <script>
@@ -125,7 +96,7 @@
                 return; 
             }
             audio.pause();
-            window.location.href = "page33.html";
+            window.location.href = "page31.html";
         }
     </script>
 
