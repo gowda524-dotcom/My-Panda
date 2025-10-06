@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Birthday Surprise - Page 29 (Three-Stage Compass)</title>
+    <title>Birthday Surprise - Page 29 (Magnetic Star Compass)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -52,7 +52,7 @@
             z-index: 11;
         }
 
-        /* --- Compass Game Area --- */
+        /* --- Game Area --- */
         #game-area {
             position: relative;
             width: 80vw;
@@ -62,14 +62,15 @@
             border-radius: 10px;
             z-index: 12;
             margin-bottom: 30px;
+            overflow: hidden; /* Keep star within bounds */
         }
 
         #target-photo {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Crucial: show original image uncropped */
+            object-fit: contain; /* CRUCIAL: show original image uncropped */
             border-radius: 10px;
-            background: #000;
+            background: #000; /* Black background behind image */
             transition: opacity 0.5s;
         }
 
@@ -85,31 +86,19 @@
             z-index: 20;
         }
 
-        /* --- Compass and Controls --- */
-        #compass {
+        /* The Magnetic Star */
+        #magnetic-star {
             position: absolute;
+            font-size: 4rem; /* Big star */
+            color: #ffeb3b; /* Yellow star */
+            text-shadow: 0 0 15px #ff00ff, 0 0 20px #ff00ff; /* Pink glow */
+            z-index: 25; /* On top of everything */
+            /* Initial position - set by JS */
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
-            animation: spin 5s linear infinite; 
-            transform-origin: 50% 50%;
-        }
-
-        @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        #arrow {
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 4rem;
-            color: #ff00ff;
-            text-shadow: 0 0 10px #ffcc00;
+            transform: translate(-50%, -50%); /* Centered initially */
+            pointer-events: none; /* Don't block clicks on the button */
+            transition: transform 0.1s linear; /* Smooth movement */
         }
         
         #stop-button {
@@ -134,7 +123,7 @@
             text-shadow: 1px 1px 2px #000;
         }
 
-        /* Animation Styles */
+        /* Floating Emojis (unchanged) */
         .emoji {
             position: fixed;
             font-size: 2rem;
@@ -157,19 +146,17 @@
     <div class="background-container"></div>
 
     <div class="container">
-        <h1>unkita Ennaku Romba Pudcha Place la Star ha stop Pannu🧭</h1>
+        <h1>Unkita Ennaku Romba Pudcha Place la Star ha stop Pannu 🥰</h1>
 
         <div id="game-area">
             <img id="target-photo" src="Target_A.jpg" alt="Puzzle Image">
             <div id="stage-indicator">Stage 1 of 3</div>
             
-            <div id="compass">
-                <span id="arrow">⭐</span>
-            </div>
+            <div id="magnetic-star">⭐</div>
         </div>
 
-        <button id="stop-button" onclick="stopCompass()">Stop Compass</button>
-        <div id="result-message">Align the ⭐ with the most special spot in the photo!</div>
+        <button id="stop-button" onclick="stopMagneticStar()">Stop Star</button>
+        <div id="result-message"></div>
     </div>
 
     <script>
@@ -190,69 +177,94 @@
         document.body.ontouchstart = forceAudioStart;
 
         // --- Game Setup (CRITICAL: REPLACE PLACEHOLDER VALUES) ---
+        // x, y are percentages from top-left of the game-area (0-100)
+        // angle is the current angle of rotation the star is on its orbit (0-360)
         const stages = [
-            { id: 1, src: "Target_A.jpg", targetAngle: 300, hint: "Look for the first place we said 'I love you.'" }, // **REPLACE 300**
-            { id: 2, src: "Target_B.jpg", targetAngle: 120, hint: "Where did we take our favorite selfie?" }, // **REPLACE 120**
-            { id: 3, src: "Target_C.jpg", targetAngle: 45, hint: "Point at the gift that means the most." } // **REPLACE 45**
+            { id: 1, src: "Target_A.jpg", targetX: 70, targetY: 20, targetAngle: 300, hint: "Look at her beautiful hair accessory!" }, // **REPLACE values**
+            { id: 2, src: "Target_B.jpg", targetX: 30, targetY: 80, targetAngle: 120, hint: "Where are her hands placed?" },       // **REPLACE values**
+            { id: 3, src: "Target_C.jpg", targetX: 50, targetY: 50, targetAngle: 45, hint: "Focus on her radiant smile!" }         // **REPLACE values**
         ];
         
-        const ANGLE_TOLERANCE = 15; // +/- 15 degrees accuracy
-        
+        const POSITION_TOLERANCE = 10; // +/- 10% for X and Y coordinates
+        const ANGLE_TOLERANCE = 30;    // +/- 30 degrees for rotation (makes it easier)
+        const ORBIT_RADIUS_X = 40;     // Max horizontal distance from center (%)
+        const ORBIT_RADIUS_Y = 30;     // Max vertical distance from center (%)
+        const ORBIT_SPEED = 0.05;      // How fast the star orbits (smaller = slower)
+
         let currentStageIndex = 0;
         let isStopped = false;
+        let animationFrameId;
+        let currentOrbitAngle = 0; // Current angle in the star's orbit
+        let currentStarX = 50;
+        let currentStarY = 50;
 
         // --- DOM Elements ---
-        const compass = document.getElementById('compass');
+        const gameArea = document.getElementById('game-area');
+        const magneticStar = document.getElementById('magnetic-star');
         const targetPhoto = document.getElementById('target-photo');
         const stopButton = document.getElementById('stop-button');
         const stageIndicator = document.getElementById('stage-indicator');
         const resultMessage = document.getElementById('result-message');
 
 
+        // --- Star Orbit Animation ---
+        function animateStar() {
+            if (isStopped) return;
+
+            currentOrbitAngle += ORBIT_SPEED;
+            if (currentOrbitAngle >= Math.PI * 2) {
+                currentOrbitAngle -= Math.PI * 2; // Keep angle within 0-2PI
+            }
+
+            // Calculate star's position for an elliptical orbit
+            currentStarX = 50 + ORBIT_RADIUS_X * Math.cos(currentOrbitAngle);
+            currentStarY = 50 + ORBIT_RADIUS_Y * Math.sin(currentOrbitAngle + Math.PI / 4); // Offset for varied path
+
+            // Apply position and rotation
+            magneticStar.style.left = `${currentStarX}%`;
+            magneticStar.style.top = `${currentStarY}%`;
+            magneticStar.style.transform = `translate(-50%, -50%) rotate(${currentOrbitAngle * (180/Math.PI)}deg)`;
+            
+            animationFrameId = requestAnimationFrame(animateStar);
+        }
+
         // --- Game Logic ---
-        function stopCompass() {
+        function stopMagneticStar() {
             if (isStopped) return;
             isStopped = true;
+            cancelAnimationFrame(animationFrameId); // Stop the star's movement
             
             const currentStage = stages[currentStageIndex];
             
-            // 1. Pause the CSS animation and find the current angle
-            const computedStyle = window.getComputedStyle(compass);
-            const transformValue = computedStyle.getPropertyValue('transform');
+            // 1. Check position
+            const posXCorrect = currentStarX >= (currentStage.targetX - POSITION_TOLERANCE) && 
+                                currentStarX <= (currentStage.targetX + POSITION_TOLERANCE);
+            const posYCorrect = currentStarY >= (currentStage.targetY - POSITION_TOLERANCE) && 
+                                currentStarY <= (currentStage.targetY + POSITION_TOLERANCE);
             
-            let matrix = transformValue.match(/^matrix\((.+)\)$/);
-            let angle = 0;
-            if (matrix) {
-                matrix = matrix[1].split(', ');
-                const cos = parseFloat(matrix[0]);
-                const sin = parseFloat(matrix[1]);
-                angle = Math.round(Math.atan2(sin, cos) * (180/Math.PI));
-            }
-            let currentAngle = (angle < 0) ? angle + 360 : angle;
-            
-            // Apply static rotation
-            compass.style.animation = 'none';
-            compass.style.transform = `translate(-50%, -50%) rotate(${currentAngle}deg)`;
-            
-            // 2. Check the angle
+            // 2. Check rotation (can be optional if only position matters)
+            const starRotation = currentOrbitAngle * (180/Math.PI);
             const target = currentStage.targetAngle;
             const lowerBound = target - ANGLE_TOLERANCE;
             const upperBound = target + ANGLE_TOLERANCE;
-            
-            let isCorrect = false;
-            // Robust check for angle wrap-around
+
+            let rotCorrect = false;
             if (lowerBound < 0) {
-                isCorrect = (currentAngle >= lowerBound + 360 || currentAngle <= upperBound);
+                rotCorrect = (starRotation >= lowerBound + 360 || starRotation <= upperBound);
             } else if (upperBound > 360) {
-                isCorrect = (currentAngle >= lowerBound || currentAngle <= upperBound - 360);
+                rotCorrect = (starRotation >= lowerBound || starRotation <= upperBound - 360);
             } else {
-                isCorrect = (currentAngle >= lowerBound && currentAngle <= upperBound);
+                rotCorrect = (starRotation >= lowerBound && starRotation <= upperBound);
             }
+
+            // Determine if the combination is correct
+            const isCorrect = posXCorrect && posYCorrect && rotCorrect;
 
 
             if (isCorrect) {
                 stopButton.innerText = "Target FOUND! Moving to next spot...";
                 resultMessage.style.visibility = 'visible';
+                resultMessage.style.color = '#ffeb3b';
                 resultMessage.innerText = `Direction found for Stage ${currentStage.id}!`;
                 
                 // Advance to the next stage or finish
@@ -273,15 +285,15 @@
             } else {
                 resultMessage.style.visibility = 'visible';
                 resultMessage.style.color = 'red';
-                resultMessage.innerText = `Angle ${currentAngle.toFixed(0)}°. Incorrect. Hint: ${currentStage.hint}`;
+                resultMessage.innerText = `Not quite there! Hint: ${currentStage.hint}`;
                 
                 // Allow user to try again after a brief pause
                 setTimeout(() => {
                     isStopped = false;
-                    compass.style.animation = 'spin 5s linear infinite';
                     resultMessage.style.visibility = 'hidden';
                     resultMessage.style.color = '#ffeb3b';
-                    stopButton.innerText = "Stop Compass";
+                    stopButton.innerText = "Stop Star";
+                    animateStar(); // Restart animation
                 }, 2500);
             }
         }
@@ -292,10 +304,9 @@
             // 1. Reset state
             isStopped = false;
             stopButton.disabled = false;
-            stopButton.innerText = "Stop Compass";
-            compass.style.animation = 'spin 5s linear infinite';
-            resultMessage.style.visibility = 'hidden';
+            stopButton.innerText = "Stop Star";
             stageIndicator.innerText = `Stage ${nextStage.id} of 3`;
+            resultMessage.innerText = `Align the ⭐ with the most special spot in the photo! Hint: ${nextStage.hint}`;
             
             // 2. Change Image (with a fade effect)
             targetPhoto.style.opacity = 0.3;
@@ -303,16 +314,18 @@
                 targetPhoto.src = nextStage.src;
                 targetPhoto.alt = `Puzzle Image Stage ${nextStage.id}`;
                 targetPhoto.style.opacity = 1;
+                animateStar(); // Restart animation for new stage
             }, 500);
         }
 
         // Initialize the first stage on load
         document.addEventListener('DOMContentLoaded', () => {
-             // Set the initial source (it's already set to Target_A.jpg in HTML but this ensures consistency)
-            targetPhoto.src = stages[0].src;
-            // The initial message is shown from the HTML
-            resultMessage.style.visibility = 'visible'; 
+             targetPhoto.src = stages[0].src; // Ensure first image is loaded
+             resultMessage.innerText = `Align the ⭐ with the most special spot in the photo! Hint: ${stages[0].hint}`;
+             resultMessage.style.visibility = 'visible';
+             animateStar(); // Start the star animation
         });
+
 
         // --- Animations Logic (Heart/Star Emojis Only) ---
         const emojis = ["💖", "✨", "❤️"];
