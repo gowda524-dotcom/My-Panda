@@ -55,8 +55,8 @@
         /* --- Game Area --- */
         #game-area {
             position: relative;
-            width: 80vw;
-            max-width: 400px;
+            width: 90vw; /* Increased size */
+            max-width: 500px; /* Increased size */
             aspect-ratio: 1 / 1;
             box-shadow: 0 0 30px rgba(255, 105, 180, 0.8);
             border-radius: 10px;
@@ -117,7 +117,7 @@
             font-size: 1.2em;
             font-weight: bold;
             color: #ffeb3b;
-            min-height: 25px; /* Prevent jumping */
+            min-height: 25px; 
             text-shadow: 1px 1px 2px #000;
         }
 
@@ -144,7 +144,7 @@
     <div class="background-container"></div>
 
     <div class="container">
-        <h1>Unkita Ennaku Romba Pudcha Place la Star ha stop Pannu 🥰</h1>
+        <h1>Na Unna killura 3 edthula Star ⭐ ha Stop pannu🤭🤭</h1>
 
         <div id="game-area">
             <img id="target-photo" src="TargetPhoto.jpg" alt="Cherished Memory">
@@ -177,13 +177,13 @@
         // --- Game Setup (CRITICAL: REPLACE PLACEHOLDER VALUES) ---
         // targetAngle is the angle (0-360) that points to the spot. 0/360=Up, 90=Right, 180=Down, 270=Left.
         const stages = [
-            { id: 1, targetAngle: 30, hint: "The first flower she gave me" },   // **REPLACE 30**
-            { id: 2, targetAngle: 180, hint: "The spot where my hand rested" }, // **REPLACE 180**
-            { id: 3, targetAngle: 250, hint: "The corner of her beautiful smile" } // **REPLACE 250**
+            { id: 1, targetAngle: 30, hint: "En Sweet bun mela Stop Pannu🙈" },   // **REPLACE 30**
+            { id: 2, targetAngle: 180, hint: "Lips mela Stop Pannu🤭" }, // **REPLACE 180**
+            { id: 3, targetAngle: 250, hint: "Idupu or Kutty Thoppa mela stop Pannu🤭🤭" } // **REPLACE 250**
         ];
         
         const ANGLE_TOLERANCE = 15; // +/- 15 degrees accuracy
-        const ORBIT_SPEED = 0.02;   // SLOWED DOWN: How fast the star orbits (smaller = slower)
+        const ORBIT_SPEED = 0.01;   // **SLOWER SPEED** How fast the star orbits (smaller = slower)
         const ORBIT_RADIUS = 50;    // Max distance from center (50% = full edge-to-edge sweep)
         
         let currentStageIndex = 0;
@@ -208,7 +208,6 @@
             }
 
             // Calculate star's position based on its angle and radius (circular orbit for maximum sweep)
-            // The position is defined by the angle (currentOrbitAngle) and the distance (ORBIT_RADIUS).
             const x = 50 + ORBIT_RADIUS * Math.sin(currentOrbitAngle);
             const y = 50 + ORBIT_RADIUS * Math.cos(currentOrbitAngle);
 
@@ -216,8 +215,7 @@
             magneticStar.style.left = `${x}%`;
             magneticStar.style.top = `${y}%`;
             
-            // To make the star point outward, we set its rotation based on its position angle
-            // The target angle (0/360 = UP) corresponds to currentOrbitAngle (cos=1, sin=0 at 0)
+            // Apply star rotation for visual effect
             const rotationDegree = currentOrbitAngle * (180/Math.PI);
             magneticStar.style.transform = `translate(-50%, -50%) rotate(${rotationDegree}deg)`;
             
@@ -248,7 +246,7 @@
             const upperBound = target + ANGLE_TOLERANCE;
 
             let isCorrect = false;
-            // Robust check for angle wrap-around (e.g., target 10 degrees, tolerance 15 degrees, check 355 to 25)
+            // Robust check for angle wrap-around
             if (lowerBound < 0) {
                 isCorrect = (currentAngle >= lowerBound + 360 || currentAngle <= upperBound);
             } else if (upperBound > 360) {
