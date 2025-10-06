@@ -11,23 +11,23 @@
       font-family: 'Comic Sans MS', cursive, sans-serif;
       text-align: center;
       color: white;
-      overflow: hidden; /* Prevent body scroll for fixed elements */
+      overflow: hidden;
       position: relative;
     }
 
-    /* 1. Background Image Fix: Changed to Page27.png and ensured full cover */
+    /* 1. Background Image */
     .background-container {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1; /* Ensure it's the lowest layer */
-      background-image: url('Page27.png'); /* Use the specified background image */
-      background-size: cover; /* Cover the entire container */
-      background-position: center; /* Center the image */
-      background-repeat: no-repeat; /* Do not repeat the image */
-      filter: brightness(60%); /* Dim the background for text readability */
+      z-index: 1;
+      background-image: url('Page27.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: brightness(60%);
     }
 
     /* 2. Content Layer */
@@ -39,18 +39,21 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: flex-end; /* Pushes content to the bottom */
+      justify-content: center; /* Center vertically to allow quiz positioning */
       align-items: center;
-      z-index: 10; 
-      background: rgba(0, 0, 0, 0.4); /* Dark overlay */
-      padding-bottom: 50px; /* Space from the very bottom */
-      box-sizing: border-box;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.4);
     }
 
-    /* 3. Quiz Area Styling (Moved down, hidden initially) */
+    /* 3. Quiz Area FIX: Absolute position for bottom middle */
     .quiz-area {
+      position: absolute; /* Anchor relative to the viewport/container */
+      bottom: 50px; /* Distance from the bottom edge */
+      left: 50%;
+      transform: translateX(-50%); /* Center horizontally */
+      
       padding: 30px;
-      background: rgba(255, 105, 180, 0.9); /* Hotpink background for quiz */
+      background: rgba(255, 105, 180, 0.9);
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
       color: white;
@@ -58,11 +61,11 @@
       text-shadow: 1px 1px 3px #000;
       max-width: 90%;
       z-index: 15;
+      
       /* Initially hidden */
       display: none; 
       opacity: 0;
-      transition: opacity 1s ease-in-out; /* Smooth fade-in */
-      margin-top: auto; /* Pushes quiz to the bottom when other elements are flexed */
+      transition: opacity 1s ease-in-out;
     }
     .quiz-area.show {
         display: block;
@@ -86,7 +89,7 @@
       padding: 12px 25px;
       font-size: 1.2em;
       font-weight: bold;
-      background: #8a2be2;
+      background: #8a2de2;
       color: white;
       border: 3px solid #ffcc00;
       border-radius: 10px;
@@ -122,7 +125,7 @@
   </audio>
 
   <div class="background-container">
-    </div>
+  </div>
 
   <div class="container">
     <div class="quiz-area" id="quiz-area">
@@ -155,7 +158,10 @@
 
     // --- Quiz Appearance Logic (Direct after 15 seconds) ---
     function showQuizAfterDelay() {
+        // --- FIX: The setTimeout call needs to be correctly wrapped in a function 
+        // that runs when the DOM is loaded.
         setTimeout(() => {
+            console.log("15 seconds elapsed. Showing quiz.");
             quizArea.classList.add('show');
         }, delayDuration);
     }
@@ -172,6 +178,7 @@
     }
 
     // --- Initialization ---
+    // Start the timer to show the quiz after 15 seconds immediately when the page loads.
     document.addEventListener('DOMContentLoaded', showQuizAfterDelay);
 
 
