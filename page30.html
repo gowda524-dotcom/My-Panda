@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Birthday Surprise - Page 30 (Grand Celebration)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
+            background: #000033; /* Deep celebratory blue/purple */
+        }
+
+        /* Full Screen Video Background */
+        #video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            filter: brightness(70%); /* Keeps the content readable */
+        }
+
+        /* Main Content Container */
+        .container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            color: #ffcc00; /* Gold */
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Quiz styles */
+        #quiz-container {
+            margin-top: 20px;
+            padding: 25px;
+            background: rgba(255, 105, 180, 0.9); /* Pink semi-transparent box */
+            border-radius: 15px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 300px;
+            color: black;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 1);
+        }
+
+        #quiz-question {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        #quiz-input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 3px solid #8a2de2; /* Purple border */
+            font-size: 1em;
+            color: #20002c;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        #quiz-submit {
+            padding: 12px 25px;
+            background: #8a2de2; /* Purple submit button */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+        #quiz-submit:hover {
+            background: #6a1ac7;
+        }
+
+
+        /* --- Emojis, Confetti, and Fireworks Animations --- */
+        .effect {
+            position: fixed;
+            font-size: 2rem;
+            animation: float linear infinite;
+            z-index: 20;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 5;
+            animation: firework 2s ease-out infinite;
+        }
+
+        @keyframes firework {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body onclick="forceAudioStart()">
+
+    <video autoplay loop muted playsinline id="video-background">
+        <source src="Page30.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <audio id="bg-audio" loop>
+        <source src="Page30.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <h1>HAPPY BIRTHDAY MY LOVE!</h1>
+
+        <div id="quiz-container">
+            <div id="quiz-question">Azhagu Pink 🩷 Bomma🙈</div>
+            <input type="text" id="quiz-input" placeholder="Type your sweet reply here..." required>
+            <button id="quiz-submit" onclick="submitQuiz()">Submit & Go to Page 31 →</button>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        let audioAttempted = false;
+
+        // --- Audio Autoplay Workaround ---
+        function forceAudioStart() {
+            if (!audioAttempted) {
+                audio.play().catch(e => {
+                    console.warn("Audio autoplay blocked. User must tap.", e);
+                });
+                audioAttempted = true;
+                document.body.onclick = null;
+                document.body.ontouchstart = null;
+            }
+        }
+        document.body.ontouchstart = forceAudioStart;
+
+        // --- Grand Animation Logic ---
+        const effects = ["💖", "✨", "❤️", "🥳", "🎁", "🎉", "⭐"];
+        const colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff69b4'];
+
+        function createEffect() {
+          const effect = document.createElement("div");
+          effect.innerText = effects[Math.floor(Math.random() * effects.length)];
+          effect.classList.add("effect");
+          effect.style.left = Math.random() * 100 + "vw";
+          effect.style.animationDuration = (8 + Math.random() * 8) + "s";
+          effect.style.fontSize = (1.5 + Math.random() * 1.5) + "rem"; 
+          effect.style.animationDelay = (-Math.random() * 8) + "s";
+          document.body.appendChild(effect);
+          setTimeout(() => { effect.remove(); }, 16000);
+        }
+        setInterval(createEffect, 300); // Higher frequency for grand effect
+
+        function createFirework(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.left = `${x}px`;
+                firework.style.top = `${y}px`;
+                firework.style.setProperty('--x', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.setProperty('--y', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.animationDuration = `${1 + Math.random()}s`;
+                firework.style.animationDelay = `${Math.random() * 0.5}s`;
+                document.body.appendChild(firework);
+                setTimeout(() => firework.remove(), 2000);
+            }
+        }
+
+        // --- Firework Generation Loop ---
+        function launchFirework() {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createFirework(x, y);
+        }
+        setInterval(launchFirework, 1500); // Launch a new firework every 1.5 seconds
+
+        // --- Quiz Timing Logic ---
+        const QUIZ_DELAY_MS = 20000; // 20 seconds delay
+
+        setTimeout(() => {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.style.visibility = 'visible';
+            quizContainer.style.opacity = 1;
+        }, QUIZ_DELAY_MS);
+
+        // --- Quiz Submission ---
+        function submitQuiz() {
+            // Any text input is accepted as the final step
+            audio.pause();
+            window.location.href = "page31.html";
+        }
+    </script>
+
+</body>
+</html>
