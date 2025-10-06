@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Birthday Surprise - Page 31 (Rotating Cheeks Gallery)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            color: white;
+            overflow: hidden;
+            position: relative;
+            background: #4B0082; /* Indigo/Deep Violet for a grand feel */
+        }
+
+        /* Full page container for main content */
+        .container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            color: #FFD700; /* Gold */
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+            margin-bottom: 5px; /* Less margin for second line */
+            animation: pulse 2s infinite;
+        }
+        h2 {
+            font-size: 1.8em;
+            color: #FF69B4; /* Hot Pink */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Rotating Image Gallery Styles */
+        #gallery-container {
+            width: 90vw;
+            max-width: 450px; /* Adjust max-width as needed */
+            height: 60vh; /* Adjust height based on desired aspect ratio for images */
+            max-height: 450px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 0.8);
+            z-index: 12;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.6); /* Dark background for images */
+            display: flex; /* Use flex to center images if they don't fill */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-image {
+            position: absolute; /* Stack images */
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* IMPORTANT: Ensures original image is shown, no cropping */
+            border-radius: 15px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out; /* Smooth fade effect */
+        }
+        .gallery-image.active {
+            opacity: 1;
+        }
+
+        /* Dark Overlay for Quiz Pop-up */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent color */
+            z-index: 14;
+            display: none; /* Hidden by default */
+            transition: opacity 0.5s;
+        }
+
+        /* Centered Quiz styles */
+        #quiz-container {
+            position: fixed; /* Fixed position for central pop-up */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centers the box */
+            
+            padding: 25px;
+            background: rgba(255, 105, 180, 1.0); /* Solid Pink box */
+            border-radius: 15px;
+            visibility: hidden; 
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 300px;
+            box-shadow: 0 0 40px rgba(255, 105, 180, 1);
+            z-index: 15; /* Above the overlay */
+        }
+
+        #quiz-question {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        #quiz-input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 3px solid #8a2de2;
+            font-size: 1em;
+            color: #20002c;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        #quiz-submit {
+            padding: 12px 25px;
+            background: #8a2de2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+        #quiz-submit:hover {
+            background: #6a1ac7;
+        }
+
+        /* --- Emojis, Confetti, and Fireworks Animations --- */
+        .effect {
+            position: fixed;
+            font-size: 2rem;
+            animation: float linear infinite;
+            z-index: 20;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 5;
+            animation: firework 2s ease-out infinite;
+        }
+
+        @keyframes firework {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="forceAudioStart()">
+
+    <audio id="bg-audio" loop>
+        <source src="Page31.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <h1>Happy Birthday En Thangoo🤗😚</h1>
+        <h2>Cheeks Part-5</h2>
+
+        <div id="gallery-container">
+            </div>
+    </div>
+
+    <div id="overlay"></div>
+
+    <div id="quiz-container">
+        <div id="quiz-question">Sweet Bun 🤭</div>
+        <input type="text" id="quiz-input" placeholder="What's your sweet reply?" required>
+        <button id="quiz-submit" onclick="submitQuiz()">Submit & Go to Page 32 →</button>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        const quizInput = document.getElementById('quiz-input');
+        const overlay = document.getElementById('overlay');
+        const quizContainer = document.getElementById('quiz-container');
+        const galleryContainer = document.getElementById('gallery-container');
+        let audioAttempted = false;
+
+        // --- Audio Autoplay Workaround ---
+        function forceAudioStart() {
+            if (!audioAttempted) {
+                audio.play().catch(e => {
+                    console.warn("Audio autoplay blocked. User must tap.", e);
+                });
+                audioAttempted = true;
+                document.body.onclick = null;
+                document.body.ontouchstart = null;
+            }
+        }
+        document.body.ontouchstart = forceAudioStart;
+
+        // --- Image Gallery Logic ---
+        const imageFiles = [
+            'Cheek41.jpg', 'Cheek42.jpg', 'Cheek43.jpg', 'Cheek44.jpg', 'Cheek45.jpg',
+            'Cheek46.jpg', 'Cheek47.jpg', 'Cheek48.jpg', 'Cheek49.jpg', 'Cheek50.jpg'
+        ];
+        let currentImageIndex = 0;
+
+        function loadImages() {
+            imageFiles.forEach((file, index) => {
+                const img = document.createElement('img');
+                img.src = file;
+                img.alt = `Cheek image ${index + 1}`;
+                img.classList.add('gallery-image');
+                if (index === 0) {
+                    img.classList.add('active'); // First image active initially
+                }
+                galleryContainer.appendChild(img);
+            });
+        }
+
+        function rotateImages() {
+            const images = document.querySelectorAll('.gallery-image');
+            images[currentImageIndex].classList.remove('active'); // Hide current
+
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            images[currentImageIndex].classList.add('active'); // Show next
+        }
+
+        // Rotate every 3 seconds
+        const galleryInterval = setInterval(rotateImages, 3000); 
+
+        // --- Grand Animation Logic (Unchanged from Page 30) ---
+        const effects = ["💖", "✨", "❤️", "🥳", "🎁", "🎉", "⭐"];
+        const colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff69b4'];
+
+        function createEffect() {
+          const effect = document.createElement("div");
+          effect.innerText = effects[Math.floor(Math.random() * effects.length)];
+          effect.classList.add("effect");
+          effect.style.left = Math.random() * 100 + "vw";
+          effect.style.animationDuration = (8 + Math.random() * 8) + "s";
+          effect.style.fontSize = (1.5 + Math.random() * 1.5) + "rem"; 
+          effect.style.animationDelay = (-Math.random() * 8) + "s";
+          document.body.appendChild(effect);
+          setTimeout(() => { effect.remove(); }, 16000);
+        }
+        setInterval(createEffect, 300); 
+
+        function createFirework(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.left = `${x}px`;
+                firework.style.top = `${y}px`;
+                firework.style.setProperty('--x', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.setProperty('--y', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.animationDuration = `${1 + Math.random()}s`;
+                firework.style.animationDelay = `${Math.random() * 0.5}s`;
+                document.body.appendChild(firework);
+                setTimeout(() => firework.remove(), 2000);
+            }
+        }
+
+        function launchFirework() {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createFirework(x, y);
+        }
+        setInterval(launchFirework, 1500); 
+
+        // --- Quiz Timing Logic (20 seconds delay after page load) ---
+        const QUIZ_DELAY_MS = 20000; // 20 seconds delay for gallery to cycle
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadImages(); // Load images once the DOM is ready
+            setTimeout(() => {
+                clearInterval(galleryInterval); // Stop rotating images when quiz appears
+                overlay.style.display = 'block';
+                quizContainer.style.visibility = 'visible';
+                quizContainer.style.opacity = 1;
+                quizInput.focus();
+            }, QUIZ_DELAY_MS);
+        });
+
+        // --- Quiz Submission ---
+        function submitQuiz() {
+            if (quizInput.value.trim() === "") {
+                alert("Please type your sweet reply first!");
+                return; 
+            }
+            audio.pause();
+            window.location.href = "page32.html";
+        }
+    </script>
+
+</body>
+</html>
