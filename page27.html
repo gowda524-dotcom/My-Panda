@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Birthday Surprise - Page 27 (Quiz Centered)</title>
+  <title>Birthday Surprise - Page 27 (Perfect Center)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -30,7 +30,7 @@
       filter: brightness(60%);
     }
 
-    /* 2. Content Layer */
+    /* 2. Content Layer (Used for perfect centering) */
     .container {
       position: absolute;
       top: 0;
@@ -38,19 +38,14 @@
       width: 100%;
       height: 100%;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: center; /* Centers content horizontally */
+      align-items: center;    /* Centers content vertically */
       z-index: 10;
       background: rgba(0, 0, 0, 0.4);
     }
 
-    /* 3. Quiz Area FIX: Perfectly centered using absolute positioning and transform */
+    /* 3. Quiz Area FIX: Flexbox in the container handles positioning */
     .quiz-area {
-      position: absolute; 
-      top: 50%;           /* Anchor 50% from the top */
-      left: 50%;          /* Anchor 50% from the left */
-      transform: translate(-50%, -50%); /* Shift back by half its width/height to center */
-      
       padding: 30px;
       background: rgba(255, 105, 180, 0.9);
       border-radius: 15px;
@@ -61,7 +56,7 @@
       max-width: 90%;
       z-index: 15;
       
-      /* FIX: Use visibility: hidden for better timing consistency */
+      /* Visibility controls the 15-second delay appearance */
       visibility: hidden; 
       opacity: 0;
       transition: opacity 1s ease-in-out, visibility 1s; 
@@ -157,10 +152,9 @@
 
     // --- Quiz Appearance Logic (Direct after 15 seconds) ---
     function showQuizAfterDelay() {
-        // This function will run immediately on page load
         setTimeout(() => {
             console.log("15 seconds elapsed. Showing quiz.");
-            quizArea.classList.add('show'); // This triggers the visibility and opacity change
+            quizArea.classList.add('show'); 
         }, delayDuration);
     }
     
