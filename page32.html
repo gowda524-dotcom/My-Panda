@@ -1,0 +1,133 @@
+            pointer-events: none;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            opacity: 0;
+            z-index: 5;
+            animation: firework 2s ease-out infinite;
+        }
+
+        @keyframes firework {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body onclick="forceAudioStart()">
+
+    <video autoplay loop muted playsinline id="video-background">
+        <source src="Page32.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <audio id="bg-audio" loop>
+        <source src="Page32.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <h1></h1>
+    </div>
+
+    <div id="overlay"></div>
+
+    <div id="quiz-container">
+        <div id="quiz-question">Antha Siripu 🙈</div>
+        <input type="text" id="quiz-input" placeholder="Type your sweet reply here..." required>
+        <button id="quiz-submit" onclick="submitQuiz()">Submit→</button>
+    </div>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        const quizInput = document.getElementById('quiz-input');
+        const overlay = document.getElementById('overlay');
+        const quizContainer = document.getElementById('quiz-container');
+        let audioAttempted = false;
+
+        // --- Audio Autoplay Workaround ---
+        function forceAudioStart() {
+            if (!audioAttempted) {
+                audio.play().catch(e => {
+                    console.warn("Audio autoplay blocked. User must tap.", e);
+                });
+                audioAttempted = true;
+                document.body.onclick = null;
+                document.body.ontouchstart = null;
+            }
+        }
+        document.body.ontouchstart = forceAudioStart;
+
+        // --- Grand Animation Logic (Unchanged) ---
+        const effects = ["💖", "✨", "❤️", "🥳", "🎁", "🎉", "⭐"];
+        const colors = ['#ff00ff', '#ffff00', '#00ffff', '#ff69b4'];
+
+        function createEffect() {
+          const effect = document.createElement("div");
+          effect.innerText = effects[Math.floor(Math.random() * effects.length)];
+          effect.classList.add("effect");
+          effect.style.left = Math.random() * 100 + "vw";
+          effect.style.animationDuration = (8 + Math.random() * 8) + "s";
+          effect.style.fontSize = (1.5 + Math.random() * 1.5) + "rem"; 
+          effect.style.animationDelay = (-Math.random() * 8) + "s";
+          document.body.appendChild(effect);
+          setTimeout(() => { effect.remove(); }, 16000);
+        }
+        setInterval(createEffect, 300); 
+
+        function createFirework(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                firework.style.background = colors[Math.floor(Math.random() * colors.length)];
+                firework.style.left = `${x}px`;
+                firework.style.top = `${y}px`;
+                firework.style.setProperty('--x', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.setProperty('--y', `${(Math.random() - 0.5) * 400}px`);
+                firework.style.animationDuration = `${1 + Math.random()}s`;
+                firework.style.animationDelay = `${Math.random() * 0.5}s`;
+                document.body.appendChild(firework);
+                setTimeout(() => firework.remove(), 2000);
+            }
+        }
+
+        // --- Firework Generation Loop ---
+        function launchFirework() {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            createFirework(x, y);
+        }
+        setInterval(launchFirework, 1500); 
+
+        // --- Quiz Timing Logic (20 seconds delay) ---
+        const QUIZ_DELAY_MS = 20000; // 18 seconds delay
+
+        setTimeout(() => {
+            // Show overlay and quiz box
+            overlay.style.display = 'block';
+            quizContainer.style.visibility = 'visible';
+            quizContainer.style.opacity = 1;
+            quizInput.focus();
+        }, QUIZ_DELAY_MS);
+
+        // --- Quiz Submission ---
+        function submitQuiz() {
+            // Require text input before proceeding
+            if (quizInput.value.trim() === "") {
+                alert("Please type a sweet reply for your Pink Bomma first!");
+                return; 
+            }
+            audio.pause();
+            window.location.href = "page33.html";
+        }
+    </script>
+
+</body>
+</html>
