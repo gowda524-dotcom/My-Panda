@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Birthday Surprise - Page 29 (Magnetic Star Compass)</title>
+    <title>Birthday Surprise - Page 29 (Three-Stage Single-Image Compass)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
@@ -24,7 +24,7 @@
             width: 100%;
             height: 100%;
             z-index: 1;
-            background-image: url('Page29.jpg');
+            background-image: url('Page29.jpg'); /* Your Background Image */
             background-size: cover;
             background-position: center;
             filter: brightness(60%);
@@ -45,8 +45,8 @@
 
         /* Header Text */
         h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
+            font-size: 2.3em;
+            margin: 15px 0 20px 0;
             color: #ffcc00;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             z-index: 11;
@@ -62,7 +62,7 @@
             border-radius: 10px;
             z-index: 12;
             margin-bottom: 30px;
-            overflow: hidden; /* Keep star within bounds */
+            overflow: hidden; 
         }
 
         #target-photo {
@@ -70,8 +70,7 @@
             height: 100%;
             object-fit: contain; /* CRUCIAL: show original image uncropped */
             border-radius: 10px;
-            background: #000; /* Black background behind image */
-            transition: opacity 0.5s;
+            background: #000;
         }
 
         #stage-indicator {
@@ -89,16 +88,15 @@
         /* The Magnetic Star */
         #magnetic-star {
             position: absolute;
-            font-size: 4rem; /* Big star */
-            color: #ffeb3b; /* Yellow star */
-            text-shadow: 0 0 15px #ff00ff, 0 0 20px #ff00ff; /* Pink glow */
-            z-index: 25; /* On top of everything */
-            /* Initial position - set by JS */
+            font-size: 4rem;
+            color: #ffeb3b;
+            text-shadow: 0 0 15px #ff00ff, 0 0 20px #ff00ff;
+            z-index: 25;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); /* Centered initially */
-            pointer-events: none; /* Don't block clicks on the button */
-            transition: transform 0.1s linear; /* Smooth movement */
+            transform: translate(-50%, -50%); 
+            pointer-events: none;
+            transition: transform 0.1s linear; 
         }
         
         #stop-button {
@@ -119,7 +117,7 @@
             font-size: 1.2em;
             font-weight: bold;
             color: #ffeb3b;
-            visibility: hidden;
+            min-height: 25px; /* Prevent jumping */
             text-shadow: 1px 1px 2px #000;
         }
 
@@ -149,7 +147,7 @@
         <h1>Unkita Ennaku Romba Pudcha Place la Star ha stop Pannu 🥰</h1>
 
         <div id="game-area">
-            <img id="target-photo" src="Target_A.jpg" alt="Puzzle Image">
+            <img id="target-photo" src="TargetPhoto.jpg" alt="Cherished Memory">
             <div id="stage-indicator">Stage 1 of 3</div>
             
             <div id="magnetic-star">⭐</div>
@@ -177,31 +175,24 @@
         document.body.ontouchstart = forceAudioStart;
 
         // --- Game Setup (CRITICAL: REPLACE PLACEHOLDER VALUES) ---
-        // x, y are percentages from top-left of the game-area (0-100)
-        // angle is the current angle of rotation the star is on its orbit (0-360)
+        // targetAngle is the angle (0-360) that points to the spot. 0/360=Up, 90=Right, 180=Down, 270=Left.
         const stages = [
-            { id: 1, src: "Target_A.jpg", targetX: 70, targetY: 20, targetAngle: 300, hint: "Look at her beautiful hair accessory!" }, // **REPLACE values**
-            { id: 2, src: "Target_B.jpg", targetX: 30, targetY: 80, targetAngle: 120, hint: "Where are her hands placed?" },       // **REPLACE values**
-            { id: 3, src: "Target_C.jpg", targetX: 50, targetY: 50, targetAngle: 45, hint: "Focus on her radiant smile!" }         // **REPLACE values**
+            { id: 1, targetAngle: 30, hint: "The first flower she gave me" },   // **REPLACE 30**
+            { id: 2, targetAngle: 180, hint: "The spot where my hand rested" }, // **REPLACE 180**
+            { id: 3, targetAngle: 250, hint: "The corner of her beautiful smile" } // **REPLACE 250**
         ];
         
-        const POSITION_TOLERANCE = 10; // +/- 10% for X and Y coordinates
-        const ANGLE_TOLERANCE = 30;    // +/- 30 degrees for rotation (makes it easier)
-        const ORBIT_RADIUS_X = 40;     // Max horizontal distance from center (%)
-        const ORBIT_RADIUS_Y = 30;     // Max vertical distance from center (%)
-        const ORBIT_SPEED = 0.05;      // How fast the star orbits (smaller = slower)
-
+        const ANGLE_TOLERANCE = 15; // +/- 15 degrees accuracy
+        const ORBIT_SPEED = 0.02;   // SLOWED DOWN: How fast the star orbits (smaller = slower)
+        const ORBIT_RADIUS = 50;    // Max distance from center (50% = full edge-to-edge sweep)
+        
         let currentStageIndex = 0;
         let isStopped = false;
         let animationFrameId;
-        let currentOrbitAngle = 0; // Current angle in the star's orbit
-        let currentStarX = 50;
-        let currentStarY = 50;
+        let currentOrbitAngle = 0; // Current angle for star's position
 
         // --- DOM Elements ---
-        const gameArea = document.getElementById('game-area');
         const magneticStar = document.getElementById('magnetic-star');
-        const targetPhoto = document.getElementById('target-photo');
         const stopButton = document.getElementById('stop-button');
         const stageIndicator = document.getElementById('stage-indicator');
         const resultMessage = document.getElementById('result-message');
@@ -213,17 +204,22 @@
 
             currentOrbitAngle += ORBIT_SPEED;
             if (currentOrbitAngle >= Math.PI * 2) {
-                currentOrbitAngle -= Math.PI * 2; // Keep angle within 0-2PI
+                currentOrbitAngle -= Math.PI * 2;
             }
 
-            // Calculate star's position for an elliptical orbit
-            currentStarX = 50 + ORBIT_RADIUS_X * Math.cos(currentOrbitAngle);
-            currentStarY = 50 + ORBIT_RADIUS_Y * Math.sin(currentOrbitAngle + Math.PI / 4); // Offset for varied path
+            // Calculate star's position based on its angle and radius (circular orbit for maximum sweep)
+            // The position is defined by the angle (currentOrbitAngle) and the distance (ORBIT_RADIUS).
+            const x = 50 + ORBIT_RADIUS * Math.sin(currentOrbitAngle);
+            const y = 50 + ORBIT_RADIUS * Math.cos(currentOrbitAngle);
 
             // Apply position and rotation
-            magneticStar.style.left = `${currentStarX}%`;
-            magneticStar.style.top = `${currentStarY}%`;
-            magneticStar.style.transform = `translate(-50%, -50%) rotate(${currentOrbitAngle * (180/Math.PI)}deg)`;
+            magneticStar.style.left = `${x}%`;
+            magneticStar.style.top = `${y}%`;
+            
+            // To make the star point outward, we set its rotation based on its position angle
+            // The target angle (0/360 = UP) corresponds to currentOrbitAngle (cos=1, sin=0 at 0)
+            const rotationDegree = currentOrbitAngle * (180/Math.PI);
+            magneticStar.style.transform = `translate(-50%, -50%) rotate(${rotationDegree}deg)`;
             
             animationFrameId = requestAnimationFrame(animateStar);
         }
@@ -236,36 +232,37 @@
             
             const currentStage = stages[currentStageIndex];
             
-            // 1. Check position
-            const posXCorrect = currentStarX >= (currentStage.targetX - POSITION_TOLERANCE) && 
-                                currentStarX <= (currentStage.targetX + POSITION_TOLERANCE);
-            const posYCorrect = currentStarY >= (currentStage.targetY - POSITION_TOLERANCE) && 
-                                currentStarY <= (currentStage.targetY + POSITION_TOLERANCE);
+            // 1. Calculate the star's current pointing angle
+            // currentOrbitAngle is in radians. Convert to degrees and normalize (0-360)
+            let currentAngle = (currentOrbitAngle * (180/Math.PI)) % 360;
             
-            // 2. Check rotation (can be optional if only position matters)
-            const starRotation = currentOrbitAngle * (180/Math.PI);
+            // Normalize to a compass angle where 0 is Up/North (This adjustment matches the Math.cos/sin use)
+            currentAngle = 360 - currentAngle;
+            if (currentAngle < 0) currentAngle += 360;
+            if (currentAngle > 360) currentAngle -= 360;
+
+
+            // 2. Check the angle against the target
             const target = currentStage.targetAngle;
             const lowerBound = target - ANGLE_TOLERANCE;
             const upperBound = target + ANGLE_TOLERANCE;
 
-            let rotCorrect = false;
+            let isCorrect = false;
+            // Robust check for angle wrap-around (e.g., target 10 degrees, tolerance 15 degrees, check 355 to 25)
             if (lowerBound < 0) {
-                rotCorrect = (starRotation >= lowerBound + 360 || starRotation <= upperBound);
+                isCorrect = (currentAngle >= lowerBound + 360 || currentAngle <= upperBound);
             } else if (upperBound > 360) {
-                rotCorrect = (starRotation >= lowerBound || starRotation <= upperBound - 360);
+                isCorrect = (currentAngle >= lowerBound || currentAngle <= upperBound - 360);
             } else {
-                rotCorrect = (starRotation >= lowerBound && starRotation <= upperBound);
+                isCorrect = (currentAngle >= lowerBound && currentAngle <= upperBound);
             }
-
-            // Determine if the combination is correct
-            const isCorrect = posXCorrect && posYCorrect && rotCorrect;
 
 
             if (isCorrect) {
-                stopButton.innerText = "Target FOUND! Moving to next spot...";
-                resultMessage.style.visibility = 'visible';
-                resultMessage.style.color = '#ffeb3b';
-                resultMessage.innerText = `Direction found for Stage ${currentStage.id}!`;
+                magneticStar.style.color = '#00ff00'; // Success color
+                stopButton.innerText = `Target ${currentStage.id} FOUND! Loading next...`;
+                resultMessage.style.color = '#00ff00';
+                resultMessage.innerText = `Yes! That's our special spot for Stage ${currentStage.id}!`;
                 
                 // Advance to the next stage or finish
                 setTimeout(() => {
@@ -275,22 +272,21 @@
                     } else {
                         // All stages complete!
                         stopButton.disabled = true;
-                        stopButton.innerText = "All Targets Complete!";
-                        resultMessage.innerText = "Our love's path is complete. Moving to the final page...";
+                        stopButton.innerText = "All Targets Complete! 🔓";
+                        resultMessage.innerText = "Our love's path is complete. Moving to the final message!";
                         
                         audio.pause();
                         window.location.href = "page30.html";
                     }
                 }, 2000);
             } else {
-                resultMessage.style.visibility = 'visible';
+                magneticStar.style.color = '#ffeb3b'; // Reset color
                 resultMessage.style.color = 'red';
-                resultMessage.innerText = `Not quite there! Hint: ${currentStage.hint}`;
+                resultMessage.innerText = `Angle ${currentAngle.toFixed(0)}°. Incorrect. Try again! Hint: ${currentStage.hint}`;
                 
                 // Allow user to try again after a brief pause
                 setTimeout(() => {
                     isStopped = false;
-                    resultMessage.style.visibility = 'hidden';
                     resultMessage.style.color = '#ffeb3b';
                     stopButton.innerText = "Stop Star";
                     animateStar(); // Restart animation
@@ -305,25 +301,18 @@
             isStopped = false;
             stopButton.disabled = false;
             stopButton.innerText = "Stop Star";
+            magneticStar.style.color = '#ffeb3b'; // Reset color
             stageIndicator.innerText = `Stage ${nextStage.id} of 3`;
-            resultMessage.innerText = `Align the ⭐ with the most special spot in the photo! Hint: ${nextStage.hint}`;
+            resultMessage.innerText = `Find the next spot. Hint: ${nextStage.hint}`;
             
-            // 2. Change Image (with a fade effect)
-            targetPhoto.style.opacity = 0.3;
-            setTimeout(() => {
-                targetPhoto.src = nextStage.src;
-                targetPhoto.alt = `Puzzle Image Stage ${nextStage.id}`;
-                targetPhoto.style.opacity = 1;
-                animateStar(); // Restart animation for new stage
-            }, 500);
+            animateStar(); // Restart animation for new stage
         }
 
         // Initialize the first stage on load
         document.addEventListener('DOMContentLoaded', () => {
-             targetPhoto.src = stages[0].src; // Ensure first image is loaded
-             resultMessage.innerText = `Align the ⭐ with the most special spot in the photo! Hint: ${stages[0].hint}`;
-             resultMessage.style.visibility = 'visible';
-             animateStar(); // Start the star animation
+             // Set the initial message and start the star
+             resultMessage.innerText = `Find the first spot. Hint: ${stages[0].hint}`;
+             animateStar(); 
         });
 
 
