@@ -13,10 +13,10 @@
             color: white;
             overflow: hidden;
             position: relative;
-            background: #000033; /* Deep celebratory blue/purple */
+            background: #000033;
         }
 
-        /* Full Screen Video Background */
+        /* 1. Full Screen Video Background */
         #video-background {
             position: fixed;
             top: 0;
@@ -25,10 +25,10 @@
             height: 100%;
             object-fit: cover;
             z-index: 1;
-            filter: brightness(70%); /* Keeps the content readable */
+            filter: brightness(70%);
         }
 
-        /* Main Content Container */
+        /* 2. Main Content Container */
         .container {
             position: absolute;
             top: 0;
@@ -44,7 +44,7 @@
 
         h1 {
             font-size: 2.8em;
-            color: #ffcc00; /* Gold */
+            color: #ffcc00;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
             margin-bottom: 20px;
             animation: pulse 2s infinite;
@@ -56,22 +56,38 @@
             100% { transform: scale(1); }
         }
 
-        /* Quiz styles */
+        /* 3. Dark Overlay for Quiz Pop-up */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent color */
+            z-index: 14;
+            display: none; /* Hidden by default */
+            transition: opacity 0.5s;
+        }
+
+        /* 4. Centered Quiz styles */
         #quiz-container {
-            margin-top: 20px;
+            position: fixed; /* Fixed position for central pop-up */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centers the box */
+            
             padding: 25px;
-            background: rgba(255, 105, 180, 0.9); /* Pink semi-transparent box */
+            background: rgba(255, 105, 180, 1.0); /* Solid Pink box */
             border-radius: 15px;
-            visibility: hidden; /* Start hidden */
+            visibility: hidden; 
             opacity: 0;
             transition: opacity 1s ease-in-out;
             display: flex;
             flex-direction: column;
             gap: 15px;
             max-width: 300px;
-            color: black;
             box-shadow: 0 0 40px rgba(255, 105, 180, 1);
-            z-index: 15; /* Ensure it floats over other content */
+            z-index: 15; /* Above the overlay */
         }
 
         #quiz-question {
@@ -84,7 +100,7 @@
         #quiz-input {
             padding: 12px;
             border-radius: 8px;
-            border: 3px solid #8a2de2; /* Purple border */
+            border: 3px solid #8a2de2;
             font-size: 1em;
             color: #20002c;
             width: 90%;
@@ -93,7 +109,7 @@
 
         #quiz-submit {
             padding: 12px 25px;
-            background: #8a2de2; /* Purple submit button */
+            background: #8a2de2;
             color: white;
             border: none;
             border-radius: 8px;
@@ -150,17 +166,21 @@
 
     <div class="container">
         <h1>HAPPY BIRTHDAY MY LOVE!</h1>
+    </div>
 
-        <div id="quiz-container">
-            <div id="quiz-question">Azhagu Pink 🩷 Bomma🙈</div>
-            <input type="text" id="quiz-input" placeholder="Type your sweet reply here..." required>
-            <button id="quiz-submit" onclick="submitQuiz()">Submit & Go to Page 31 →</button>
-        </div>
+    <div id="overlay"></div>
+
+    <div id="quiz-container">
+        <div id="quiz-question">Azhagu Pink 🩷 Bomma🙈</div>
+        <input type="text" id="quiz-input" placeholder="Type your sweet reply here..." required>
+        <button id="quiz-submit" onclick="submitQuiz()">Submit & Go to Page 31 →</button>
     </div>
 
     <script>
         const audio = document.getElementById('bg-audio');
         const quizInput = document.getElementById('quiz-input');
+        const overlay = document.getElementById('overlay');
+        const quizContainer = document.getElementById('quiz-container');
         let audioAttempted = false;
 
         // --- Audio Autoplay Workaround ---
@@ -221,10 +241,11 @@
         const QUIZ_DELAY_MS = 18000; // 18 seconds delay
 
         setTimeout(() => {
-            const quizContainer = document.getElementById('quiz-container');
+            // Show overlay and quiz box
+            overlay.style.display = 'block';
             quizContainer.style.visibility = 'visible';
             quizContainer.style.opacity = 1;
-            quizInput.focus(); // Auto-focus on the input for ease of use
+            quizInput.focus();
         }, QUIZ_DELAY_MS);
 
         // --- Quiz Submission ---
