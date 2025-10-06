@@ -102,7 +102,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 50; /* Ensure it's on top of everything */
+            z-index: 100; /* FIX: Critical Z-INDEX to ensure it's tappable above confetti/fireworks */
             background: rgba(255, 192, 203, 0.95); /* Pink Background */
             padding: 30px;
             border-radius: 20px;
@@ -157,7 +157,7 @@
         .floating-emoji, .confetti-fall {
             position: fixed; 
             pointer-events: none;
-            z-index: 1; 
+            z-index: 1; /* Note: Lower than quiz z-index */
         }
         
         @keyframes float {
@@ -188,7 +188,7 @@
             box-shadow: 0 0 10px #FFD700, 0 0 20px #ff0;
             animation: fireworkBurst 1s forwards ease-out;
             opacity: 0;
-            z-index: 5;
+            z-index: 5; /* Note: Lower than quiz z-index */
         }
 
         @keyframes fireworkBurst {
@@ -248,9 +248,7 @@
             musicTrigger.addEventListener('click', startContent, { once: true }); 
             
             music.volume = 0; 
-            music.play().then(startContent).catch(e => {
-                console.log("Music blocked by browser. User must click anywhere to start.");
-            });
+            music.play().then(startContent).catch(e => {});
 
             // --- 2. Photo Slideshow Setup ---
             const PHOTO_TRANSITION_INTERVAL = 3000; // 3 seconds per photo
