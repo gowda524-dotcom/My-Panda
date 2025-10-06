@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page 31: Cheeks Part 5 - Rotating Gallery</title>
+    <title>Page 31: Cheeks Part 5 - Slideshow Gallery</title>
     
     <style>
         /* --- General Setup & Theme --- */
@@ -14,14 +14,13 @@
             background: linear-gradient(135deg, #0a011a 0%, #30034a 100%); 
             display: flex;
             flex-direction: column;
-            justify-content: flex-start; /* Start from top for headers */
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             color: white;
             text-align: center;
             position: relative; 
-            overflow-x: hidden; 
-            overflow-y: auto; /* Allow scrolling for content if needed */
+            overflow: hidden; /* Hide overflow for clean confetti/fireworks */
         }
 
         /* --- Music Autoplay Trigger --- */
@@ -41,7 +40,7 @@
             position: relative;
             z-index: 20; 
             padding-top: 30px;
-            margin-bottom: 30px; /* Space between text and gallery */
+            margin-bottom: 20px;
         }
 
         #main-header {
@@ -58,94 +57,103 @@
             margin-bottom: 20px;
         }
 
-        /* --- Rotating Photo Gallery --- */
+        /* --- Photo Slideshow Container --- */
         #gallery-container {
             position: relative;
             z-index: 10;
-            width: 90vw;
-            max-width: 800px;
-            height: 300px; /* Fixed height for the gallery viewport */
-            margin: 20px 0 50px 0;
-            overflow: hidden; /* Crucial for hiding photos outside the view */
+            width: 80vw;
+            max-width: 450px; /* Max size for a centered portrait photo */
+            height: 60vh; /* Fixed height for display */
+            margin: 20px 0;
+            overflow: hidden;
             border-radius: 20px;
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
         }
-
-        #photo-carousel {
-            display: flex;
-            height: 100%; /* Photos take up full height of container */
-            transition: transform 0.5s ease-in-out; /* Smooth scrolling transition */
-            will-change: transform; /* Optimize for animation */
-        }
-
+        
+        /* Individual Photos in Slideshow */
         .gallery-item {
-            flex: 0 0 auto; /* Do not grow, do not shrink, use auto width */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            opacity: 0; /* Start hidden */
+            transition: opacity 1s ease-in-out;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 10px; /* Spacing between photos */
-            background: rgba(0,0,0,0.3); /* Placeholder background */
-            border-radius: 10px;
-            overflow: hidden; /* Ensure image fits */
+        }
+
+        .gallery-item.active {
+            opacity: 1; /* Current photo is visible */
         }
 
         .gallery-item img {
-            height: 100%; /* Fill the height */
-            width: auto; /* Maintain aspect ratio */
-            object-fit: contain; /* Ensure entire image is visible, no cropping */
-            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain; /* CRUCIAL: Keeps image uncropped and original aspect ratio */
         }
 
-        /* --- Quiz Area --- */
+        /* --- Quiz Area (The Central Modal) --- */
         #quiz-section {
-            position: relative;
-            z-index: 20;
-            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50; /* Ensure it's on top of everything */
+            background: rgba(255, 192, 203, 0.95); /* Pink Background */
             padding: 30px;
-            border-radius: 15px;
-            margin-top: 40px;
-            margin-bottom: 50px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 500px;
+            max-width: 400px;
             display: none; /* Starts hidden */
             flex-direction: column;
             align-items: center;
+            box-shadow: 0 0 40px #FFC0CB, 0 0 20px white;
+            animation: popIn 0.5s forwards;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
         #quiz-label {
-            font-size: 2em;
-            color: #FFD700;
+            font-size: 2.5em;
+            color: #8A2BE2; /* Blue-Violet for contrast */
+            font-weight: bold;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px #FFD700;
+            text-shadow: 1px 1px 2px white;
         }
 
         #text-input {
-            padding: 15px;
-            width: 80%;
+            padding: 12px;
+            width: 90%;
             border-radius: 10px;
-            border: 3px solid #FFC0CB;
-            font-size: 1.2em;
+            border: 2px solid #FF69B4;
+            font-size: 1.1em;
             margin-bottom: 20px;
             text-align: center;
-            background: #220044;
-            color: white;
+            background: #FFFFFF;
+            color: #333;
         }
 
         #submit-button {
-            padding: 15px 30px;
-            font-size: 1.5em;
+            padding: 12px 25px;
+            font-size: 1.3em;
             font-weight: bold;
-            background-color: #4CAF50; 
+            background-color: #FF69B4; /* Hot Pink Submit Button */
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 0 25px #4CAF50, 0 0 40px rgba(76, 175, 80, 0.6);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             transition: background-color 0.3s;
         }
 
-        /* --- Grand Effects CSS --- */
+        /* --- Grand Effects CSS (Same as previous, high density) --- */
         .floating-emoji, .confetti-fall {
             position: fixed; 
             pointer-events: none;
@@ -201,9 +209,7 @@
     </div>
     
     <div id="gallery-container">
-        <div id="photo-carousel">
-            </div>
-    </div>
+        </div>
 
     <div id="quiz-section">
         <p id="quiz-label">Sweet Bun 🤭</p>
@@ -218,14 +224,13 @@
             const body = document.body;
             const music = document.getElementById('bgMusic');
             const musicTrigger = document.getElementById('music-trigger');
-            const photoCarousel = document.getElementById('photo-carousel');
+            const galleryContainer = document.getElementById('gallery-container');
             const quizSection = document.getElementById('quiz-section');
             const quizForm = document.getElementById('quiz-form');
             
             let musicStarted = false;
             let currentPhotoIndex = 0;
-            let photoFiles = [];
-
+            
             // --- 1. Music Autoplay and Start Logic ---
             const startContent = () => {
                 if (!musicStarted) {
@@ -237,7 +242,7 @@
                         console.error("Music playback failed:", e);
                     });
                 }
-                startPhotoRotation(); // Start rotation after music/user interaction
+                startPhotoSlideshow(); // Start slideshow after music/user interaction
             };
 
             musicTrigger.addEventListener('click', startContent, { once: true }); 
@@ -247,72 +252,63 @@
                 console.log("Music blocked by browser. User must click anywhere to start.");
             });
 
-            // --- 2. Photo Gallery Setup ---
-            // Generate file names for the 10 photos (Cheek41.jpg to Cheek50.jpg)
+            // --- 2. Photo Slideshow Setup ---
+            const PHOTO_TRANSITION_INTERVAL = 3000; // 3 seconds per photo
+            const photoFiles = [];
             for (let i = 41; i <= 50; i++) {
-                // ASSUMPTION: Files are named Cheek41.jpg to Cheek50.jpg
-                // CHANGE '.jpg' if your files have a different extension (e.g., .png or .jpeg)
-                photoFiles.push(`Cheek${i}.jpg`);
+                // IMPORTANT: Change '.jpg' if your files have a different extension
+                photoFiles.push(`Cheek${i}.jpg`); 
             }
 
-            // Populate the carousel with images
+            // Populate the container with images
             photoFiles.forEach(fileName => {
                 const galleryItem = document.createElement('div');
                 galleryItem.classList.add('gallery-item');
                 galleryItem.innerHTML = `<img src="${fileName}" alt="Cheeks Part 5 Photo">`;
-                photoCarousel.appendChild(galleryItem);
+                galleryContainer.appendChild(galleryItem);
             });
 
             const galleryItems = document.querySelectorAll('.gallery-item');
-            const PHOTO_TRANSITION_INTERVAL = 3000; // 3 seconds per photo
-            let rotationInterval;
 
-            // --- 3. Horizontal Photo Rotation Logic ---
-            function startPhotoRotation() {
-                // Dynamically set the width of the carousel to hold all photos for smooth scrolling
-                // This is a bit tricky with object-fit: contain; as image width varies.
-                // We'll approximate or use individual image widths if they were loaded.
-                // For simplicity, let's assume average photo width + margin.
-                const itemWidth = galleryItems[0].offsetWidth || 300; // Fallback width
-                const totalWidth = (itemWidth + 20) * photoFiles.length; // itemWidth + margin
-                photoCarousel.style.width = `${totalWidth}px`;
+            function showSlide(index) {
+                // Deactivate all
+                galleryItems.forEach(item => item.classList.remove('active'));
+                // Activate the current one
+                galleryItems[index].classList.add('active');
+            }
 
+            function startPhotoSlideshow() {
+                // Show the first slide immediately
+                showSlide(currentPhotoIndex);
+                
+                const slideshowInterval = setInterval(() => {
+                    currentPhotoIndex++;
 
-                rotationInterval = setInterval(() => {
-                    currentPhotoIndex = (currentPhotoIndex + 1) % photoFiles.length;
-                    
-                    // Calculate the scroll position based on currentPhotoIndex
-                    // We need to scroll to the center of the current photo in the viewport
-                    const scrollOffset = galleryItems[currentPhotoIndex].offsetLeft - 
-                                         (galleryItems[currentPhotoIndex].parentNode.offsetWidth / 2) + 
-                                         (galleryItems[currentPhotoIndex].offsetWidth / 2);
-
-                    photoCarousel.parentNode.scrollTo({
-                        left: scrollOffset,
-                        behavior: 'smooth'
-                    });
-
-                    // If we've cycled through all photos once, show the quiz
-                    if (currentPhotoIndex === 0 && rotationInterval) {
-                        clearInterval(rotationInterval); // Stop rotation
-                        rotationInterval = null; // Clear the interval ID
+                    if (currentPhotoIndex < photoFiles.length) {
+                        showSlide(currentPhotoIndex);
+                    } else {
+                        // All photos have been shown
+                        clearInterval(slideshowInterval);
+                        // Show the quiz section after the slideshow is complete
                         setTimeout(() => {
+                            // Ensure the last image remains visible behind the quiz modal
+                            galleryItems[photoFiles.length - 1].classList.add('active'); 
                             quizSection.style.display = 'flex';
-                            quizSection.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                        }, 1000); // Small delay before showing quiz
+                        }, 1000); // 1 second delay after last image transition
                     }
                 }, PHOTO_TRANSITION_INTERVAL);
             }
-
-            // --- 4. Quiz Navigation ---
+            
+            // --- 3. Quiz Navigation ---
             quizForm.addEventListener('submit', (e) => {
                 e.preventDefault(); 
                 if (music) music.pause();
+                // Submitting any text moves to the next page
                 window.location.href = 'page32.html'; 
             });
 
 
-            // --- 5. Grand Effects (Floating Emojis, Confetti, Fireworks) ---
+            // --- 4. Grand Effects (Floating Emojis, Confetti, Fireworks) ---
             const confettiColors = ['#FF69B4', '#FFD700', '#FFFFFF', '#FF00FF', '#4CAF50', '#8A2BE2', '#FF1493'];
             const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
             
