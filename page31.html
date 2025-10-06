@@ -20,7 +20,7 @@
             color: white;
             text-align: center;
             position: relative; 
-            overflow: hidden; /* Hide overflow for clean confetti/fireworks */
+            overflow: hidden; 
         }
 
         /* --- Music Autoplay Trigger --- */
@@ -46,14 +46,14 @@
         #main-header {
             font-size: 3.5em;
             font-weight: 900;
-            color: #FFD700; /* Gold */
+            color: #FFD700; 
             text-shadow: 0 0 15px #FFD700, 0 0 30px rgba(255, 255, 255, 0.8);
             margin-bottom: 5px;
         }
 
         #sub-header {
             font-size: 2em;
-            color: #FFC0CB; /* Pink */
+            color: #FFC0CB; 
             margin-bottom: 20px;
         }
 
@@ -70,7 +70,6 @@
             box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
         }
         
-        /* Individual Photos in Slideshow */
         .gallery-item {
             position: absolute;
             top: 0;
@@ -93,7 +92,7 @@
             max-height: 100%;
             width: auto;
             height: auto;
-            object-fit: contain; /* CRUCIAL: Keeps image uncropped and original aspect ratio */
+            object-fit: contain; 
         }
 
         /* --- Quiz Area (The Central Modal) --- */
@@ -102,8 +101,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 1000; /* ULTRA HIGH Z-INDEX to guarantee it's on top */
-            background: rgba(255, 192, 203, 0.95); /* Pink Background */
+            /* z-index will be set by JS on show, but CSS provides a default stacking context */
+            background: rgba(255, 192, 203, 0.95); 
             padding: 30px;
             border-radius: 20px;
             width: 90%;
@@ -113,8 +112,7 @@
             align-items: center;
             box-shadow: 0 0 40px #FFC0CB, 0 0 20px white;
             animation: popIn 0.5s forwards;
-            /* CRITICAL FIX: Ensure the quiz box itself captures events */
-            pointer-events: auto; 
+            pointer-events: auto; /* Essential: Ensures the box itself is clickable */
         }
 
         @keyframes popIn {
@@ -233,6 +231,7 @@
             
             let musicStarted = false;
             let currentPhotoIndex = 0;
+            let effectIntervals = []; // Array to hold interval IDs for effects
             
             // --- 1. Music Autoplay and Start Logic ---
             const startContent = () => {
@@ -245,6 +244,7 @@
                         console.error("Music playback failed:", e);
                     });
                 }
+                startGrandEffects(); // Start effects immediately
                 startPhotoSlideshow(); // Start slideshow after music/user interaction
             };
 
@@ -257,7 +257,6 @@
             const PHOTO_TRANSITION_INTERVAL = 3000; // 3 seconds per photo
             const photoFiles = [];
             for (let i = 41; i <= 50; i++) {
-                // IMPORTANT: Change '.jpg' if your files have a different extension
                 photoFiles.push(`Cheek${i}.jpg`); 
             }
 
@@ -272,14 +271,17 @@
             const galleryItems = document.querySelectorAll('.gallery-item');
 
             function showSlide(index) {
-                // Deactivate all
                 galleryItems.forEach(item => item.classList.remove('active'));
-                // Activate the current one
                 galleryItems[index].classList.add('active');
             }
 
+            function stopGrandEffects() {
+                effectIntervals.forEach(clearInterval); // Stop all running effect intervals
+                // Optionally remove existing effect elements from the DOM if performance is a concern
+                document.querySelectorAll('.floating-emoji, .confetti-fall, .firework').forEach(el => el.remove());
+            }
+
             function startPhotoSlideshow() {
-                // Show the first slide immediately
                 showSlide(currentPhotoIndex);
                 
                 const slideshowInterval = setInterval(() => {
@@ -290,10 +292,12 @@
                     } else {
                         // All photos have been shown
                         clearInterval(slideshowInterval);
+                        
                         // Show the quiz section after the slideshow is complete
                         setTimeout(() => {
-                            galleryItems[photoFiles.length - 1].classList.add('active'); 
+                            stopGrandEffects(); // CRITICAL: Stop effects to ensure no interference
                             quizSection.style.display = 'flex';
+                            quizSection.style.zIndex = '1000'; // CRITICAL: Force high z-index via JS
                         }, 1000); // 1 second delay after last image transition
                     }
                 }, PHOTO_TRANSITION_INTERVAL);
@@ -303,16 +307,14 @@
             quizForm.addEventListener('submit', (e) => {
                 e.preventDefault(); 
                 if (music) music.pause();
-                // Submitting any text moves to the next page
                 window.location.href = 'page32.html'; 
             });
 
 
-            // --- 4. Grand Effects (Floating Emojis, Confetti, Fireworks) ---
+            // --- 4. Grand Effects Initialization ---
             const confettiColors = ['#FF69B4', '#FFD700', '#FFFFFF', '#FF00FF', '#4CAF50', '#8A2BE2', '#FF1493'];
             const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
             
-            setInterval(createFloatingEmoji, 300); 
             function createFloatingEmoji() {
                 const emoji = document.createElement('span');
                 emoji.classList.add('floating-emoji');
@@ -327,7 +329,6 @@
                 setTimeout(() => emoji.remove(), 20000);
             }
 
-            setInterval(createConfettiPiece, 200); 
             function createConfettiPiece() {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti-fall');
@@ -347,7 +348,6 @@
                 setTimeout(() => confetti.remove(), 25000); 
             }
 
-            setInterval(createFirework, 1500); 
             function createFirework() {
                 const firework = document.createElement('div');
                 firework.classList.add('firework');
@@ -359,8 +359,7 @@
                 const particleCount = Math.floor(Math.random() * 10) + 10; 
                 for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
-                    // particle does NOT have pointer-events: none, so it inherits from parent
-                    particle.classList.add('firework-particle'); 
+                    particle.classList.add('firework-particle');
                     particle.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
                     particle.style.width = `${Math.random() * 5 + 2}px`;
                     particle.style.height = particle.style.width;
@@ -392,6 +391,12 @@
                     firework.style.opacity = 0; 
                     setTimeout(() => firework.remove(), 500); 
                 }, (Math.random() * 0.8 + 0.7) * 1000); 
+            }
+
+            function startGrandEffects() {
+                effectIntervals.push(setInterval(createFloatingEmoji, 300));
+                effectIntervals.push(setInterval(createConfettiPiece, 200));
+                effectIntervals.push(setInterval(createFirework, 1500));
             }
         });
     </script>
