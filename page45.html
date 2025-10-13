@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 44: The Grand Finale Letter</title>
+    
+    <style>
+        /* --- General Setup & Theme --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif; 
+            background: radial-gradient(circle, #5e0279 0%, #1e003a 100%); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            text-align: center;
+            position: relative; 
+            overflow: hidden; 
+        }
+
+        /* --- Letter Form Modal (INSTANT POP-UP, Clickable) --- */
+        #letter-form-modal {
+            position: fixed; 
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; 
+            background: rgba(255, 20, 147, 0.98); 
+            padding: 35px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 550px;
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 0 40px #FFD700, 0 0 20px white;
+            animation: popIn 0.5s forwards;
+            pointer-events: auto; /* Ensures inputs are responsive */
+            color: white; 
+        }
+        
+        @keyframes popIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        #form-label {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #FFFF00;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            text-shadow: 1px 1px 2px #333;
+        }
+        
+        #form-label strong {
+            font-size: 1.3em;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 900;
+            color: #FFFFFF;
+        }
+
+        #letter-content {
+            width: 95%;
+            height: 200px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 3px solid #FFFFFF;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            resize: none;
+            background: #FFF0F5;
+            color: #333;
+        }
+
+        #send-button {
+            padding: 15px 35px;
+            font-size: 1.5em;
+            font-weight: bold;
+            background-color: #00FF7F; 
+            color: #1a003a;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+
+        /* --- Grand Effects CSS (Run Continuously) --- */
+        .floating-emoji, .confetti-fall, .firework, .firework-particle {
+            position: fixed; 
+            z-index: 1; 
+            pointer-events: none; 
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh); opacity: 0; } 
+            50% { transform: translateY(50vh) rotate(15deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(-15deg); opacity: 0; }
+        }
+        
+        .floating-emoji {
+            font-size: 2.5em; 
+            animation: float 10s linear infinite; 
+        }
+        
+        @keyframes confetti-fall-slow {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti-fall {
+            animation: confetti-fall-slow 15s linear infinite;
+        }
+        
+        .floating-emoji, .confetti-fall {
+            z-index: 5;
+        }
+        
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" src="Page44.mp3" loop preload="auto"></audio>
+
+    <div id="letter-form-modal">
+        <p id="form-label">
+            <strong>  💎</strong>
+            "This entire birthday journey was a reflection of you. Now, it's your turn. Indha letter la Namma Friendship ha pathi eluthu...Apro Unaku Enkita Pudchathu..Pudikathathu...Ni Enna Thitanum nalum Ethula Nalla thitiko...Ni ethula enna venalu Type panniko ...unnoda istam ...Let your words be a true reflection of our bond. (Please write more than 100 words to make it count!)"
+        </p>
+        
+        <form id="final-letter-form" action="https://formspree.io/f/xanppggz" method="POST">
+            <input type="hidden" name="_subject" value="A Birthday Letter from Your Bestest Friend! 💌">
+            <textarea id="letter-content" name="Letter_Content" placeholder="Your heartfelt message here (Must be over 100 words)..." required></textarea>
+            <input type="text" name="Sender_Name" placeholder="Your Name (Optional)" style="width:95%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: none;">
+            <button type="submit" id="send-button">
+                Submit 📬
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const music = document.getElementById('bgMusic');
+            const finalLetterForm = document.getElementById('final-letter-form');
+            
+            let musicStarted = false;
+            let effectIntervals = []; 
+
+            // --- 1. Music Autoplay and Effects Start ---
+            const startContent = () => {
+                if (!musicStarted) {
+                    music.volume = 0.6; 
+                    music.play().then(() => {
+                        musicStarted = true;
+                    }).catch(e => {
+                        console.error("Music playback failed:", e);
+                    });
+                }
+                startGrandEffects();
+            };
+
+            music.volume = 0; 
+            music.play().then(startContent).catch(e => {
+                startGrandEffects();
+            });
+
+
+            // --- 2. Form Submission ---
+            finalLetterForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); 
+                
+                const letterContent = document.getElementById('letter-content').value;
+                if (letterContent.split(/\s+/).length < 100) {
+                     alert("Please write a more detailed letter (aim for over 100 words) to complete this journey!");
+                     return; 
+                }
+
+                const button = document.getElementById('send-button');
+                button.textContent = 'Submit';
+                button.disabled = true;
+
+                const response = await fetch(finalLetterForm.action, {
+                    method: finalLetterForm.method,
+                    body: new FormData(finalLetterForm),
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    button.textContent = 'Sent' Submit';
+                    setTimeout(() => {
+                        if (music) music.pause();
+                        window.location.href = 'page46.html'; 
+                    }, 2000); 
+                } else {
+                    button.textContent = 'Submission Failed ❌';
+                    button.disabled = false;
+                    alert("A submission error occurred. Please check your email inbox (including spam) for a Formspree confirmation email to activate the form, then try again!");
+                    console.error("Formspree submission failed.");
+                }
+            });
+
+
+            // --- 3. Grand Effects Functions ---
+            const confettiColors = ['#FF69B4', '#FFD700', '#FFFFFF', '#00FF7F', '#4CAF50', '#8A2BE2', '#FF1493'];
+            const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
+            
+            function createFloatingEmoji() { 
+                const emoji = document.createElement('span');
+                emoji.classList.add('floating-emoji');
+                emoji.textContent = floatingEmojis[Math.floor(Math.random() * floatingEmojis.length)];
+                body.appendChild(emoji);
+                const size = Math.random() * 1.5 + 1.5;
+                emoji.style.fontSize = `${size}em`;
+                emoji.style.left = `${Math.random() * 100}vw`;
+                emoji.style.animationDuration = `${Math.random() * 8 + 10}s`;
+                emoji.style.animationDelay = `${Math.random() * 5}s`;
+                emoji.style.opacity = Math.random() * 0.5 + 0.5; 
+                setTimeout(() => emoji.remove(), 20000);
+            }
+
+            function createConfettiPiece() { 
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti-fall');
+                body.appendChild(confetti);
+
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.width = `${Math.random() * 8 + 4}px`; 
+                confetti.style.height = `${Math.random() * 8 + 4}px`;
+                confetti.style.borderRadius = `${Math.random() > 0.5 ? '50%' : '0'}`; 
+                
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `-10vh`; 
+                confetti.style.animationDuration = `${Math.random() * 10 + 15}s`; 
+                confetti.style.animationDelay = `${Math.random() * 5}s`;
+                confetti.style.opacity = Math.random() * 0.7 + 0.3; 
+                
+                setTimeout(() => confetti.remove(), 25000); 
+            }
+
+            function startGrandEffects() {
+                effectIntervals.push(setInterval(createFloatingEmoji, 300));
+                effectIntervals.push(setInterval(createConfettiPiece, 200));
+            }
+        });
+    </script>
+</body>
+</html>
