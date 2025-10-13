@@ -23,7 +23,7 @@
             overflow: hidden; 
         }
 
-        /* --- Music Autoplay Trigger (Kept for compatibility, but hidden) --- */
+        /* --- Music Autoplay Trigger (Hidden) --- */
         #music-trigger {
             position: fixed;
             top: 0;
@@ -38,7 +38,7 @@
         /* --- Header Text --- */
         #main-header-container {
             position: relative;
-            z-index: 100; /* Ensure text is on top of everything */
+            z-index: 100; 
             margin-top: 30px;
             margin-bottom: 20px;
             color: #FFC0CB; 
@@ -60,21 +60,26 @@
 
         /* --- Image Slideshow Container --- */
         #slideshow-container {
-            position: fixed; /* Fixed position to cover the background */
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1; /* Below text and quiz */
+            z-index: 1; 
+            /* Set background to black to hide potential image edges better */
+            background-color: #000000; 
         }
         
         .slide-image {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Don't crop, show full image */
+            /* Keep 'contain' to show the full image */
+            object-fit: contain; 
             position: absolute;
             opacity: 0;
-            transition: opacity 3s ease-in-out; /* Slower fade transition */
+            /* Add a small filter to blur the image slightly, making the edges/blank space less jarring */
+            filter: blur(0.5px); 
+            transition: opacity 3s ease-in-out; 
         }
         
         .slide-image.active {
@@ -93,7 +98,7 @@
             border-radius: 15px;
             width: 80%;
             max-width: 400px;
-            display: none; /* Starts hidden */
+            display: none; 
             flex-direction: column;
             align-items: center;
             box-shadow: 0 0 40px #FFD700, 0 0 20px white;
@@ -167,7 +172,9 @@
 <body>
     <audio id="bgMusic" src="Page44.mp3" loop preload="auto"></audio>
 
-    <div id="music-trigger"></div> <div id="slideshow-container">
+    <div id="music-trigger"></div>
+
+    <div id="slideshow-container">
         <img class="slide-image active" src="L1.jpg" alt="Final Photo 1">
         <img class="slide-image" src="L2.jpg" alt="Final Photo 2">
     </div>
@@ -231,16 +238,15 @@
                 currentSlide = (currentSlide + 1) % slides.length;
                 slides[currentSlide].classList.add('active');
             }
-            const slideshowInterval = setInterval(nextSlide, 8000); // Fade every 8 seconds
+            const slideshowInterval = setInterval(nextSlide, 8000);
 
             // --- 3. Delayed Quiz Appearance ---
             setTimeout(() => {
                 quizBox.style.display = 'flex';
-                // Stop the fireworks after the quiz appears to focus attention
                 clearInterval(fireworkInterval); 
-            }, 20000); // Quiz appears after 20 seconds
+            }, 20000); 
 
-            // --- 4. Grand Effects Functions ---
+            // --- 4. Grand Effects Functions (omitted for brevity) ---
             const confettiColors = ['#FF69B4', '#FFD700', '#FFFFFF', '#00FF7F', '#4CAF50', '#8A2BE2', '#FF1493'];
             const floatingEmojis = ['💖', '💕', '🥰', '😍', '✨', '🌟', '🎉', '🎈', '❤️', '😘', '👑', '🎂', '🥳', '🤩', '🫶', '🤗', '😚', '💙', '🫂', '🎊']; 
             
@@ -284,14 +290,12 @@
                 firework.style.left = `${startLeft}vw`;
                 firework.style.bottom = `-10px`; 
 
-                // Animation for the firework shell launch
                 const endHeight = Math.random() * 60 + 20; 
                 firework.style.transition = `transform ${Math.random() * 0.8 + 0.7}s ease-in, opacity 0.5s ease-out 0.8s`;
                 firework.style.transform = `translateY(-${endHeight}vh)`;
                 firework.style.opacity = 1;
 
                 setTimeout(() => {
-                    // Create the explosion particles at the apex
                     const particleCount = Math.floor(Math.random() * 15) + 15; 
                     for (let i = 0; i < particleCount; i++) {
                         const particle = document.createElement('div');
@@ -306,13 +310,11 @@
                         const angle = Math.random() * 2 * Math.PI;
                         const distance = Math.random() * 80 + 50; 
                         
-                        // Use the firework's final position for explosion (in relative terms)
                         particle.style.left = `50%`;
                         particle.style.top = `50%`;
 
                         firework.appendChild(particle);
 
-                        // Animate the particles outward
                         setTimeout(() => {
                             particle.style.transition = `transform 1s ease-out, opacity 1s ease-out`;
                             particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.5)`;
@@ -323,21 +325,18 @@
                     }
                     
                     firework.remove();
-                }, (Math.random() * 0.8 + 0.7) * 1000); // Time to reach apex
+                }, (Math.random() * 0.8 + 0.7) * 1000);
             }
 
             function startGrandEffects() {
                 effectIntervals.push(setInterval(createFloatingEmoji, 300));
                 effectIntervals.push(setInterval(createConfettiPiece, 200));
-                // Firework interval runs frequently at the start
                 fireworkInterval = setInterval(createFirework, 1000); 
             }
 
             // --- 5. Form Submission ---
             finalSubmitForm.addEventListener('submit', (e) => {
-                // No warning, simply submit and redirect
                 if (music) music.pause();
-                // Form action is already set to page45.html
             });
 
         });
