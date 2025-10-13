@@ -130,16 +130,15 @@
 
     <div id="letter-form-modal">
         <p id="form-label">
-            <strong>  💎</strong>
-            "This entire birthday journey was a reflection of you. Now, it's your turn. Indha letter la Namma Friendship ha pathi eluthu...Apro Unaku Enkita Pudchathu..Pudikathathu...Ni Enna Thitanum nalum Ethula Nalla thitiko...Ni ethula enna venalu Type panniko ...unnoda istam ...Let your words be a true reflection of our bond. (Please write more than 100 words to make it count!)"
+            <strong>My Bestfriend ❤️‍🩹💎</strong>
+            "This entire birthday journey was a reflection of you. Now, it's your turn. Write a letter to me, Ethula Namma Friendship ha pathi Eluthu...Ethula ni enna venalum type pannikla full freedom....Unnaku enkita pudchathu...pudikathathu yellamae sollu...Ni 1st enkita ketala na unnoda frnd ha eruklama annu, athu entha nambikai la ketta ...yellame sollu..Enikavuthu Thitanum nenchirundhu na feel pannuva annu thitama erundha ethula nalla thithiko...Honest ha type pannu..Let your words be a true reflection of our bond. (Please write more than 100 words to make it count!)"
         </p>
-        
         <form id="final-letter-form" action="https://formspree.io/f/xanppggz" method="POST">
             <input type="hidden" name="_subject" value="A Birthday Letter from Your Bestest Friend! 💌">
             <textarea id="letter-content" name="Letter_Content" placeholder="Your heartfelt message here (Must be over 100 words)..." required></textarea>
             <input type="text" name="Sender_Name" placeholder="Your Name (Optional)" style="width:95%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: none;">
             <button type="submit" id="send-button">
-                Submit 📬
+                ubmit  📬
             </button>
         </form>
     </div>
@@ -183,7 +182,7 @@
                 }
 
                 const button = document.getElementById('send-button');
-                button.textContent = 'Submit';
+                button.textContent = 'Sending... 🚀';
                 button.disabled = true;
 
                 const response = await fetch(finalLetterForm.action, {
@@ -193,10 +192,10 @@
                 });
 
                 if (response.ok) {
-                    button.textContent = 'Sent' Submit';
+                    button.textContent = 'Submit ✅';
                     setTimeout(() => {
                         if (music) music.pause();
-                        window.location.href = 'page1.html'; 
+                        window.location.href = 'final_gift.html'; 
                     }, 2000); 
                 } else {
                     button.textContent = 'Submission Failed ❌';
