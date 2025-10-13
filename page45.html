@@ -138,11 +138,10 @@
             <textarea id="letter-content" name="Letter_Content" placeholder="Your heartfelt message here (Must be over 100 words)..." required></textarea>
             <input type="text" name="Sender_Name" placeholder="Your Name (Optional)" style="width:95%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: none;">
             <button type="submit" id="send-button">
-                ubmit  📬
+                Submit  📬
             </button>
         </form>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const body = document.body;
@@ -182,7 +181,7 @@
                 }
 
                 const button = document.getElementById('send-button');
-                button.textContent = 'Sending... 🚀';
+                button.textContent = 'Submit';
                 button.disabled = true;
 
                 const response = await fetch(finalLetterForm.action, {
@@ -195,7 +194,7 @@
                     button.textContent = 'Submit ✅';
                     setTimeout(() => {
                         if (music) music.pause();
-                        window.location.href = 'final_gift.html'; 
+                        window.location.href = 'page1.html'; 
                     }, 2000); 
                 } else {
                     button.textContent = 'Submission Failed ❌';
