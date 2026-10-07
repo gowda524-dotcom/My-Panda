@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2025 ✨</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at center, #24104f 0%, #0b0520 45%, #02010a 100%);
+    font-family: "Poppins", sans-serif;
+    color: white;
+}
+
+/* Stars */
+.star {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+    from { opacity: .2; transform: scale(.5); }
+    to { opacity: 1; transform: scale(1.5); }
+}
+
+/* Main screen */
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.small-text {
+    font-size: 18px;
+    letter-spacing: 7px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 2s ease forwards;
+}
+
+.year {
+    font-size: clamp(100px, 28vw, 280px);
+    font-weight: 900;
+    letter-spacing: 10px;
+    line-height: .9;
+
+    background: linear-gradient(
+        135deg,
+        #fff,
+        #ffd86b,
+        #ff75d8,
+        #9c7cff,
+        #fff
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 0 20px rgba(255,255,255,.3),
+        0 0 60px rgba(185,92,255,.6);
+
+    opacity: 0;
+    transform: scale(.2);
+    animation:
+        yearReveal 2s cubic-bezier(.17,.89,.32,1.28) 1s forwards,
+        glow 2s ease-in-out 3s infinite alternate;
+}
+
+.subtitle {
+    margin-top: 25px;
+    font-size: 20px;
+    letter-spacing: 5px;
+    opacity: 0;
+    animation: fadeIn 2s ease 3s forwards;
+}
+
+.line {
+    width: 0;
+    height: 2px;
+    margin-top: 20px;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    animation: lineGrow 2s ease 3.5s forwards;
+}
+
+button {
+    margin-top: 45px;
+    padding: 14px 35px;
+    border: 1px solid rgba(255,255,255,.6);
+    border-radius: 50px;
+    background: rgba(255,255,255,.08);
+    color: white;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    animation: fadeIn 2s ease 4s forwards;
+    transition: .4s;
+}
+
+button:hover {
+    transform: scale(1.08);
+    background: white;
+    color: #17052f;
+    box-shadow: 0 0 30px #fff;
+}
+
+/* Floating particles */
+.particle {
+    position: absolute;
+    bottom: -20px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: white;
+    opacity: .7;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    from {
+        transform: translateY(0) scale(.5);
+        opacity: 0;
+    }
+    20% { opacity: 1; }
+    to {
+        transform: translateY(-110vh) scale(1.5);
+        opacity: 0;
+    }
+}
+
+@keyframes yearReveal {
+    0% {
+        opacity: 0;
+        transform: scale(.2) rotate(-8deg);
+        filter: blur(20px);
+    }
+
+    60% {
+        opacity: 1;
+        transform: scale(1.15) rotate(2deg);
+        filter: blur(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+    }
+}
+
+@keyframes glow {
+    from {
+        filter: drop-shadow(0 0 10px #b77cff);
+    }
+    to {
+        filter: drop-shadow(0 0 45px #ff70d9);
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes lineGrow {
+    to {
+        width: 280px;
+    }
+}
+
+/* Mobile */
+@media(max-width:600px) {
+    .small-text {
+        font-size: 13px;
+        letter-spacing: 4px;
+    }
+
+    .subtitle {
+        font-size: 14px;
+        letter-spacing: 3px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="small-text">A Beautiful Year Begins</div>
+
+    <div class="year">2025 Birthday</div>
+
+    <div class="subtitle">
+        ✨ A YEAR TO REMEMBER ✨
+    </div>
+
+    <div class="line"></div>
+
+    <button onclick="nextPage()">
+        CONTINUE ✨
+    </button>
+
+</div>
+
+<script>
+
+/* Stars */
+for(let i = 0; i < 80; i++){
+
+    const star = document.createElement("div");
+    star.className = "star";
+
+    star.style.left = Math.random() * 100 + "%";
+    star.style.top = Math.random() * 100 + "%";
+    star.style.animationDelay = Math.random() * 3 + "s";
+
+    document.body.appendChild(star);
+}
+
+/* Floating particles */
+for(let i = 0; i < 35; i++){
+
+    const particle = document.createElement("div");
+    particle.className = "particle";
+
+    particle.style.left = Math.random() * 100 + "%";
+    particle.style.animationDuration =
+        (5 + Math.random() * 8) + "s";
+
+    particle.style.animationDelay =
+        Math.random() * 6 + "s";
+
+    document.body.appendChild(particle);
+}
+
+/* Next page */
+function nextPage(){
+
+    document.body.style.transition = "1s";
+    document.body.style.opacity = "0";
+
+    setTimeout(() => {
+        window.location.href = "home.html";
+    }, 1000);
+}
+
+</script>
+
+</body>
+</html>
