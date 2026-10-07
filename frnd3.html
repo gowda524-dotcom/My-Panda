@@ -1,592 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cut the Cake 🎂 | Maha Lakshmi</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    min-height:100vh;
-    overflow:hidden;
-    font-family:Georgia,serif;
-    color:white;
-    background:
-        radial-gradient(circle at 50% 35%,#4b174f 0%,#1c0925 42%,#050208 100%);
-}
-<audio id="birthdayMusic" loop>
-    <source src="pa3.mp3" type="audio/mpeg">
-</audio>
-/* Ambient glow */
-
-.glow{
-    position:fixed;
-    width:350px;
-    height:350px;
-    left:50%;
-    top:43%;
-    transform:translate(-50%,-50%);
-    background:rgba(255,105,180,.13);
-    filter:blur(80px);
-    border-radius:50%;
-}
-
-/* Stars */
-
-.star{
-    position:fixed;
-    width:3px;
-    height:3px;
-    background:#fff;
-    border-radius:50%;
-    box-shadow:0 0 8px white;
-    animation:twinkle 2s infinite alternate;
-}
-
-@keyframes twinkle{
-    from{opacity:.2}
-    to{opacity:1}
-}
-
-/* Main */
-
-.scene{
-    min-height:100vh;
-    position:relative;
-    z-index:5;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-}
-
-.heading{
-    position:absolute;
-    top:7%;
-    animation:fadeDown 1.5s ease;
-}
-
-.heading small{
-    display:block;
-    color:#ffd7ec;
-    letter-spacing:4px;
-    font-size:12px;
-    margin-bottom:12px;
-}
-
-.heading h1{
-    font-size:clamp(30px,7vw,55px);
-    color:#fff;
-    text-shadow:
-        0 0 10px #ff69b4,
-        0 0 30px rgba(255,105,180,.7);
-}
-
-@keyframes fadeDown{
-    from{
-        opacity:0;
-        transform:translateY(-30px);
+  <meta charset="UTF-8">
+  <title>Page with Cube and Quiz</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between; /* push quiz to bottom */
+      align-items: center;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
     }
-    to{
-        opacity:1;
-        transform:translateY(0);
+
+    /* Top text */
+    .top-text {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+      line-height: 1.8;
     }
-}
 
-/* Cake */
-
-.cake-area{
-    position:relative;
-    width:330px;
-    height:330px;
-    margin-top:50px;
-}
-
-/* Plate */
-
-.plate{
-    position:absolute;
-    bottom:25px;
-    left:50%;
-    transform:translateX(-50%);
-    width:310px;
-    height:38px;
-    border-radius:50%;
-    background:linear-gradient(#fff,#d7d7d7);
-    box-shadow:
-        0 10px 20px rgba(0,0,0,.5),
-        0 0 20px rgba(255,255,255,.2);
-}
-
-/* Cake body */
-
-.cake{
-    position:absolute;
-    bottom:48px;
-    left:50%;
-    transform:translateX(-50%);
-    width:250px;
-    height:150px;
-    transition:1s;
-}
-
-/* Bottom cake */
-
-.layer{
-    position:absolute;
-    left:0;
-    bottom:0;
-    width:250px;
-    height:100px;
-    border-radius:15px 15px 25px 25px;
-
-    background:
-        linear-gradient(
-            90deg,
-            #7e183b,
-            #c34c67 25%,
-            #f08a9d 50%,
-            #bd3d5f 75%,
-            #74152f
-        );
-
-    box-shadow:
-        inset 0 -15px 0 rgba(80,0,20,.25),
-        0 15px 20px rgba(0,0,0,.4);
-}
-
-/* Cream layer */
-
-.cream{
-    position:absolute;
-    left:0;
-    top:42px;
-    width:250px;
-    height:28px;
-
-    background:
-        linear-gradient(#fff8fb,#f4cddd);
-
-    border-radius:50%;
-
-    box-shadow:
-        0 5px 5px rgba(0,0,0,.15);
-}
-
-/* Top */
-
-.top{
-    position:absolute;
-    left:0;
-    top:15px;
-    width:250px;
-    height:75px;
-
-    border-radius:50%;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            #ffdce9,
-            #f3a5bd 70%,
-            #c75875
-        );
-
-    box-shadow:
-        inset 0 -8px 10px rgba(120,20,50,.25);
-}
-
-/* Frosting drips */
-
-.drip{
-    position:absolute;
-    width:25px;
-    height:42px;
-    background:#fff0f6;
-    border-radius:0 0 15px 15px;
-    top:35px;
-}
-
-.d1{left:30px}
-.d2{left:80px;height:30px}
-.d3{left:135px;height:45px}
-.d4{left:190px;height:32px}
-
-/* Sprinkles */
-
-.sprinkle{
-    position:absolute;
-    width:7px;
-    height:18px;
-    border-radius:5px;
-    transform:rotate(35deg);
-    background:#ff4fa3;
-}
-
-.s1{left:60px;top:35px}
-.s2{left:105px;top:52px;background:#9d6cff;transform:rotate(-30deg)}
-.s3{left:155px;top:32px;background:#ffd447}
-.s4{left:190px;top:50px;background:#54dfff}
-
-/* Candle */
-
-.candle{
-    position:absolute;
-    width:18px;
-    height:72px;
-    left:50%;
-    top:-52px;
-    transform:translateX(-50%);
-
-    background:
-        repeating-linear-gradient(
-            -45deg,
-            #fff 0px,
-            #fff 8px,
-            #ff69a9 8px,
-            #ff69a9 16px
-        );
-
-    border-radius:5px;
-    box-shadow:0 4px 8px rgba(0,0,0,.3);
-}
-
-/* Flame */
-
-.flame{
-    position:absolute;
-    width:22px;
-    height:32px;
-    left:50%;
-    top:-30px;
-    transform:translateX(-50%) rotate(45deg);
-
-    background:linear-gradient(
-        135deg,
-        #fff 15%,
-        #ffd447 45%,
-        #ff702f 75%
-    );
-
-    border-radius:
-        50% 0 50% 50%;
-
-    box-shadow:
-        0 0 12px #ffd447,
-        0 0 30px #ff8c42;
-
-    animation:flicker .15s infinite alternate;
-}
-
-@keyframes flicker{
-    from{
-        transform:translateX(-50%) rotate(40deg) scale(.95);
+    /* Cube wrapper */
+    .scene {
+      width: 450px;
+      height: 450px;
+      perspective: 1000px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
     }
-    to{
-        transform:translateX(-50%) rotate(50deg) scale(1.08);
+    .cube {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotateCube 16s infinite linear; /* slower rotation */
     }
-}
-
-/* Knife */
-
-.knife{
-    position:absolute;
-    width:145px;
-    height:12px;
-    right:-40px;
-    bottom:120px;
-
-    background:linear-gradient(
-        #ffffff,
-        #b8c0ca,
-        #ffffff
-    );
-
-    border-radius:0 8px 8px 0;
-    transform:rotate(-28deg);
-    transform-origin:left center;
-
-    cursor:pointer;
-    transition:1s;
-
-    box-shadow:0 4px 8px rgba(0,0,0,.4);
-}
-
-.knife:after{
-    content:"";
-    position:absolute;
-    left:-42px;
-    top:-5px;
-    width:45px;
-    height:22px;
-    background:#633b2c;
-    border-radius:7px;
-}
-
-/* Instruction */
-
-.instruction{
-    margin-top:-5px;
-    font-family:Arial,sans-serif;
-    font-size:16px;
-    color:#ffe3f2;
-    animation:pulse 1.5s infinite alternate;
-}
-
-@keyframes pulse{
-    from{opacity:.6}
-    to{opacity:1}
-}
-
-/* Reveal */
-
-.reveal{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:20;
-    background:rgba(8,0,12,.92);
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:25px;
-}
-
-.reveal-box{
-    max-width:600px;
-    animation:pop .8s ease;
-}
-
-@keyframes pop{
-    from{
-        transform:scale(.4);
-        opacity:0;
+    .cube img {
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      object-fit: contain; /* Keep image fully visible */
     }
-    to{
-        transform:scale(1);
-        opacity:1;
+    .front  { transform: rotateY(  0deg) translateZ(225px); }
+    .back   { transform: rotateY(180deg) translateZ(225px); }
+    .right  { transform: rotateY( 90deg) translateZ(225px); }
+    .left   { transform: rotateY(-90deg) translateZ(225px); }
+    .top    { transform: rotateX( 90deg) translateZ(225px); }
+    .bottom { transform: rotateX(-90deg) translateZ(225px); }
+
+    @keyframes rotateCube {
+      from { transform: rotateX(0) rotateY(0); }
+      to   { transform: rotateX(360deg) rotateY(360deg); }
     }
-}
 
-.reveal h2{
-    font-size:clamp(35px,9vw,65px);
-    color:#ffafd7;
-    text-shadow:0 0 25px #ff4fa3;
-}
-
-.reveal p{
-    margin:20px 0;
-    line-height:1.8;
-    font-size:18px;
-}
-
-button{
-    border:0;
-    border-radius:50px;
-    padding:15px 30px;
-    color:white;
-    background:linear-gradient(90deg,#ff439f,#9d50ff);
-    font-weight:bold;
-    font-size:16px;
-    cursor:pointer;
-    box-shadow:0 0 25px #ff439f;
-}
-
-/* Confetti */
-
-.confetti{
-    position:fixed;
-    top:-20px;
-    width:8px;
-    height:14px;
-    z-index:30;
-    animation:fall 4s linear forwards;
-}
-
-@keyframes fall{
-    to{
-        transform:translateY(110vh) rotate(720deg);
+    /* Quiz pinned bottom */
+    .quiz {
+      margin-bottom: 25px;
     }
-}
-</style>
+    .quiz p {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .quiz input {
+      padding: 8px;
+      font-size: 16px;
+      width: 220px;
+    }
+    .quiz button {
+      padding: 8px 15px;
+      font-size: 16px;
+      font-weight: bold;
+      margin-left: 10px;
+      background: hotpink;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Floating emojis */
+    .emoji {
+      position: absolute;
+      font-size: 32px;
+      animation: floatEmojis 8s linear infinite;
+    }
+    @keyframes floatEmojis {
+      0% { transform: translateY(100vh); opacity: 1; }
+      100% { transform: translateY(-10vh); opacity: 0; }
+    }
+
+    /* Fireworks canvas */
+    #fireworks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="glow"></div>
+  <!-- Top text -->
+  <div class="top-text">
+    Happy Birthday Amma🌍🧿<br>
+    Appu🧿 <br>
+    Lov uuu😚 always...
+  </div>
 
-<div class="scene">
-
-    <div class="heading">
-        <small>🎂 THE SWEETEST MOMENT 🎂</small>
-        <h1>Make a Wish, Kolanthaaa 😚🧿</h1>
+  <!-- Rotating Cube -->
+  <div class="scene">
+    <div class="cube">
+      <img src="B1.jpg" class="front">
+      <img src="B2.jpg" class="back">
+      <img src="B3.jpg" class="right">
+      <img src="B4.jpg" class="left">
+      <img src="B5.jpg" class="top">
+      <img src="B6.jpg" class="bottom">
     </div>
+  </div>
 
-    <div class="cake-area">
+  <!-- Quiz at bottom -->
+  <div class="quiz">
+    <p>Next page ku porathukku Papa ku oru kiss pannu😚...</p>
+    <input type="text" id="answer" placeholder="Enter your answer">
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
 
-        <div class="plate"></div>
+  <!-- Floating emojis -->
+  <div id="emojis"></div>
 
-        <div class="cake">
+  <!-- Fireworks -->
+  <canvas id="fireworks"></canvas>
 
-            <div class="top">
+  <!-- Background Music -->
+  <audio autoplay loop>
+    <source src="First.mp3" type="audio/mpeg">
+  </audio>
 
-                <div class="drip d1"></div>
-                <div class="drip d2"></div>
-                <div class="drip d3"></div>
-                <div class="drip d4"></div>
+  <script>
+    // Floating emojis
+    const emojiArray = ["🙈","😚","💎","🤗","🫂","❤️‍🩹"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.classList.add("emoji");
+      emoji.innerText = emojiArray[Math.floor(Math.random() * emojiArray.length)];
+      emoji.style.left = Math.random() * window.innerWidth + "px";
+      emoji.style.top = "100vh";
+      emoji.style.fontSize = (24 + Math.random() * 24) + "px";
+      document.getElementById("emojis").appendChild(emoji);
 
-                <div class="sprinkle s1"></div>
-                <div class="sprinkle s2"></div>
-                <div class="sprinkle s3"></div>
-                <div class="sprinkle s4"></div>
-
-            </div>
-
-            <div class="cream"></div>
-            <div class="layer"></div>
-
-            <div class="candle">
-                <div class="flame"></div>
-            </div>
-
-        </div>
-
-        <div class="knife" onclick="cutCake()"></div>
-
-    </div>
-
-    <div class="instruction">
-        🔪 Tap the knife to cut your birthday cake ✨
-    </div>
-
-</div>
-
-<div class="reveal" id="reveal">
-
-    <div class="reveal-box">
-
-        <h2>🎂 YAYYY! 🎉</h2>
-
-        <p>
-            The first slice is officially yours, Panda🐼 
-            <br><br>
-            May every slice of this new year bring you
-            more happiness, more laughter and more beautiful memories. 🦋✨
-        </p>
-
-        <button onclick="nextPage()">
-            💌 Continue the Surprise
-        </button>
-
-    </div>
-
-</div>
-
-<script>
-
-/* Stars */
-
-for(let i=0;i<90;i++){
-
-    let s=document.createElement("div");
-
-    s.className="star";
-
-    s.style.left=Math.random()*100+"vw";
-    s.style.top=Math.random()*100+"vh";
-
-    s.style.animationDelay=Math.random()*3+"s";
-
-    document.body.appendChild(s);
-}
-
-
-/* Cake cutting */
-
-function cutCake(){
-
-    const knife=document.querySelector(".knife");
-    const cake=document.querySelector(".cake");
-    const flame=document.querySelector(".flame");
-
-    knife.style.transform="rotate(18deg) translate(-55px,35px)";
-
-    setTimeout(()=>{
-
-        flame.style.opacity="0";
-
-        cake.style.transform=
-            "translateX(-50%) scale(.96)";
-
-        createConfetti();
-
-    },700);
-
-    setTimeout(()=>{
-
-        document.getElementById("reveal")
-        .style.display="flex";
-
-    },1300);
-}
-
-
-/* Confetti */
-
-function createConfetti(){
-
-    for(let i=0;i<100;i++){
-
-        setTimeout(()=>{
-
-            let c=document.createElement("div");
-
-            c.className="confetti";
-
-            c.style.left=Math.random()*100+"vw";
-
-            c.style.background=[
-                "#ff69b4",
-                "#ffd447",
-                "#9d6cff",
-                "#55e6ff",
-                "#ffffff"
-            ][Math.floor(Math.random()*5)];
-
-            c.style.animationDuration=
-                (2+Math.random()*3)+"s";
-
-            document.body.appendChild(c);
-
-            setTimeout(()=>{
-                c.remove();
-            },5000);
-
-        },i*12);
+      setTimeout(() => { emoji.remove(); }, 8000);
     }
-}
+    setInterval(createEmoji, 600);
 
+    // Quiz auto-next
+    function checkAnswer() {
+      const ans = document.getElementById("answer").value.trim();
+      const correct = "😚";
+      if (ans === correct) {
+        window.location.href = "frnd4.html"; // Next page
+      }
+    }
 
-/* Page 4 */
+    // Fireworks
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particles = [];
 
-function nextPage(){
-
-    document.body.style.transition="1s";
-    document.body.style.opacity="0";
-
-    setTimeout(()=>{
-        window.location.href="frnd4.html";
-    },1000);
-}
-
-</script>
+    function random(min, max) { return Math.random() * (max - min) + min; }
+    function Particle(x, y, color) {
+      this.x = x; this.y = y;
+      this.color = color;
+      this.radius = random(2, 4);
+      this.dx = random(-5, 5);
+      this.dy = random(-5, 5);
+      this.life = 100;
+    }
+    Particle.prototype.update = function () {
+      this.x += this.dx;
+      this.y += this.dy;
+      this.life--;
+    }
+    function createFirework() {
+      const x = random(100, canvas.width - 100);
+      const y = random(100, canvas.height / 2);
+      const colors = ["red","yellow","blue","green","purple","orange"];
+      for (let i=0; i<100; i++) {
+        particles.push(new Particle(x, y, colors[Math.floor(Math.random()*colors.length)]));
+      }
+    }
+    function animate() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      particles.forEach((p, i) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        p.update();
+        if (p.life <= 0) particles.splice(i, 1);
+      });
+      requestAnimationFrame(animate);
+    }
+    setInterval(createFirework, 2000);
+    animate();
+  </script>
 
 </body>
 </html>
