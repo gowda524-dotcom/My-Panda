@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You, Maha Lakshmi 💖</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    color:white;
+    background:
+        radial-gradient(circle at 50% 40%,#5b126f,#22002f 45%,#08000d);
+}
+
+/* Stars */
+.stars{
+    position:fixed;
+    inset:0;
+}
+
+.star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:white;
+    border-radius:50%;
+    box-shadow:0 0 10px white;
+    animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+    from{opacity:.2}
+    to{opacity:1}
+}
+
+/* Main */
+.main{
+    min-height:100vh;
+    position:relative;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:25px;
+}
+
+.card{
+    width:min(90%,650px);
+    padding:45px 25px;
+    border-radius:35px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.2);
+    backdrop-filter:blur(15px);
+    box-shadow:0 0 50px rgba(255,80,180,.25);
+
+    animation:cardIn 1.5s ease;
+}
+
+@keyframes cardIn{
+    from{
+        opacity:0;
+        transform:translateY(60px) scale(.85);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+.small{
+    font-size:13px;
+    letter-spacing:5px;
+    color:#ffd6ed;
+    margin-bottom:25px;
+}
+
+h1{
+    font-size:clamp(32px,8vw,60px);
+    margin-bottom:20px;
+
+    background:linear-gradient(
+        90deg,
+        #fff,
+        #ff9bd5,
+        #dca0ff,
+        #fff
+    );
+
+    -webkit-background-clip:text;
+    color:transparent;
+
+    background-size:300%;
+    animation:shine 4s linear infinite;
+}
+
+@keyframes shine{
+    to{background-position:300%}
+}
+
+.message{
+    min-height:115px;
+    font-size:18px;
+    line-height:1.8;
+    color:#ffeaf7;
+}
+
+.cursor{
+    color:#ff8bc9;
+    animation:blink .7s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0}
+}
+
+/* Button */
+button{
+    margin-top:25px;
+    padding:15px 32px;
+    border:0;
+    border-radius:50px;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+
+    background:linear-gradient(
+        90deg,
+        #ff439f,
+        #9f52ff
+    );
+
+    box-shadow:0 0 25px rgba(255,67,159,.7);
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.08);
+}
+
+/* Floating emojis */
+.float{
+    position:fixed;
+    bottom:-40px;
+    z-index:3;
+    pointer-events:none;
+    animation:floatUp 7s linear forwards;
+}
+
+@keyframes floatUp{
+    0%{
+        transform:translateY(0) rotate(0);
+        opacity:0;
+    }
+    15%{opacity:1}
+    100%{
+        transform:translateY(-115vh) rotate(360deg);
+        opacity:0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="main">
+
+    <div class="card">
+
+        <div class="small">
+            💌 A MESSAGE JUST FOR YOU 💌
+        </div>
+
+        <h1>
+            My Jerry💙🤌
+        </h1>
+
+        <div class="message">
+            <span id="typing"></span>
+            <span class="cursor">|</span>
+        </div>
+
+        <button onclick="nextPage()">
+            ✨ There's More... 💖
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+/* Stars */
+
+const stars=document.getElementById("stars");
+
+for(let i=0;i<100;i++){
+
+    const s=document.createElement("div");
+
+    s.className="star";
+
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+
+    s.style.animationDelay=
+        Math.random()*3+"s";
+
+    stars.appendChild(s);
+}
+
+
+/* Typing message */
+
+const text =
+"Wishing you Happiest Birthday my Bestest friend forever 🧿♾️. 💖\n\n" +
+"Happy ya iru loosu 🫂😚, " +
+"Ni ennaku Epovum Special. ✨\n\n" +
+"So this little surprise is just the beginning... 🦋";
+
+const typing=document.getElementById("typing");
+
+let index=0;
+
+function typeText(){
+
+    if(index<text.length){
+
+        typing.innerHTML =
+            text.substring(0,index+1)
+            .replace(/\n/g,"<br>");
+
+        index++;
+
+        setTimeout(typeText,45);
+
+    }
+}
+
+setTimeout(typeText,700);
+
+
+/* Floating hearts & butterflies */
+
+function floating(){
+
+    const item=document.createElement("div");
+
+    item.className="float";
+
+    const emojis=[
+        "💖","💕","💗","✨",
+        "🦋","🌸","💫","🩷"
+    ];
+
+    item.innerHTML=
+        emojis[Math.floor(Math.random()*emojis.length)];
+
+    item.style.left=
+        Math.random()*100+"vw";
+
+    item.style.fontSize=
+        (18+Math.random()*18)+"px";
+
+    item.style.animationDuration=
+        (5+Math.random()*4)+"s";
+
+    document.body.appendChild(item);
+
+    setTimeout(()=>{
+        item.remove();
+    },9000);
+}
+
+setInterval(floating,500);
+
+
+/* Next page */
+
+function nextPage(){
+
+    document.body.style.transition="1s";
+
+    document.body.style.opacity="0";
+
+    setTimeout(()=>{
+
+        window.location.href="frnd3.html";
+
+    },1000);
+}
+
+</script>
+
+</body>
+</html>
